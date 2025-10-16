@@ -1,0 +1,48 @@
+### 获取所有用户
+GET http://localhost:8080/users
+
+### 创建管理员用户
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin123",
+  "fullName": "系统管理员",
+  "email": "admin@hotel.com",
+  "phone": "13800138000",
+  "role": "ADMIN"
+}
+
+### 创建前台用户
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{
+  "username": "reception",
+  "password": "reception123",
+  "fullName": "前台小李",
+  "email": "reception@hotel.com",
+  "phone": "13900139000",
+  "role": "RECEPTIONIST"
+}
+
+### 根据ID获取用户
+GET http://localhost:8080/users/1
+
+### 更新用户
+PUT http://localhost:8080/users/1
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "newpassword123",
+  "fullName": "超级管理员",
+  "email": "superadmin@hotel.com",
+  "phone": "13900139001",
+  "role": "ADMIN",
+  "isActive": true
+}
+
+### 删除用户
+DELETE http://localhost:8080/users/2

@@ -5,44 +5,47 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
-@Table(name = "users")
+@Table(name = "guests")
 @Data
-public class User {
+public class Guest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank
     @Size(max = 50)
-    @Column(unique = true)
-    private String username;
-
-    @NotBlank
-    @Size(max = 100)
-    private String password;
-
-    @NotBlank
-    @Size(max = 50)
     private String fullName;
 
-    @Email
-    @Size(max = 100)
+    @NotBlank
+    @Size(max = 20)
     @Column(unique = true)
-    private String email;
+    private String idCardNumber; // 身份证号
 
     @Size(max = 20)
     private String phone;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 20)
-    private UserRole role = UserRole.MANAGER; // 默认角色为经理
+    @Email
+    @Size(max = 100)
+    private String email;
 
-    @Column(name = "is_active")
-    private Boolean isActive = true;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 10)
+    private Gender gender;
+
+    private LocalDate dateOfBirth;
+
+    @Size(max = 200)
+    private String address;
+
+    @Size(max = 100)
+    private String preferences; // 偏好，如 "无烟,高楼层"
+
+    @Size(max = 500)
+    private String specialRequests; // 特殊要求
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -61,10 +64,8 @@ public class User {
         updatedAt = LocalDateTime.now();
     }
 
-    public enum UserRole {
-        ADMIN,       // 管理员
-        MANAGER,     // 经理
-        RECEPTIONIST, // 前台
-        HOUSEKEEPING // 房务
+    // 性别枚举
+    public enum Gender {
+        MALE, FEMALE
     }
 }
