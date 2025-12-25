@@ -113,4 +113,15 @@ public class GuestController {
         List<GuestDto> guests = guestService.getGuestsByPhone(phone);
         return ResponseEntity.ok(ApiResponse.success(guests));
     }
+
+    /**
+     * 综合搜索：按关键词搜索姓名、身份证号或手机号
+     */
+    @GetMapping("/search")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    public ResponseEntity<ApiResponse<List<GuestDto>>> searchGuests(
+            @RequestParam(required = false) String keyword) {
+        List<GuestDto> guests = guestService.searchGuests(keyword);
+        return ResponseEntity.ok(ApiResponse.success(guests));
+    }
 }

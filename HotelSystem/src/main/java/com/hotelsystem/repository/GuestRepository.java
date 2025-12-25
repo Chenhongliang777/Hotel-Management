@@ -15,4 +15,8 @@ public interface GuestRepository extends JpaRepository<Guest, Long> {
     Boolean existsByIdCardNumber(String idCardNumber);
 
     Optional<Guest> findByEmail(String email);
+    
+    // 综合搜索：按姓名、身份证号或手机号搜索
+    List<Guest> findByFullNameContainingIgnoreCaseOrIdCardNumberContainingOrPhoneContaining(
+            String fullName, String idCardNumber, String phone);
 }

@@ -96,4 +96,18 @@ public class GuestService {
                 .map(GuestDto::fromEntity)
                 .collect(Collectors.toList());
     }
+
+    /**
+     * 综合搜索：按关键词搜索姓名、身份证号或手机号
+     */
+    public List<GuestDto> searchGuests(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return getAllGuests();
+        }
+        String trimmedKeyword = keyword.trim();
+        return guestRepository.findByFullNameContainingIgnoreCaseOrIdCardNumberContainingOrPhoneContaining(
+                trimmedKeyword, trimmedKeyword, trimmedKeyword).stream()
+                .map(GuestDto::fromEntity)
+                .collect(Collectors.toList());
+    }
 }

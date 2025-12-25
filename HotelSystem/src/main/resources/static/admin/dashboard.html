@@ -84,6 +84,7 @@
                 <a href="http://localhost:8081/admin/rooms.html" id="roomsMenuLink">房间管理</a>
                 <a href="http://localhost:8081/admin/guests.html" id="guestsMenuLink">宾客管理</a>
                 <a href="http://localhost:8081/admin/statistics.html" id="statisticsMenuLink">统计报表</a>
+            <a href="http://localhost:8081/admin/logs.html" id="logsMenuLink" style="display:none;">操作日志</a>
                 <a href="http://localhost:8081/admin/users.html" id="usersMenuLink" style="display:none;">员工管理</a>
         </div>
 
@@ -93,8 +94,25 @@
                 <div class="loading">加载中...</div>
             </div>
             <div id="contentArea">
-                <h3>今日概览</h3>
-                <p>欢迎使用民宿管理系统！</p>
+                <h3>快捷操作</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px;">
+                    <a href="http://localhost:8081/admin/reservations.html" class="card" style="padding: 20px; text-decoration: none; color: inherit; display: block;">
+                        <h4>预订管理</h4>
+                        <p>查看和管理所有预订</p>
+                    </a>
+                    <a href="http://localhost:8081/admin/rooms.html" class="card" style="padding: 20px; text-decoration: none; color: inherit; display: block;">
+                        <h4>房间管理</h4>
+                        <p>管理房间信息和状态</p>
+                    </a>
+                    <a href="http://localhost:8081/admin/guests.html" class="card" style="padding: 20px; text-decoration: none; color: inherit; display: block;">
+                        <h4>宾客管理</h4>
+                        <p>查看和管理宾客信息</p>
+                    </a>
+                    <a href="http://localhost:8081/admin/statistics.html" class="card" style="padding: 20px; text-decoration: none; color: inherit; display: block;">
+                        <h4>统计报表</h4>
+                        <p>查看业务统计数据</p>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -102,31 +120,43 @@
     <script src="/admin/js/api-admin.js"></script>
     <script src="/admin/js/permissions.js"></script>
     <script>
-        // 检查登录状态
-        if (!auth.isAuthenticated() || auth.getUserRole() === 'GUEST') {
-            alert('请先登录');
-            window.location.href = '/admin/login.html';
-        }
-        
-        // 根据权限显示/隐藏菜单
-        const userRole = auth.getUserRole();
-        if (userRole === 'ADMIN') {
-            const usersMenuLink = document.getElementById('usersMenuLink');
-            if (usersMenuLink) {
-                usersMenuLink.style.display = 'block';
+        document.addEventListener('DOMContentLoaded', () => {
+            // 检查登录状态
+            if (!auth.isAuthenticated() || auth.getUserRole() === 'GUEST') {
+                alert('请先登录');
+                window.location.href = 'http://localhost:8081/admin/login.html';
+                return;
             }
-        }
-        
-        // 根据角色隐藏无权限的菜单项
-        if (userRole === 'HOUSEKEEPING') {
-            // 房务只能看仪表盘和房间管理
-            const reservationsLink = document.getElementById('reservationsMenuLink');
-            const guestsLink = document.getElementById('guestsMenuLink');
-            const statisticsLink = document.getElementById('statisticsMenuLink');
-            if (reservationsLink) reservationsLink.style.display = 'none';
-            if (guestsLink) guestsLink.style.display = 'none';
-            if (statisticsLink) statisticsLink.style.display = 'none';
-        }
+            
+            // 根据权限显示/隐藏菜单
+            const userRole = auth.getUserRole();
+            if (userRole === 'ADMIN') {
+                const usersMenuLink = document.getElementById('usersMenuLink');
+                if (usersMenuLink) {
+                    usersMenuLink.style.display = 'block';
+                }
+            }
+            if (userRole === 'ADMIN' || userRole === 'MANAGER') {
+                const logsMenuLink = document.getElementById('logsMenuLink');
+                if (logsMenuLink) {
+                    logsMenuLink.style.display = 'block';
+                }
+            }
+            
+            // 根据角色隐藏无权限的菜单项
+            if (userRole === 'HOUSEKEEPING') {
+                // 房务只能看仪表盘和房间管理
+                const reservationsLink = document.getElementById('reservationsMenuLink');
+                const guestsLink = document.getElementById('guestsMenuLink');
+                const statisticsLink = document.getElementById('statisticsMenuLink');
+                if (reservationsLink) reservationsLink.style.display = 'none';
+                if (guestsLink) guestsLink.style.display = 'none';
+                if (statisticsLink) statisticsLink.style.display = 'none';
+            }
+
+            // 加载统计数据
+            loadStatistics();
+        });
 
         async function loadStatistics() {
             const container = document.getElementById('statsContainer');
@@ -172,8 +202,6 @@
                 </div>
             `;
         }
-
-        loadStatistics();
     </script>
 </body>
 </html>
