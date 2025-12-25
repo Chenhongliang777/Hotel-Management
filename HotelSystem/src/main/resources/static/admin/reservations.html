@@ -76,11 +76,15 @@
             <a href="http://localhost:8081/admin/rooms.html">房间管理</a>
             <a href="http://localhost:8081/admin/guests.html">宾客管理</a>
             <a href="http://localhost:8081/admin/statistics.html">统计报表</a>
+            <a href="http://localhost:8081/admin/logs.html" id="logsMenuLink" style="display:none;">操作日志</a>
             <a href="http://localhost:8081/admin/users.html" id="usersMenuLink" style="display:none;">员工管理</a>
         </div>
 
         <div class="main-content">
-            <h2>预订管理</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="margin: 0;">预订管理</h2>
+                <button class="btn btn-primary" onclick="exportReservations()">导出数据</button>
+            </div>
             <div class="filter-section">
                 <form class="filter-form" id="filterForm">
                     <div class="form-group">
@@ -116,37 +120,39 @@
     <script src="/admin/js/api-admin.js"></script>
     <script src="/admin/js/permissions.js"></script>
     <script>
-        // 检查登录状态
-        if (!auth.isAuthenticated() || auth.getUserRole() === 'GUEST') {
-            alert('请先登录');
-            window.location.href = 'http://localhost:8081/admin/login.html';
-        }
-        
-        // 根据权限显示/隐藏菜单
-        const userRole = auth.getUserRole();
-        if (userRole === 'ADMIN') {
-            const usersMenuLink = document.getElementById('usersMenuLink');
-            if (usersMenuLink) {
-                usersMenuLink.style.display = 'block';
+        document.addEventListener('DOMContentLoaded', () => {
+            // 检查登录状态
+            if (!auth.isAuthenticated() || auth.getUserRole() === 'GUEST') {
+                alert('请先登录');
+                window.location.href = 'http://localhost:8081/admin/login.html';
+                return;
             }
-        }
-        
-        // 房务不能访问预订管理 - 直接跳转
-        if (userRole === 'HOUSEKEEPING') {
-            alert('权限不足：房务无法访问预订管理');
-            window.location.href = 'http://localhost:8081/admin/dashboard.html';
-            return;
-        }
-        
-        // 根据角色隐藏无权限的菜单项（如果房务通过其他方式进入）
-        if (userRole === 'HOUSEKEEPING') {
-            const reservationsLink = document.getElementById('reservationsMenuLink');
-            const guestsLink = document.getElementById('guestsMenuLink');
-            const statisticsLink = document.getElementById('statisticsMenuLink');
-            if (reservationsLink) reservationsLink.style.display = 'none';
-            if (guestsLink) guestsLink.style.display = 'none';
-            if (statisticsLink) statisticsLink.style.display = 'none';
-        }
+            
+            // 根据权限显示/隐藏菜单
+            const userRole = auth.getUserRole();
+            if (userRole === 'ADMIN') {
+                const usersMenuLink = document.getElementById('usersMenuLink');
+                if (usersMenuLink) {
+                    usersMenuLink.style.display = 'block';
+                }
+            }
+            if (userRole === 'ADMIN' || userRole === 'MANAGER') {
+                const logsMenuLink = document.getElementById('logsMenuLink');
+                if (logsMenuLink) {
+                    logsMenuLink.style.display = 'block';
+                }
+            }
+            
+            // 房务不能访问预订管理 - 直接跳转
+            if (userRole === 'HOUSEKEEPING') {
+                alert('权限不足：房务无法访问预订管理');
+                window.location.href = 'http://localhost:8081/admin/dashboard.html';
+                return;
+            }
+
+            // 加载预订列表
+            loadReservations();
+        });
 
         async function loadReservations() {
             const container = document.getElementById('reservationsContainer');
@@ -227,6 +233,9 @@
         function getActionButtons(reservation) {
             let buttons = '';
 
+            // 查看详情按钮
+            buttons += `<button class="btn btn-primary" onclick="viewReservation(${reservation.id})">查看</button> `;
+
             // 办理入住/退房 - 前台、经理、管理员可以操作
             if (permissions.isReceptionistOrAbove()) {
                 if (reservation.status === 'CONFIRMED') {
@@ -235,14 +244,220 @@
                 if (reservation.status === 'CHECKED_IN') {
                     buttons += `<button class="btn btn-primary" onclick="checkOut(${reservation.id})">办理退房</button> `;
                 }
+                if (reservation.status === 'PENDING' || reservation.status === 'CONFIRMED') {
+                    buttons += `<button class="btn btn-warning" onclick="cancelReservation(${reservation.id})">取消</button> `;
+                }
             }
 
-            // 删除预订 - 仅经理和管理员可以操作
-            if (permissions.isManagerOrAdmin() && reservation.status !== 'CHECKED_OUT') {
-                buttons += `<button class="btn btn-danger" onclick="deleteReservation(${reservation.id})">删除</button> `;
+            // 编辑和删除预订 - 仅经理和管理员可以操作
+            if (permissions.isManagerOrAdmin()) {
+                if (reservation.status !== 'CHECKED_OUT') {
+                    buttons += `<button class="btn btn-secondary" onclick="editReservation(${reservation.id})">编辑</button> `;
+                }
+                if (reservation.status !== 'CHECKED_OUT') {
+                    buttons += `<button class="btn btn-danger" onclick="deleteReservation(${reservation.id})">删除</button> `;
+                }
             }
 
             return buttons || '-';
+        }
+
+        async function viewReservation(id) {
+            try {
+                const reservation = await reservations.getById(id);
+                if (reservation) {
+                    showReservationDetailModal(reservation);
+                } else {
+                    alert('获取预订信息失败');
+                }
+            } catch (error) {
+                console.error('获取预订详情失败:', error);
+                alert('获取预订详情失败: ' + error.message);
+            }
+        }
+
+        function showReservationDetailModal(reservation) {
+            const modal = document.createElement('div');
+            modal.id = 'reservationDetailModal';
+            modal.style.cssText = 'position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:1000; display:flex; align-items:center; justify-content:center;';
+            modal.innerHTML = `
+                <div class="card" style="max-width:700px; width:90%; max-height:90vh; overflow-y:auto;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                        <h2>预订详情</h2>
+                        <button class="btn btn-secondary" id="closeReservationDetailBtn">关闭</button>
+                    </div>
+                    <div class="form-group">
+                        <label><strong>预订号：</strong></label>
+                        <div>${reservation.reservationNumber || '-'}</div>
+                    </div>
+                    <div class="form-group">
+                        <label><strong>宾客：</strong></label>
+                        <div>${reservation.guest ? reservation.guest.fullName : '未知'}</div>
+                    </div>
+                    <div class="form-group">
+                        <label><strong>房间：</strong></label>
+                        <div>${reservation.room ? reservation.room.roomNumber + ' (' + reservation.room.roomType + ')' : '未分配'}</div>
+                    </div>
+                    <div class="form-group">
+                        <label><strong>入住日期：</strong></label>
+                        <div>${reservation.checkInDate || '-'}</div>
+                    </div>
+                    <div class="form-group">
+                        <label><strong>离店日期：</strong></label>
+                        <div>${reservation.checkOutDate || '-'}</div>
+                    </div>
+                    <div class="form-group">
+                        <label><strong>入住人数：</strong></label>
+                        <div>${reservation.numberOfGuests || '-'}</div>
+                    </div>
+                    <div class="form-group">
+                        <label><strong>总金额：</strong></label>
+                        <div>¥${reservation.totalAmount || 0}</div>
+                    </div>
+                    <div class="form-group">
+                        <label><strong>已付金额：</strong></label>
+                        <div>¥${reservation.paidAmount || 0}</div>
+                    </div>
+                    <div class="form-group">
+                        <label><strong>状态：</strong></label>
+                        <div><span class="badge badge-${getStatusClass(reservation.status)}">${getStatusText(reservation.status)}</span></div>
+                    </div>
+                    <div class="form-group">
+                        <label><strong>特殊要求：</strong></label>
+                        <div>${reservation.specialRequests || '-'}</div>
+                    </div>
+                    <div class="form-group">
+                        <label><strong>创建时间：</strong></label>
+                        <div>${reservation.createdAt ? new Date(reservation.createdAt).toLocaleString() : '-'}</div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            // 绑定关闭按钮事件
+            const closeBtn = document.getElementById('closeReservationDetailBtn');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    modal.remove();
+                });
+            }
+            
+            // 点击背景关闭
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+        }
+
+        async function editReservation(id) {
+            try {
+                const reservation = await reservations.getById(id);
+                if (reservation) {
+                    showReservationEditModal(reservation);
+                } else {
+                    alert('获取预订信息失败');
+                }
+            } catch (error) {
+                console.error('获取预订详情失败:', error);
+                alert('获取预订详情失败: ' + error.message);
+            }
+        }
+
+        function showReservationEditModal(reservation) {
+            const modal = document.createElement('div');
+            modal.id = 'reservationEditModal';
+            modal.style.cssText = 'position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:1000; display:flex; align-items:center; justify-content:center;';
+            modal.innerHTML = `
+                <div class="card" style="max-width:600px; width:90%; max-height:90vh; overflow-y:auto;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                        <h2>编辑预订</h2>
+                        <button class="btn btn-secondary" id="closeReservationEditBtn">关闭</button>
+                    </div>
+                    <form id="reservationEditForm">
+                        <input type="hidden" id="reservationId" value="${reservation.id}">
+                        <div class="form-group">
+                            <label>入住日期 <span style="color:red;">*</span></label>
+                            <input type="date" id="checkInDate" value="${reservation.checkInDate || ''}" required>
+                        </div>
+                        <div class="form-group">
+                            <label>离店日期 <span style="color:red;">*</span></label>
+                            <input type="date" id="checkOutDate" value="${reservation.checkOutDate || ''}" required>
+                        </div>
+                        <div class="form-group">
+                            <label>入住人数</label>
+                            <input type="number" id="numberOfGuests" value="${reservation.numberOfGuests || 1}" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>特殊要求</label>
+                            <textarea id="specialRequests" rows="3">${reservation.specialRequests || ''}</textarea>
+                        </div>
+                        <div style="display:flex; gap:10px; margin-top:20px;">
+                            <button type="submit" class="btn btn-primary" style="flex:1;">保存</button>
+                            <button type="button" class="btn btn-secondary" id="cancelReservationEditBtn" style="flex:1;">取消</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            // 绑定关闭和取消按钮事件
+            const closeBtn = document.getElementById('closeReservationEditBtn');
+            const cancelBtn = document.getElementById('cancelReservationEditBtn');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    modal.remove();
+                });
+            }
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', () => {
+                    modal.remove();
+                });
+            }
+            
+            // 点击背景关闭
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+
+            document.getElementById('reservationEditForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const reservationId = document.getElementById('reservationId').value;
+                const updateData = {
+                    checkInDate: document.getElementById('checkInDate').value,
+                    checkOutDate: document.getElementById('checkOutDate').value,
+                    numberOfGuests: parseInt(document.getElementById('numberOfGuests').value),
+                    specialRequests: document.getElementById('specialRequests').value.trim()
+                };
+
+                try {
+                    await reservations.update(reservationId, updateData);
+                    alert('更新成功');
+                    modal.remove();
+                    await loadReservations();
+                } catch (error) {
+                    console.error('更新预订失败:', error);
+                    alert('更新失败: ' + error.message);
+                }
+            });
+        }
+
+        async function cancelReservation(id) {
+            if (!confirm('确定要取消此预订吗？')) return;
+            try {
+                const response = await reservations.cancel(id);
+                if (response && response.success) {
+                    alert('取消成功');
+                    await loadReservations();
+                } else {
+                    alert('取消失败: ' + (response?.message || '未知错误'));
+                }
+            } catch (error) {
+                console.error('取消预订失败:', error);
+                alert('取消失败: ' + error.message);
+            }
         }
         
         async function deleteReservation(id) {
@@ -307,10 +522,68 @@
 
         document.getElementById('filterForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            await loadReservations();
+            await applyFilters();
         });
 
-        loadReservations();
+        function exportReservations() {
+            // 获取当前显示的预订列表
+            const table = document.querySelector('#reservationsContainer table');
+            if (!table) {
+                alert('没有数据可导出');
+                return;
+            }
+
+            let csv = '预订号,宾客,房间,入住日期,离店日期,总金额,已付金额,状态\n';
+            const rows = table.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                const cols = row.querySelectorAll('td');
+                if (cols.length >= 8) {
+                    csv += `"${cols[0].textContent.trim()}","${cols[1].textContent.trim()}","${cols[2].textContent.trim()}","${cols[3].textContent.trim()}","${cols[4].textContent.trim()}","${cols[5].textContent.trim()}","${cols[6].textContent.trim()}","${cols[7].textContent.trim()}"\n`;
+                }
+            });
+
+            const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `预订数据_${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+        }
+
+        async function applyFilters() {
+            const container = document.getElementById('reservationsContainer');
+            const status = document.getElementById('statusFilter').value;
+            const checkInStart = document.getElementById('checkInStart').value;
+            const checkInEnd = document.getElementById('checkInEnd').value;
+
+            try {
+                container.innerHTML = '<div class="loading">筛选中...</div>';
+                let reservationList = [];
+
+                if (status && (checkInStart || checkInEnd)) {
+                    // 如果同时有状态和日期筛选，先按日期筛选，再前端过滤状态
+                    if (checkInStart && checkInEnd) {
+                        reservationList = await reservations.getByCheckInRange(checkInStart, checkInEnd);
+                    } else {
+                        reservationList = await reservations.getAll();
+                    }
+                    if (status) {
+                        reservationList = reservationList.filter(r => r.status === status);
+                    }
+                } else if (status) {
+                    reservationList = await reservations.getByStatus(status);
+                } else if (checkInStart && checkInEnd) {
+                    reservationList = await reservations.getByCheckInRange(checkInStart, checkInEnd);
+                } else {
+                    reservationList = await reservations.getAll();
+                }
+
+                displayReservations(reservationList);
+            } catch (error) {
+                console.error('筛选预订失败:', error);
+                container.innerHTML = `<div class="alert alert-error">筛选失败: ${error.message || '网络错误'}</div>`;
+            }
+        }
+
     </script>
 </body>
 </html>

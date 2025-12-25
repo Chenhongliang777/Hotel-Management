@@ -90,11 +90,15 @@
             <a href="http://localhost:8081/admin/rooms.html">房间管理</a>
             <a href="http://localhost:8081/admin/guests.html">宾客管理</a>
             <a href="http://localhost:8081/admin/statistics.html" class="active">统计报表</a>
+            <a href="http://localhost:8081/admin/logs.html" id="logsMenuLink" style="display:none;">操作日志</a>
             <a href="http://localhost:8081/admin/users.html" id="usersMenuLink" style="display:none;">员工管理</a>
         </div>
 
         <div class="main-content">
-            <h2>统计报表</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="margin: 0;">统计报表</h2>
+                <button class="btn btn-primary" onclick="exportStatistics()">导出统计</button>
+            </div>
             
             <div class="date-range-form">
                 <div class="form-group" style="margin-bottom:0;">
@@ -123,37 +127,39 @@
     <script src="/admin/js/api-admin.js"></script>
     <script src="/admin/js/permissions.js"></script>
     <script>
-        // 检查登录状态
-        if (!auth.isAuthenticated() || auth.getUserRole() === 'GUEST') {
-            alert('请先登录');
-            window.location.href = 'http://localhost:8081/admin/login.html';
-        }
-        
-        // 根据权限显示/隐藏菜单和功能
-        const userRole = auth.getUserRole();
-        if (userRole === 'ADMIN') {
-            const usersMenuLink = document.getElementById('usersMenuLink');
-            if (usersMenuLink) {
-                usersMenuLink.style.display = 'block';
+        document.addEventListener('DOMContentLoaded', () => {
+            // 检查登录状态
+            if (!auth.isAuthenticated() || auth.getUserRole() === 'GUEST') {
+                alert('请先登录');
+                window.location.href = 'http://localhost:8081/admin/login.html';
+                return;
             }
-        }
-        
-        // 房务不能访问统计报表 - 直接跳转
-        if (userRole === 'HOUSEKEEPING') {
-            alert('权限不足：房务无法访问统计报表');
-            window.location.href = 'http://localhost:8081/admin/dashboard.html';
-            return;
-        }
-        
-        // 根据角色隐藏无权限的菜单项（如果房务通过其他方式进入）
-        if (userRole === 'HOUSEKEEPING') {
-            const reservationsLink = document.getElementById('reservationsMenuLink');
-            const guestsLink = document.getElementById('guestsMenuLink');
-            const statisticsLink = document.getElementById('statisticsMenuLink');
-            if (reservationsLink) reservationsLink.style.display = 'none';
-            if (guestsLink) guestsLink.style.display = 'none';
-            if (statisticsLink) statisticsLink.style.display = 'none';
-        }
+            
+            // 根据权限显示/隐藏菜单和功能
+            const userRole = auth.getUserRole();
+            if (userRole === 'ADMIN') {
+                const usersMenuLink = document.getElementById('usersMenuLink');
+                if (usersMenuLink) {
+                    usersMenuLink.style.display = 'block';
+                }
+            }
+            if (userRole === 'ADMIN' || userRole === 'MANAGER') {
+                const logsMenuLink = document.getElementById('logsMenuLink');
+                if (logsMenuLink) {
+                    logsMenuLink.style.display = 'block';
+                }
+            }
+            
+            // 房务不能访问统计报表 - 直接跳转
+            if (userRole === 'HOUSEKEEPING') {
+                alert('权限不足：房务无法访问统计报表');
+                window.location.href = 'http://localhost:8081/admin/dashboard.html';
+                return;
+            }
+
+            // 加载今日统计
+            loadTodayStats();
+        });
         
         // 房务不能查看日期范围统计
         async function loadDateRangeStats() {
@@ -249,7 +255,6 @@
             `;
         }
 
-        loadTodayStats();
     </script>
 </body>
 </html>

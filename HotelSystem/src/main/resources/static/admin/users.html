@@ -114,6 +114,7 @@
             <a href="http://localhost:8081/admin/rooms.html" id="roomsMenuLink">房间管理</a>
             <a href="http://localhost:8081/admin/guests.html" id="guestsMenuLink">宾客管理</a>
             <a href="http://localhost:8081/admin/statistics.html" id="statisticsMenuLink">统计报表</a>
+            <a href="http://localhost:8081/admin/logs.html" id="logsMenuLink">操作日志</a>
             <a href="http://localhost:8081/admin/users.html" class="active">员工管理</a>
         </div>
 
@@ -184,35 +185,34 @@
     <script src="/admin/js/api-admin.js"></script>
     <script src="/admin/js/permissions.js"></script>
     <script>
-        // 检查登录状态和权限 - 只有管理员可以访问
-        if (!auth.isAuthenticated() || auth.getUserRole() === 'GUEST') {
-            alert('请先登录');
-            window.location.href = 'http://localhost:8081/admin/login.html';
-        } else if (auth.getUserRole() !== 'ADMIN') {
-            alert('权限不足：只有管理员可以访问员工管理');
-            window.location.href = 'http://localhost:8081/admin/dashboard.html';
-        }
-        
-        // 根据角色隐藏无权限的菜单项（虽然只有管理员能访问，但为了统一性也加上）
-        const userRole = auth.getUserRole();
-        if (userRole === 'HOUSEKEEPING') {
-            const reservationsLink = document.getElementById('reservationsMenuLink');
-            const guestsLink = document.getElementById('guestsMenuLink');
-            const statisticsLink = document.getElementById('statisticsMenuLink');
-            if (reservationsLink) reservationsLink.style.display = 'none';
-            if (guestsLink) guestsLink.style.display = 'none';
-            if (statisticsLink) statisticsLink.style.display = 'none';
-        }
+        document.addEventListener('DOMContentLoaded', () => {
+            // 检查登录状态和权限 - 只有管理员可以访问
+            if (!auth.isAuthenticated() || auth.getUserRole() === 'GUEST') {
+                alert('请先登录');
+                window.location.href = 'http://localhost:8081/admin/login.html';
+                return;
+            } else if (auth.getUserRole() !== 'ADMIN') {
+                alert('权限不足：只有管理员可以访问员工管理');
+                window.location.href = 'http://localhost:8081/admin/dashboard.html';
+                return;
+            }
+
+            // 加载用户列表
+            loadUsers();
+        });
 
         async function loadUsers() {
+            const container = document.getElementById('usersContainer');
             try {
                 const response = await api.get('/users');
-                if (response.success) {
+                if (response && response.success) {
                     displayUsers(response.data || []);
+                } else {
+                    container.innerHTML = `<div class="alert alert-error">加载失败: ${response?.message || '未知错误'}</div>`;
                 }
             } catch (error) {
-                document.getElementById('usersContainer').innerHTML = 
-                    `<div class="alert alert-error">加载失败: ${error.message}</div>`;
+                console.error('加载用户失败:', error);
+                container.innerHTML = `<div class="alert alert-error">加载失败: ${error.message || '网络错误'}</div>`;
             }
         }
 
@@ -395,7 +395,6 @@
             }
         });
 
-        loadUsers();
     </script>
 </body>
 </html>

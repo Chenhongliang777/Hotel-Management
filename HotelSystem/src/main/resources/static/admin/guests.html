@@ -75,15 +75,35 @@
             <a href="http://localhost:8081/admin/rooms.html" id="roomsMenuLink">房间管理</a>
             <a href="http://localhost:8081/admin/guests.html" class="active">宾客管理</a>
             <a href="http://localhost:8081/admin/statistics.html" id="statisticsMenuLink">统计报表</a>
+            <a href="http://localhost:8081/admin/logs.html" id="logsMenuLink" style="display:none;">操作日志</a>
             <a href="http://localhost:8081/admin/users.html" id="usersMenuLink" style="display:none;">员工管理</a>
         </div>
 
         <div class="main-content">
-            <h2>宾客管理</h2>
-            <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="搜索宾客姓名、身份证号或手机号">
-                <button class="btn btn-primary" onclick="searchGuests()">搜索</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="margin: 0;">宾客管理</h2>
+                <button class="btn btn-primary" onclick="exportGuests()">导出数据</button>
             </div>
+            
+            <!-- 搜索和筛选区域 -->
+            <div class="filter-section" style="margin-bottom: 20px; padding: 20px; background: #f8f9fa; border-radius: 5px;">
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="搜索宾客姓名、身份证号或手机号">
+                    <button class="btn btn-primary" onclick="searchGuests()">搜索</button>
+                    <button class="btn btn-secondary" onclick="resetSearch()">重置</button>
+                </div>
+                <div style="margin-top: 15px; display: flex; gap: 15px; flex-wrap: wrap;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>注册时间起</label>
+                        <input type="date" id="startDateFilter" onchange="applyFilters()">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>注册时间止</label>
+                        <input type="date" id="endDateFilter" onchange="applyFilters()">
+                    </div>
+                </div>
+            </div>
+            
             <div id="guestsContainer">
                 <div class="loading">加载中...</div>
             </div>
@@ -93,42 +113,45 @@
     <script src="/admin/js/api-admin.js"></script>
     <script src="/admin/js/permissions.js"></script>
     <script>
-        // 检查登录状态
-        if (!auth.isAuthenticated() || auth.getUserRole() === 'GUEST') {
-            alert('请先登录');
-            window.location.href = 'http://localhost:8081/admin/login.html';
-        }
-        
-        // 根据权限显示/隐藏菜单
-        const userRole = auth.getUserRole();
-        if (userRole === 'ADMIN') {
-            const usersMenuLink = document.getElementById('usersMenuLink');
-            if (usersMenuLink) {
-                usersMenuLink.style.display = 'block';
+        document.addEventListener('DOMContentLoaded', () => {
+            // 检查登录状态
+            if (!auth.isAuthenticated() || auth.getUserRole() === 'GUEST') {
+                alert('请先登录');
+                window.location.href = 'http://localhost:8081/admin/login.html';
+                return;
             }
-        }
-        
-        // 房务不能访问宾客管理 - 直接跳转
-        if (userRole === 'HOUSEKEEPING') {
-            alert('权限不足：房务无法访问宾客管理');
-            window.location.href = 'http://localhost:8081/admin/dashboard.html';
-            return;
-        }
-        
-        // 根据角色隐藏无权限的菜单项（如果房务通过其他方式进入）
-        if (userRole === 'HOUSEKEEPING') {
-            const reservationsLink = document.getElementById('reservationsMenuLink');
-            const guestsLink = document.getElementById('guestsMenuLink');
-            const statisticsLink = document.getElementById('statisticsMenuLink');
-            if (reservationsLink) reservationsLink.style.display = 'none';
-            if (guestsLink) guestsLink.style.display = 'none';
-            if (statisticsLink) statisticsLink.style.display = 'none';
-        }
+            
+            // 根据权限显示/隐藏菜单
+            const userRole = auth.getUserRole();
+            if (userRole === 'ADMIN') {
+                const usersMenuLink = document.getElementById('usersMenuLink');
+                if (usersMenuLink) {
+                    usersMenuLink.style.display = 'block';
+                }
+            }
+            if (userRole === 'ADMIN' || userRole === 'MANAGER') {
+                const logsMenuLink = document.getElementById('logsMenuLink');
+                if (logsMenuLink) {
+                    logsMenuLink.style.display = 'block';
+                }
+            }
+            
+            // 房务不能访问宾客管理 - 直接跳转
+            if (userRole === 'HOUSEKEEPING') {
+                alert('权限不足：房务无法访问宾客管理');
+                window.location.href = 'http://localhost:8081/admin/dashboard.html';
+                return;
+            }
+
+            // 加载宾客列表
+            loadGuests();
+        });
 
         async function loadGuests() {
             const container = document.getElementById('guestsContainer');
             try {
                 const guestList = await guests.getAll();
+                allGuests = guestList; // 保存所有宾客数据
                 displayGuests(guestList);
             } catch (error) {
                 console.error('加载宾客失败:', error);
@@ -151,7 +174,6 @@
                             <th>身份证号</th>
                             <th>手机号</th>
                             <th>邮箱</th>
-                            <th>性别</th>
                             <th>注册时间</th>
                             <th>操作</th>
                         </tr>
@@ -163,7 +185,6 @@
                                 <td>${g.idCardNumber}</td>
                                 <td>${g.phone || '-'}</td>
                                 <td>${g.email || '-'}</td>
-                                <td>${g.gender === 'MALE' ? '男' : g.gender === 'FEMALE' ? '女' : '-'}</td>
                                 <td>${g.createdAt ? new Date(g.createdAt).toLocaleDateString() : '-'}</td>
                                 <td>
                                     <button class="btn btn-primary" onclick="viewGuest(${g.id})">查看</button>
@@ -176,20 +197,141 @@
             `;
         }
 
-        function searchGuests() {
-            const keyword = document.getElementById('searchInput').value;
-            if (!keyword) {
-                loadGuests();
-                return;
+        let allGuests = []; // 存储所有宾客数据，用于前端筛选
+
+        async function searchGuests() {
+            const container = document.getElementById('guestsContainer');
+            const keyword = document.getElementById('searchInput').value.trim();
+            
+            try {
+                if (!keyword) {
+                    // 如果没有关键词，加载所有宾客
+                    await loadGuests();
+                    return;
+                }
+                
+                container.innerHTML = '<div class="loading">搜索中...</div>';
+                const guestList = await guests.search(keyword);
+                allGuests = guestList;
+                displayGuests(guestList);
+            } catch (error) {
+                console.error('搜索宾客失败:', error);
+                container.innerHTML = `<div class="alert alert-error">搜索失败: ${error.message || '网络错误'}</div>`;
             }
-            // 简化处理：前端过滤
-            loadGuests().then(() => {
-                // 实际应该调用后端搜索API
-            });
         }
 
-        function viewGuest(id) {
-            alert('查看宾客详情功能待实现');
+        function resetSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('startDateFilter').value = '';
+            document.getElementById('endDateFilter').value = '';
+            loadGuests();
+        }
+
+        function applyFilters() {
+            const startDate = document.getElementById('startDateFilter').value;
+            const endDate = document.getElementById('endDateFilter').value;
+            
+            let filtered = [...allGuests];
+            
+            // 按注册时间筛选
+            if (startDate) {
+                const start = new Date(startDate);
+                filtered = filtered.filter(g => {
+                    if (!g.createdAt) return false;
+                    return new Date(g.createdAt) >= start;
+                });
+            }
+            
+            if (endDate) {
+                const end = new Date(endDate);
+                end.setHours(23, 59, 59, 999); // 包含整天
+                filtered = filtered.filter(g => {
+                    if (!g.createdAt) return false;
+                    return new Date(g.createdAt) <= end;
+                });
+            }
+            
+            displayGuests(filtered);
+        }
+
+        async function viewGuest(id) {
+            try {
+                const guest = await guests.getById(id);
+                if (guest) {
+                    showGuestDetailModal(guest);
+                } else {
+                    alert('获取宾客信息失败');
+                }
+            } catch (error) {
+                console.error('获取宾客详情失败:', error);
+                alert('获取宾客详情失败: ' + error.message);
+            }
+        }
+
+        function showGuestDetailModal(guest) {
+            const modal = document.createElement('div');
+            modal.id = 'guestDetailModal';
+            modal.style.cssText = 'position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:1000; display:flex; align-items:center; justify-content:center;';
+            modal.innerHTML = `
+                <div class="card" style="max-width:600px; width:90%; max-height:90vh; overflow-y:auto;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                        <h2>宾客详情</h2>
+                        <button class="btn btn-secondary" id="closeGuestDetailBtn">关闭</button>
+                    </div>
+                    <div class="form-group">
+                        <label><strong>姓名：</strong></label>
+                        <div>${guest.fullName || '-'}</div>
+                    </div>
+                    <div class="form-group">
+                        <label><strong>身份证号：</strong></label>
+                        <div>${guest.idCardNumber || '-'}</div>
+                    </div>
+                    <div class="form-group">
+                        <label><strong>手机号：</strong></label>
+                        <div>${guest.phone || '-'}</div>
+                    </div>
+                    <div class="form-group">
+                        <label><strong>邮箱：</strong></label>
+                        <div>${guest.email || '-'}</div>
+                    </div>
+                    <div class="form-group">
+                        <label><strong>出生日期：</strong></label>
+                        <div>${guest.dateOfBirth ? new Date(guest.dateOfBirth).toLocaleDateString() : '-'}</div>
+                    </div>
+                    <div class="form-group">
+                        <label><strong>地址：</strong></label>
+                        <div>${guest.address || '-'}</div>
+                    </div>
+                    <div class="form-group">
+                        <label><strong>偏好：</strong></label>
+                        <div>${guest.preferences || '-'}</div>
+                    </div>
+                    <div class="form-group">
+                        <label><strong>特殊要求：</strong></label>
+                        <div>${guest.specialRequests || '-'}</div>
+                    </div>
+                    <div class="form-group">
+                        <label><strong>注册时间：</strong></label>
+                        <div>${guest.createdAt ? new Date(guest.createdAt).toLocaleString() : '-'}</div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            // 绑定关闭按钮事件
+            const closeBtn = document.getElementById('closeGuestDetailBtn');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    modal.remove();
+                });
+            }
+            
+            // 点击背景关闭
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
         }
         
         async function deleteGuest(id) {
@@ -218,7 +360,29 @@
             }
         });
 
-        loadGuests();
+        function exportGuests() {
+            const table = document.querySelector('#guestsContainer table');
+            if (!table) {
+                alert('没有数据可导出');
+                return;
+            }
+
+            let csv = '姓名,身份证号,手机号,邮箱,性别,注册时间\n';
+            const rows = table.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                const cols = row.querySelectorAll('td');
+                if (cols.length >= 6) {
+                    csv += `"${cols[0].textContent.trim()}","${cols[1].textContent.trim()}","${cols[2].textContent.trim()}","${cols[3].textContent.trim()}","${cols[4].textContent.trim()}","${cols[5].textContent.trim()}"\n`;
+                }
+            });
+
+            const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `宾客数据_${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+        }
+
     </script>
 </body>
 </html>
