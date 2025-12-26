@@ -22,14 +22,14 @@ public class StocktakeController {
     private final StocktakeService stocktakeService;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<List<InventoryStocktake>>> getAllStocktakes() {
         List<InventoryStocktake> stocktakes = stocktakeService.getAllStocktakes();
         return ResponseEntity.ok(ApiResponse.success(stocktakes));
     }
 
     @GetMapping("/status/{status}")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<List<InventoryStocktake>>> getStocktakesByStatus(
             @PathVariable InventoryStocktake.StocktakeStatus status) {
         List<InventoryStocktake> stocktakes = stocktakeService.getStocktakesByStatus(status);
@@ -37,7 +37,7 @@ public class StocktakeController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<InventoryStocktake>> getStocktakeById(@PathVariable Long id) {
         return stocktakeService.getStocktakeById(id)
                 .map(stocktake -> ResponseEntity.ok(ApiResponse.success(stocktake)))
@@ -45,7 +45,7 @@ public class StocktakeController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<InventoryStocktake>> createStocktake(
             @RequestBody Map<String, Object> request,
             Authentication authentication) {
@@ -65,7 +65,7 @@ public class StocktakeController {
     }
 
     @PostMapping("/{id}/complete")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<InventoryStocktake>> completeStocktake(
             @PathVariable Long id,
             @RequestBody Map<String, Object> request) {
@@ -83,7 +83,7 @@ public class StocktakeController {
     }
 
     @PostMapping("/{id}/adjust")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<InventoryStocktake>> adjustInventory(@PathVariable Long id) {
         try {
             InventoryStocktake stocktake = stocktakeService.adjustInventory(id);

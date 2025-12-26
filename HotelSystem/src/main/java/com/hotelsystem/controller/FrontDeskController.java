@@ -27,7 +27,7 @@ public class FrontDeskController {
 
     // 散客快速入住（无需预订）
     @PostMapping("/quick-checkin")
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<Map<String, Object>>> quickCheckIn(
             @RequestBody CheckInRequest request,
             Authentication authentication) {
@@ -69,7 +69,7 @@ public class FrontDeskController {
 
     // 前台办理入住（员工权限）
     @PostMapping("/checkin/{reservationId}")
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<Map<String, Object>>> checkIn(
             @PathVariable Long reservationId,
             @RequestBody(required = false) CheckInRequest request,
@@ -86,7 +86,7 @@ public class FrontDeskController {
     
     // 获取入住确认信息（用于确认页面）
     @GetMapping("/checkin/{reservationId}/confirm")
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<Map<String, Object>>> getCheckInConfirmation(@PathVariable Long reservationId) {
         try {
             return reservationService.getReservationById(reservationId)
@@ -110,7 +110,7 @@ public class FrontDeskController {
 
     // 房间检查（退房前）
     @PostMapping("/checkout/{reservationId}/inspection")
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<Map<String, Object>>> roomInspection(
             @PathVariable Long reservationId,
             @RequestBody CheckOutRequest request,
@@ -127,7 +127,7 @@ public class FrontDeskController {
 
     // 前台办理退房（员工权限）
     @PostMapping("/checkout/{reservationId}")
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<Map<String, Object>>> checkOut(
             @PathVariable Long reservationId,
             @RequestBody(required = false) CheckOutRequest request,
@@ -151,7 +151,7 @@ public class FrontDeskController {
     
     // 获取退房账单详情
     @GetMapping("/checkout/{reservationId}/bill")
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<Map<String, Object>>> getCheckOutBill(@PathVariable Long reservationId) {
         try {
             Map<String, Object> billDetails = reservationService.getCheckOutBillDetails(reservationId);

@@ -18,14 +18,14 @@ public class GuestPreferenceController {
     private final GuestPreferenceService preferenceService;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<List<GuestPreferenceDto>>> getPreferences(@PathVariable Long guestId) {
         List<GuestPreferenceDto> preferences = preferenceService.getPreferencesByGuestId(guestId);
         return ResponseEntity.ok(ApiResponse.success(preferences));
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<GuestPreferenceDto>> createPreference(
             @PathVariable Long guestId,
             @RequestBody GuestPreferenceDto dto) {
@@ -38,7 +38,7 @@ public class GuestPreferenceController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<GuestPreferenceDto>> updatePreference(
             @PathVariable Long id,
             @RequestBody GuestPreferenceDto dto) {
@@ -51,7 +51,7 @@ public class GuestPreferenceController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<Void>> deletePreference(@PathVariable Long id) {
         try {
             preferenceService.deletePreference(id);
@@ -62,7 +62,7 @@ public class GuestPreferenceController {
     }
 
     @PostMapping("/extract")
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<String>> extractPreferencesFromHistory(@PathVariable Long guestId) {
         try {
             preferenceService.extractPreferencesFromHistory(guestId);
@@ -73,7 +73,7 @@ public class GuestPreferenceController {
     }
 
     @GetMapping("/recommendations")
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<List<String>>> getRecommendedRoomTypes(@PathVariable Long guestId) {
         List<String> recommendations = preferenceService.getRecommendedRoomTypes(guestId);
         return ResponseEntity.ok(ApiResponse.success(recommendations));

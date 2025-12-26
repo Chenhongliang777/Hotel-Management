@@ -30,7 +30,7 @@ public class HousekeepingController {
      * 房务工作台 - 获取待办任务
      */
     @GetMapping("/dashboard")
-    @PreAuthorize("hasAnyRole('HOUSEKEEPING','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('HOUSEKEEPING','OPERATOR')")
     public ResponseEntity<ApiResponse<Map<String, Object>>> getHousekeepingDashboard(Authentication authentication) {
         String username = authentication != null ? authentication.getName() : null;
 
@@ -95,7 +95,7 @@ public class HousekeepingController {
      * 获取清洁任务详情
      */
     @GetMapping("/task/{taskId}")
-    @PreAuthorize("hasAnyRole('HOUSEKEEPING','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('HOUSEKEEPING','OPERATOR')")
     public ResponseEntity<ApiResponse<Map<String, Object>>> getTaskDetails(@PathVariable Long taskId) {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new RuntimeException("任务不存在"));
@@ -136,7 +136,7 @@ public class HousekeepingController {
      * 开始清洁任务
      */
     @PostMapping("/task/{taskId}/start")
-    @PreAuthorize("hasAnyRole('HOUSEKEEPING','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('HOUSEKEEPING','OPERATOR')")
     public ResponseEntity<ApiResponse<Task>> startTask(
             @PathVariable Long taskId,
             @RequestBody(required = false) Map<String, String> request,
@@ -162,7 +162,7 @@ public class HousekeepingController {
      * 完成清洁任务
      */
     @PostMapping("/task/{taskId}/complete")
-    @PreAuthorize("hasAnyRole('HOUSEKEEPING','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('HOUSEKEEPING','OPERATOR')")
     public ResponseEntity<ApiResponse<Task>> completeTask(
             @PathVariable Long taskId,
             @RequestBody(required = false) Map<String, Object> request) {
@@ -188,7 +188,7 @@ public class HousekeepingController {
      * 批量更新房态
      */
     @PostMapping("/rooms/batch-update-status")
-    @PreAuthorize("hasAnyRole('HOUSEKEEPING','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('HOUSEKEEPING','OPERATOR')")
     public ResponseEntity<ApiResponse<Map<String, Object>>> batchUpdateRoomStatus(
             @RequestBody Map<String, Object> request) {
         try {

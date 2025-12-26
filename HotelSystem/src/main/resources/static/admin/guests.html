@@ -123,13 +123,11 @@
             
             // 根据权限显示/隐藏菜单
             const userRole = auth.getUserRole();
-            if (userRole === 'ADMIN') {
+            if (userRole === 'OPERATOR') {
                 const usersMenuLink = document.getElementById('usersMenuLink');
                 if (usersMenuLink) {
                     usersMenuLink.style.display = 'block';
                 }
-            }
-            if (userRole === 'ADMIN' || userRole === 'MANAGER') {
                 const logsMenuLink = document.getElementById('logsMenuLink');
                 if (logsMenuLink) {
                     logsMenuLink.style.display = 'block';

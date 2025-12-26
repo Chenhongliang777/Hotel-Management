@@ -12,19 +12,19 @@ const permissions = {
         return roles.includes(userRole);
     },
 
-    // 检查用户是否是管理员
-    isAdmin() {
-        return this.hasRole('ADMIN');
+    // 检查用户是否是民宿经营者
+    isOperator() {
+        return this.hasRole('OPERATOR');
     },
 
-    // 检查用户是否是经理或管理员
-    isManagerOrAdmin() {
-        return this.hasAnyRole('MANAGER', 'ADMIN');
+    // 检查用户是否是民宿经营者（原经理或管理员）
+    isOperatorOrAbove() {
+        return this.hasRole('OPERATOR');
     },
 
-    // 检查用户是否是前台、经理或管理员
+    // 检查用户是否是前台或民宿经营者
     isReceptionistOrAbove() {
-        return this.hasAnyRole('RECEPTIONIST', 'MANAGER', 'ADMIN');
+        return this.hasAnyRole('RECEPTIONIST', 'OPERATOR');
     },
 
     // 根据角色显示/隐藏元素
@@ -59,8 +59,7 @@ const permissions = {
     getRoleDisplayName() {
         const role = auth.getUserRole();
         const roleMap = {
-            'ADMIN': '管理员',
-            'MANAGER': '经理',
+            'OPERATOR': '民宿经营者',
             'RECEPTIONIST': '前台',
             'HOUSEKEEPING': '房务'
         };

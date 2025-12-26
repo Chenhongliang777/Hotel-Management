@@ -37,7 +37,7 @@ public class RoomTypeController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<RoomType>> createRoomType(@RequestBody RoomType roomType) {
         try {
             RoomType created = roomTypeService.createRoomType(roomType);
@@ -48,7 +48,7 @@ public class RoomTypeController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<RoomType>> updateRoomType(
             @PathVariable Long id,
             @RequestBody RoomType roomType) {
@@ -61,7 +61,7 @@ public class RoomTypeController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<Void>> deleteRoomType(@PathVariable Long id) {
         try {
             roomTypeService.deleteRoomType(id);

@@ -34,7 +34,7 @@ public class InitialDataLoader implements ApplicationRunner {
             admin.setPassword(passwordEncoder.encode(adminPassword));
             admin.setFullName("Initial Admin");
             admin.setEmail(adminUsername + "@example.com");
-            admin.setRole(User.UserRole.ADMIN);
+            admin.setRole(User.UserRole.OPERATOR);
             admin.setIsActive(true);
             userRepository.save(admin);
             System.out.println("Created initial admin user: " + adminUsername);

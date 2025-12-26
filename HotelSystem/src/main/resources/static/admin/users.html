@@ -162,10 +162,9 @@
                 <div class="form-group">
                     <label>角色 <span style="color:red;">*</span></label>
                     <select id="role" required>
+                        <option value="OPERATOR">民宿经营者</option>
                         <option value="RECEPTIONIST">前台</option>
                         <option value="HOUSEKEEPING">房务</option>
-                        <option value="MANAGER">经理</option>
-                        <option value="ADMIN">管理员</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -191,8 +190,8 @@
                 alert('请先登录');
                 window.location.href = 'http://localhost:8081/admin/login.html';
                 return;
-            } else if (auth.getUserRole() !== 'ADMIN') {
-                alert('权限不足：只有管理员可以访问员工管理');
+            } else if (auth.getUserRole() !== 'OPERATOR') {
+                alert('权限不足：只有民宿经营者可以访问员工管理');
                 window.location.href = 'http://localhost:8081/admin/dashboard.html';
                 return;
             }
@@ -256,8 +255,7 @@
 
         function getRoleText(role) {
             const roleMap = {
-                'ADMIN': '管理员',
-                'MANAGER': '经理',
+                'OPERATOR': '民宿经营者',
                 'RECEPTIONIST': '前台',
                 'HOUSEKEEPING': '房务'
             };

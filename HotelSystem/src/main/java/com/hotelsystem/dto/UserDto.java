@@ -73,7 +73,7 @@ public class UserDto {
         if (this.securityAnswer != null && !this.securityAnswer.isBlank()) {
             user.setSecurityAnswer(this.securityAnswer); // 注意：实际使用中需要加密
         }
-        user.setRole(this.role != null ? this.role : User.UserRole.RECEPTIONIST);
+        user.setRole(this.role != null ? this.role : User.UserRole.OPERATOR);
         user.setIsActive(this.isActive != null ? this.isActive : true);
         return user;
     }

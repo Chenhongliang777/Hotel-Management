@@ -22,14 +22,14 @@ public class PurchaseController {
     private final PurchaseService purchaseService;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<List<PurchaseOrder>>> getAllPurchaseOrders() {
         List<PurchaseOrder> orders = purchaseService.getAllPurchaseOrders();
         return ResponseEntity.ok(ApiResponse.success(orders));
     }
 
     @GetMapping("/status/{status}")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<List<PurchaseOrder>>> getPurchaseOrdersByStatus(
             @PathVariable PurchaseOrder.PurchaseStatus status) {
         List<PurchaseOrder> orders = purchaseService.getPurchaseOrdersByStatus(status);
@@ -37,7 +37,7 @@ public class PurchaseController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<PurchaseOrder>> getPurchaseOrderById(@PathVariable Long id) {
         return purchaseService.getPurchaseOrderById(id)
                 .map(order -> ResponseEntity.ok(ApiResponse.success(order)))
@@ -45,7 +45,7 @@ public class PurchaseController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<PurchaseOrder>> createPurchaseOrder(
             @RequestBody Map<String, Object> request,
             Authentication authentication) {
@@ -72,7 +72,7 @@ public class PurchaseController {
     }
 
     @PostMapping("/{id}/update-status")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<PurchaseOrder>> updatePurchaseOrderStatus(
             @PathVariable Long id,
             @RequestBody Map<String, String> request) {
@@ -87,7 +87,7 @@ public class PurchaseController {
     }
 
     @PostMapping("/{id}/receive")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<PurchaseOrder>> receivePurchaseOrder(
             @PathVariable Long id,
             @RequestBody Map<String, Object> request) {
@@ -101,7 +101,7 @@ public class PurchaseController {
     }
 
     @PostMapping("/{id}/cancel")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<Void>> cancelPurchaseOrder(@PathVariable Long id) {
         try {
             purchaseService.cancelPurchaseOrder(id);

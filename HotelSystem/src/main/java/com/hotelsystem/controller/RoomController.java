@@ -25,14 +25,14 @@ public class RoomController {
     private final RoomStatusUpdateService roomStatusUpdateService;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('GUEST','RECEPTIONIST','MANAGER','ADMIN','HOUSEKEEPING')")
+    @PreAuthorize("hasAnyRole('GUEST','RECEPTIONIST','OPERATOR','HOUSEKEEPING')")
     public ResponseEntity<ApiResponse<List<RoomDto>>> getAllRooms() {
         List<RoomDto> rooms = roomService.getAllRooms();
         return ResponseEntity.ok(ApiResponse.success(rooms));
     }
 
     @GetMapping("/available")
-    @PreAuthorize("hasAnyRole('GUEST','RECEPTIONIST','MANAGER','ADMIN','HOUSEKEEPING')")
+    @PreAuthorize("hasAnyRole('GUEST','RECEPTIONIST','OPERATOR','HOUSEKEEPING')")
     public ResponseEntity<ApiResponse<List<RoomDto>>> getAvailableRooms(
             @RequestParam(required = false) String checkIn,
             @RequestParam(required = false) String checkOut) {
@@ -47,28 +47,28 @@ public class RoomController {
     }
 
     @GetMapping("/by-type")
-    @PreAuthorize("hasAnyRole('GUEST','RECEPTIONIST','MANAGER','ADMIN','HOUSEKEEPING')")
+    @PreAuthorize("hasAnyRole('GUEST','RECEPTIONIST','OPERATOR','HOUSEKEEPING')")
     public ResponseEntity<ApiResponse<List<RoomDto>>> getRoomsByType(@RequestParam String roomType) {
         List<RoomDto> rooms = roomService.getRoomsByType(roomType);
         return ResponseEntity.ok(ApiResponse.success(rooms));
     }
 
     @GetMapping("/type/{roomType}")
-    @PreAuthorize("hasAnyRole('GUEST','RECEPTIONIST','MANAGER','ADMIN','HOUSEKEEPING')")
+    @PreAuthorize("hasAnyRole('GUEST','RECEPTIONIST','OPERATOR','HOUSEKEEPING')")
     public ResponseEntity<ApiResponse<List<RoomDto>>> getRoomsByTypePath(@PathVariable String roomType) {
         List<RoomDto> rooms = roomService.getRoomsByType(roomType);
         return ResponseEntity.ok(ApiResponse.success(rooms));
     }
 
     @GetMapping("/active")
-    @PreAuthorize("hasAnyRole('GUEST','RECEPTIONIST','MANAGER','ADMIN','HOUSEKEEPING')")
+    @PreAuthorize("hasAnyRole('GUEST','RECEPTIONIST','OPERATOR','HOUSEKEEPING')")
     public ResponseEntity<ApiResponse<List<RoomDto>>> getActiveRooms() {
         List<RoomDto> activeRooms = roomService.getActiveRooms();
         return ResponseEntity.ok(ApiResponse.success(activeRooms));
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('GUEST','RECEPTIONIST','MANAGER','ADMIN','HOUSEKEEPING')")
+    @PreAuthorize("hasAnyRole('GUEST','RECEPTIONIST','OPERATOR','HOUSEKEEPING')")
     public ResponseEntity<ApiResponse<RoomDto>> getRoomById(@PathVariable Long id) {
         return roomService.getRoomById(id)
                 .map(room -> ResponseEntity.ok(ApiResponse.success(room)))
@@ -76,7 +76,7 @@ public class RoomController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<RoomDto>> createRoom(@Valid @RequestBody RoomDto roomDto) {
         try {
             RoomDto createdRoom = roomService.createRoom(roomDto);
@@ -87,7 +87,7 @@ public class RoomController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<RoomDto>> updateRoom(
             @PathVariable Long id,
             @Valid @RequestBody RoomDto roomDto) {
@@ -100,7 +100,7 @@ public class RoomController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<Void>> deleteRoom(@PathVariable Long id) {
         try {
             roomService.deleteRoom(id);
@@ -112,7 +112,7 @@ public class RoomController {
 
     // 更新房间状态（供前台和房务员工使用）
     @PutMapping("/{id}/status")
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','HOUSEKEEPING','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','HOUSEKEEPING','OPERATOR')")
     public ResponseEntity<ApiResponse<RoomDto>> updateRoomStatus(
             @PathVariable Long id,
             @RequestParam String status,

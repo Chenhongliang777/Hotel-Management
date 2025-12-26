@@ -22,21 +22,21 @@ public class WaitlistController {
     private final com.hotelsystem.repository.GuestRepository guestRepository;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<List<Waitlist>>> getAllWaitlist() {
         List<Waitlist> waitlist = waitlistService.getAllWaitlist();
         return ResponseEntity.ok(ApiResponse.success(waitlist));
     }
 
     @GetMapping("/pending")
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<List<Waitlist>>> getPendingWaitlist() {
         List<Waitlist> waitlist = waitlistService.getPendingWaitlist();
         return ResponseEntity.ok(ApiResponse.success(waitlist));
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<Waitlist>> getWaitlistById(@PathVariable Long id) {
         return waitlistService.getWaitlistById(id)
                 .map(waitlist -> ResponseEntity.ok(ApiResponse.success(waitlist)))
@@ -44,7 +44,7 @@ public class WaitlistController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('GUEST','RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('GUEST','RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<Waitlist>> addToWaitlist(
             @RequestBody Map<String, Object> request,
             Authentication authentication) {
@@ -79,7 +79,7 @@ public class WaitlistController {
     }
 
     @PostMapping("/{id}/notify")
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<Void>> notifyWaitlist(@PathVariable Long id) {
         try {
             waitlistService.notifyWaitlist(id);
@@ -90,7 +90,7 @@ public class WaitlistController {
     }
 
     @PostMapping("/{id}/convert")
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<com.hotelsystem.entity.Reservation>> convertToReservation(
             @PathVariable Long id,
             @RequestBody Map<String, Long> request) {
@@ -104,7 +104,7 @@ public class WaitlistController {
     }
 
     @PostMapping("/{id}/cancel")
-    @PreAuthorize("hasAnyRole('GUEST','RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('GUEST','RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<Void>> cancelWaitlist(@PathVariable Long id) {
         try {
             waitlistService.cancelWaitlist(id);

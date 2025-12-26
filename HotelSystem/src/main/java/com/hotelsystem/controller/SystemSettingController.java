@@ -18,14 +18,14 @@ public class SystemSettingController {
     private final SystemSettingService settingService;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<List<SystemSettingDto>>> getAllSettings() {
         List<SystemSettingDto> settings = settingService.getAllSettings();
         return ResponseEntity.ok(ApiResponse.success(settings));
     }
 
     @GetMapping("/{key}")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<SystemSettingDto>> getSettingByKey(@PathVariable String key) {
         return settingService.getSettingByKey(key)
                 .map(setting -> ResponseEntity.ok(ApiResponse.success(setting)))
@@ -33,7 +33,7 @@ public class SystemSettingController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<SystemSettingDto>> saveSetting(@RequestBody SystemSettingDto dto) {
         try {
             SystemSettingDto saved = settingService.saveSetting(dto);
@@ -44,7 +44,7 @@ public class SystemSettingController {
     }
 
     @PutMapping("/{key}")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<SystemSettingDto>> updateSetting(
             @PathVariable String key,
             @RequestBody SystemSettingDto dto) {
@@ -58,7 +58,7 @@ public class SystemSettingController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<Void>> deleteSetting(@PathVariable Long id) {
         try {
             settingService.deleteSetting(id);

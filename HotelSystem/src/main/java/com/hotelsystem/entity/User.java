@@ -46,7 +46,7 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
-    private UserRole role = UserRole.MANAGER; // 默认角色为经理
+    private UserRole role = UserRole.OPERATOR; // 默认角色为民宿经营者
 
     @Column(name = "is_active")
     private Boolean isActive = true;
@@ -69,9 +69,8 @@ public class User {
     }
 
     public enum UserRole {
-        ADMIN,       // 管理员
-        MANAGER,     // 经理
+        OPERATOR,     // 民宿经营者（合并了原管理员和经理）
         RECEPTIONIST, // 前台
-        HOUSEKEEPING // 房务
+        HOUSEKEEPING  // 房务
     }
 }

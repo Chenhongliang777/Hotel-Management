@@ -178,13 +178,13 @@
             currentRole = auth.getUserRole();
             
             // 根据权限显示/隐藏菜单
-            if (currentRole === 'ADMIN') {
+            if (currentRole === 'OPERATOR') {
                 const usersMenuLink = document.getElementById('usersMenuLink');
                 if (usersMenuLink) {
                     usersMenuLink.style.display = 'block';
                 }
             }
-            if (currentRole === 'ADMIN' || currentRole === 'MANAGER') {
+            if (currentRole === 'OPERATOR') {
                 const logsMenuLink = document.getElementById('logsMenuLink');
                 if (logsMenuLink) {
                     logsMenuLink.style.display = 'block';
@@ -399,7 +399,7 @@
                     html += `</div>`;
                 }
 
-            } else if (role === 'MANAGER' || role === 'ADMIN') {
+            } else if (role === 'OPERATOR') {
                 // 经理/管理员工作台
                 html += `<h3>经营概览</h3>`;
                 

@@ -170,14 +170,14 @@
             window.location.href = 'http://localhost:8081/admin/login.html';
         }
         
-        // 只有经理和管理员可以访问
+        // 只有民宿经营者可以访问
         const userRole = auth.getUserRole();
-        if (userRole !== 'MANAGER' && userRole !== 'ADMIN') {
-            alert('权限不足：只有经理和管理员可以访问规则设置');
+        if (userRole !== 'OPERATOR') {
+            alert('权限不足：只有民宿经营者可以访问规则设置');
             window.location.href = 'http://localhost:8081/admin/dashboard.html';
         }
         
-        if (userRole === 'ADMIN') {
+        if (userRole === 'OPERATOR') {
             const usersMenuLink = document.getElementById('usersMenuLink');
             if (usersMenuLink) {
                 usersMenuLink.style.display = 'block';

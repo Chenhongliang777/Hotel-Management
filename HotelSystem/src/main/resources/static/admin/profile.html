@@ -172,7 +172,7 @@
             
             // 根据权限显示/隐藏菜单
             const userRole = auth.getUserRole();
-            if (userRole === 'ADMIN') {
+            if (userRole === 'OPERATOR') {
                 const usersMenuLink = document.getElementById('usersMenuLink');
                 if (usersMenuLink) {
                     usersMenuLink.style.display = 'block';
@@ -248,8 +248,7 @@
 
         function getRoleDisplayName(role) {
             const roleMap = {
-                'ADMIN': '管理员',
-                'MANAGER': '经理',
+                'OPERATOR': '民宿经营者',
                 'RECEPTIONIST': '前台',
                 'HOUSEKEEPING': '房务'
             };

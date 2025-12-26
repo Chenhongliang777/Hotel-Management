@@ -147,22 +147,20 @@
             // 根据权限显示/隐藏菜单和按钮
             const userRole = auth.getUserRole();
             
-            // 员工管理菜单 - 仅管理员可见
-            if (userRole === 'ADMIN') {
+            // 员工管理菜单 - 仅民宿经营者可见
+            if (userRole === 'OPERATOR') {
                 const usersMenuLink = document.getElementById('usersMenuLink');
                 if (usersMenuLink) {
                     usersMenuLink.style.display = 'block';
                 }
-            }
-            if (userRole === 'ADMIN' || userRole === 'MANAGER') {
                 const logsMenuLink = document.getElementById('logsMenuLink');
                 if (logsMenuLink) {
                     logsMenuLink.style.display = 'block';
                 }
             }
             
-            // 房间管理 - 添加按钮仅经理和管理员可见
-            if (!permissions.isManagerOrAdmin()) {
+            // 房间管理 - 添加按钮仅民宿经营者可见
+            if (!permissions.isOperator()) {
                 const addRoomBtn = document.querySelector('.action-bar button');
                 if (addRoomBtn) {
                     addRoomBtn.style.display = 'none';
@@ -293,8 +291,8 @@
                                 <td><span class="badge badge-${getStatusClass(r.status)}">${getStatusText(r.status)}</span></td>
                                 <td>
                                     <button class="btn btn-primary" onclick="viewRoom(${r.id})">查看</button>
-                                    ${permissions.isManagerOrAdmin() ? `<button class="btn btn-secondary" onclick="editRoom(${r.id})">编辑</button>` : ''}
-                                    ${permissions.isManagerOrAdmin() ? `<button class="btn btn-danger" onclick="deleteRoom(${r.id})">删除</button>` : ''}
+                                    ${permissions.isOperator() ? `<button class="btn btn-secondary" onclick="editRoom(${r.id})">编辑</button>` : ''}
+                                    ${permissions.isOperator() ? `<button class="btn btn-danger" onclick="deleteRoom(${r.id})">删除</button>` : ''}
                                 </td>
                             </tr>
                         `).join('')}
@@ -327,7 +325,7 @@
 
         function openAddRoomModal() {
             // 检查权限
-            if (!permissions.checkPermission(['MANAGER', 'ADMIN'], '添加房间')) {
+            if (!permissions.checkPermission(['OPERATOR'], '添加房间')) {
                 return;
             }
             document.getElementById('modalTitle').textContent = '添加房间';
@@ -339,7 +337,7 @@
 
         async function editRoom(id) {
             // 检查权限
-            if (!permissions.checkPermission(['MANAGER', 'ADMIN'], '编辑房间')) {
+            if (!permissions.checkPermission(['OPERATOR'], '编辑房间')) {
                 return;
             }
             try {
@@ -370,7 +368,7 @@
 
         async function deleteRoom(id) {
             // 检查权限
-            if (!permissions.checkPermission(['MANAGER', 'ADMIN'], '删除房间')) {
+            if (!permissions.checkPermission(['OPERATOR'], '删除房间')) {
                 return;
             }
             if (!confirm('确定要删除此房间吗？删除后无法恢复！')) return;

@@ -22,14 +22,14 @@ public class InventoryController {
     private final InventoryService inventoryService;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('HOUSEKEEPING','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('HOUSEKEEPING','OPERATOR')")
     public ResponseEntity<ApiResponse<List<InventoryDto>>> getAllInventories() {
         List<InventoryDto> inventories = inventoryService.getAllInventories();
         return ResponseEntity.ok(ApiResponse.success(inventories));
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('HOUSEKEEPING','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('HOUSEKEEPING','OPERATOR')")
     public ResponseEntity<ApiResponse<InventoryDto>> getInventoryById(@PathVariable Long id) {
         return inventoryService.getInventoryById(id)
                 .map(inventory -> ResponseEntity.ok(ApiResponse.success(inventory)))
@@ -37,7 +37,7 @@ public class InventoryController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<InventoryDto>> createInventory(@RequestBody InventoryDto dto) {
         try {
             InventoryDto created = inventoryService.createInventory(dto);
@@ -48,7 +48,7 @@ public class InventoryController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<InventoryDto>> updateInventory(
             @PathVariable Long id,
             @RequestBody InventoryDto dto) {
@@ -61,7 +61,7 @@ public class InventoryController {
     }
 
     @PostMapping("/{id}/stock-in")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<InventoryTransactionDto>> stockIn(
             @PathVariable Long id,
             @RequestBody Map<String, Object> request,
@@ -82,7 +82,7 @@ public class InventoryController {
     }
 
     @PostMapping("/{id}/stock-out")
-    @PreAuthorize("hasAnyRole('HOUSEKEEPING','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('HOUSEKEEPING','OPERATOR')")
     public ResponseEntity<ApiResponse<InventoryTransactionDto>> stockOut(
             @PathVariable Long id,
             @RequestBody Map<String, Object> request,
@@ -102,7 +102,7 @@ public class InventoryController {
     }
 
     @GetMapping("/low-stock")
-    @PreAuthorize("hasAnyRole('HOUSEKEEPING','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('HOUSEKEEPING','OPERATOR')")
     public ResponseEntity<ApiResponse<Map<String, Object>>> getLowStockItems() {
         List<InventoryDto> items = inventoryService.getLowStockItems();
         
@@ -133,7 +133,7 @@ public class InventoryController {
     }
 
     @GetMapping("/{id}/transactions")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<List<InventoryTransactionDto>>> getTransactions(@PathVariable Long id) {
         List<InventoryTransactionDto> transactions = inventoryService.getTransactionsByInventoryId(id);
         return ResponseEntity.ok(ApiResponse.success(transactions));

@@ -198,7 +198,7 @@
         
         // 根据权限显示/隐藏菜单
         const userRole = auth.getUserRole();
-        if (userRole === 'ADMIN') {
+        if (userRole === 'OPERATOR') {
             const usersMenuLink = document.getElementById('usersMenuLink');
             if (usersMenuLink) {
                 usersMenuLink.style.display = 'block';
@@ -206,8 +206,8 @@
         }
         
         // 房务和前台可以访问房态管理
-        if (userRole !== 'HOUSEKEEPING' && userRole !== 'RECEPTIONIST' && userRole !== 'MANAGER' && userRole !== 'ADMIN') {
-            alert('权限不足：只有前台、房务、经理和管理员可以访问房态管理');
+        if (userRole !== 'HOUSEKEEPING' && userRole !== 'RECEPTIONIST' && userRole !== 'OPERATOR') {
+            alert('权限不足：只有前台、房务和民宿经营者可以访问房态管理');
             window.location.href = 'http://localhost:8081/admin/dashboard.html';
         }
 

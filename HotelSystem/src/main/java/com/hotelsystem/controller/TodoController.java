@@ -32,7 +32,7 @@ public class TodoController {
     private final com.hotelsystem.repository.UserRepository userRepository;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','RECEPTIONIST','HOUSEKEEPING')")
+    @PreAuthorize("hasAnyRole('OPERATOR','RECEPTIONIST','HOUSEKEEPING')")
     public ResponseEntity<ApiResponse<List<Map<String, Object>>>> getTodos(Authentication authentication) {
         String username = authentication.getName();
         User.UserRole role = userRepository.findByUsername(username)
@@ -76,9 +76,8 @@ public class TodoController {
                 }
                 break;
 
-            case MANAGER:
-            case ADMIN:
-                // 经营者/管理员：库存不足
+            case OPERATOR:
+                // 民宿经营者：库存不足
                 List<com.hotelsystem.entity.Inventory> lowStockItems = inventoryRepository.findAll().stream()
                         .filter(item -> item.getCurrentQuantity().compareTo(item.getSafetyThreshold()) < 0)
                         .toList();

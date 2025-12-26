@@ -132,13 +132,13 @@
             }
             
             const userRole = auth.getUserRole();
-            if (userRole !== 'ADMIN' && userRole !== 'MANAGER') {
-                alert('权限不足：只有管理员和经理可以查看操作日志');
+            if (userRole !== 'OPERATOR') {
+                alert('权限不足：只有民宿经营者可以查看操作日志');
                 window.location.href = 'http://localhost:8081/admin/dashboard.html';
                 return;
             }
 
-            if (userRole === 'ADMIN') {
+            if (userRole === 'OPERATOR') {
                 const usersMenuLink = document.getElementById('usersMenuLink');
                 if (usersMenuLink) {
                     usersMenuLink.style.display = 'block';

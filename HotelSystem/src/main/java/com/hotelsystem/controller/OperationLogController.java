@@ -30,7 +30,7 @@ public class OperationLogController {
      * 获取操作日志列表（分页）
      */
     @GetMapping
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<Page<OperationLog>>> getLogs(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
@@ -59,7 +59,7 @@ public class OperationLogController {
      * 获取最近的日志
      */
     @GetMapping("/recent")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<List<OperationLog>>> getRecentLogs(
             @RequestParam(defaultValue = "50") int limit) {
         List<OperationLog> logs = operationLogRepository.findAll(
@@ -72,7 +72,7 @@ public class OperationLogController {
      * 获取当前用户的操作日志
      */
     @GetMapping("/my-logs")
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','HOUSEKEEPING','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','HOUSEKEEPING','OPERATOR')")
     public ResponseEntity<ApiResponse<Page<OperationLog>>> getMyLogs(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
@@ -91,7 +91,7 @@ public class OperationLogController {
      * 按操作类型查询日志
      */
     @GetMapping("/by-action")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<Page<OperationLog>>> getLogsByAction(
             @RequestParam String action,
             @RequestParam(defaultValue = "0") int page,
@@ -105,7 +105,7 @@ public class OperationLogController {
      * 获取关键操作详情
      */
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<OperationLog>> getLogById(@PathVariable Long id) {
         return operationLogRepository.findById(id)
                 .map(log -> ResponseEntity.ok(ApiResponse.success(log)))

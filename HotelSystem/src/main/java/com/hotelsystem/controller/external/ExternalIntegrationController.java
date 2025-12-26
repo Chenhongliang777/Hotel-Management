@@ -31,7 +31,7 @@ public class ExternalIntegrationController {
      * 同步预订到OTA平台
      */
     @PostMapping("/ota/sync-reservation")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<Map<String, Object>>> syncReservationToOta(
             @RequestBody Map<String, Object> request) {
         try {
@@ -47,7 +47,7 @@ public class ExternalIntegrationController {
      * 更新OTA平台房间库存
      */
     @PostMapping("/ota/update-inventory")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<Map<String, Object>>> updateOtaInventory(
             @RequestBody Map<String, Object> request) {
         try {
@@ -66,7 +66,7 @@ public class ExternalIntegrationController {
      * 验证身份证
      */
     @PostMapping("/security/verify-id-card")
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<Map<String, Object>>> verifyIdCard(
             @RequestBody Map<String, Object> request) {
         try {
@@ -83,7 +83,7 @@ public class ExternalIntegrationController {
      * 上报住宿登记信息
      */
     @PostMapping("/security/report-registration")
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<Map<String, Object>>> reportGuestRegistration(
             @RequestBody Map<String, Object> guestInfo) {
         try {
@@ -98,7 +98,7 @@ public class ExternalIntegrationController {
      * 上报退房信息
      */
     @PostMapping("/security/report-checkout")
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<Map<String, Object>>> reportGuestCheckout(
             @RequestBody Map<String, Object> guestInfo) {
         try {
@@ -146,7 +146,7 @@ public class ExternalIntegrationController {
      * 创建退款订单
      */
     @PostMapping("/payment/create-refund")
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<Map<String, Object>>> createRefundOrder(
             @RequestBody Map<String, Object> request) {
         try {

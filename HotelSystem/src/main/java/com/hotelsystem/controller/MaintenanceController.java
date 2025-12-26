@@ -22,28 +22,28 @@ public class MaintenanceController {
     private final MaintenanceService maintenanceService;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN','HOUSEKEEPING')")
+    @PreAuthorize("hasAnyRole('OPERATOR','HOUSEKEEPING')")
     public ResponseEntity<ApiResponse<List<MaintenanceOrder>>> getAllMaintenanceOrders() {
         List<MaintenanceOrder> orders = maintenanceService.getAllMaintenanceOrders();
         return ResponseEntity.ok(ApiResponse.success(orders));
     }
 
     @GetMapping("/pending")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN','HOUSEKEEPING')")
+    @PreAuthorize("hasAnyRole('OPERATOR','HOUSEKEEPING')")
     public ResponseEntity<ApiResponse<List<MaintenanceOrder>>> getPendingMaintenanceOrders() {
         List<MaintenanceOrder> orders = maintenanceService.getPendingMaintenanceOrders();
         return ResponseEntity.ok(ApiResponse.success(orders));
     }
 
     @GetMapping("/room/{roomId}")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN','HOUSEKEEPING')")
+    @PreAuthorize("hasAnyRole('OPERATOR','HOUSEKEEPING')")
     public ResponseEntity<ApiResponse<List<MaintenanceOrder>>> getMaintenanceOrdersByRoom(@PathVariable Long roomId) {
         List<MaintenanceOrder> orders = maintenanceService.getMaintenanceOrdersByRoom(roomId);
         return ResponseEntity.ok(ApiResponse.success(orders));
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN','HOUSEKEEPING')")
+    @PreAuthorize("hasAnyRole('OPERATOR','HOUSEKEEPING')")
     public ResponseEntity<ApiResponse<MaintenanceOrder>> getMaintenanceOrderById(@PathVariable Long id) {
         return maintenanceService.getMaintenanceOrderById(id)
                 .map(order -> ResponseEntity.ok(ApiResponse.success(order)))
@@ -51,7 +51,7 @@ public class MaintenanceController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN','HOUSEKEEPING')")
+    @PreAuthorize("hasAnyRole('OPERATOR','HOUSEKEEPING')")
     public ResponseEntity<ApiResponse<MaintenanceOrder>> createMaintenanceOrder(
             @RequestBody Map<String, Object> request,
             Authentication authentication) {
@@ -75,7 +75,7 @@ public class MaintenanceController {
     }
 
     @PostMapping("/{id}/assign")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<MaintenanceOrder>> assignMaintenanceOrder(
             @PathVariable Long id,
             @RequestBody Map<String, String> request) {
@@ -89,7 +89,7 @@ public class MaintenanceController {
     }
 
     @PostMapping("/{id}/complete")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN','HOUSEKEEPING')")
+    @PreAuthorize("hasAnyRole('OPERATOR','HOUSEKEEPING')")
     public ResponseEntity<ApiResponse<MaintenanceOrder>> completeMaintenanceOrder(
             @PathVariable Long id,
             @RequestBody Map<String, Object> request) {
@@ -106,7 +106,7 @@ public class MaintenanceController {
     }
 
     @PostMapping("/{id}/cancel")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<Void>> cancelMaintenanceOrder(@PathVariable Long id) {
         try {
             maintenanceService.cancelMaintenanceOrder(id);

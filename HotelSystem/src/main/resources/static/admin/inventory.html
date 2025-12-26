@@ -153,16 +153,16 @@
                 return;
             }
             
-            // 只有经理和管理员可以访问
+            // 只有民宿经营者可以访问
             const userRole = auth.getUserRole();
-            if (userRole !== 'MANAGER' && userRole !== 'ADMIN') {
-                alert('权限不足：只有经理和管理员可以访问库存管理');
+            if (userRole !== 'OPERATOR' && userRole !== 'HOUSEKEEPING') {
+                alert('权限不足：只有民宿经营者和房务可以访问库存管理');
                 window.location.href = 'http://localhost:8081/admin/dashboard.html';
                 return;
             }
             
             // 根据权限显示/隐藏菜单
-            if (userRole === 'ADMIN') {
+            if (userRole === 'OPERATOR') {
                 const usersMenuLink = document.getElementById('usersMenuLink');
                 if (usersMenuLink) {
                     usersMenuLink.style.display = 'block';

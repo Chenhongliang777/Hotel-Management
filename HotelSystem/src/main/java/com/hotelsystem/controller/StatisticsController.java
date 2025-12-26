@@ -25,7 +25,7 @@ public class StatisticsController {
      * 获取今日统计
      */
     @GetMapping("/today")
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','HOUSEKEEPING','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','HOUSEKEEPING','OPERATOR')")
     public ResponseEntity<ApiResponse<Map<String, Object>>> getTodayStatistics() {
         Map<String, Object> stats = statisticsService.getTodayStatistics();
         return ResponseEntity.ok(ApiResponse.success(stats));
@@ -35,7 +35,7 @@ public class StatisticsController {
      * 获取日期范围统计
      */
     @GetMapping("/date-range")
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<Map<String, Object>>> getDateRangeStatistics(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
@@ -47,7 +47,7 @@ public class StatisticsController {
      * 获取房型统计
      */
     @GetMapping("/room-types")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<Map<String, Object>>> getRoomTypeStatistics() {
         Map<String, Object> stats = statisticsService.getRoomTypeStatistics();
         return ResponseEntity.ok(ApiResponse.success(stats));
@@ -57,7 +57,7 @@ public class StatisticsController {
      * 获取完整的经营分析报表（收入、成本、利润）
      */
     @GetMapping("/business-analysis")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<Map<String, Object>>> getBusinessAnalysis(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
@@ -69,7 +69,7 @@ public class StatisticsController {
      * 对比分析（同比、环比）
      */
     @GetMapping("/compare")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<Map<String, Object>>> getCompareAnalysis(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
@@ -82,7 +82,7 @@ public class StatisticsController {
      * 实时数据看板
      */
     @GetMapping("/dashboard")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<Map<String, Object>>> getRealTimeDashboard() {
         Map<String, Object> dashboard = statisticsService.getRealTimeDashboard();
         return ResponseEntity.ok(ApiResponse.success(dashboard));
@@ -92,7 +92,7 @@ public class StatisticsController {
      * 导出数据为Excel
      */
     @GetMapping("/export")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<org.springframework.core.io.Resource> exportToExcel(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,

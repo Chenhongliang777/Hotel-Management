@@ -22,7 +22,7 @@ public class UserController {
 
     // 获取所有用户 - 仅管理员可访问
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<List<UserDto>>> getAllUsers() {
         List<UserDto> users = userService.getAllUsers();
         return ResponseEntity.ok(ApiResponse.success(users));
@@ -30,7 +30,7 @@ public class UserController {
 
     // 根据ID获取用户 - 仅管理员可访问
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<UserDto>> getUserById(@PathVariable Long id) {
         return userService.getUserById(id)
                 .map(user -> ResponseEntity.ok(ApiResponse.success(user)))
@@ -39,7 +39,7 @@ public class UserController {
 
     // 创建用户 - 仅管理员可访问
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<UserDto>> createUser(@Valid @RequestBody UserDto userDto) {
         try {
             // 手动验证密码（因为移除了@NotBlank，允许更新时为空）
@@ -56,7 +56,7 @@ public class UserController {
 
     // 更新用户 - 仅管理员可访问
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<UserDto>> updateUser(
             @PathVariable Long id,
             @Valid @RequestBody UserDto userDto) {
@@ -70,7 +70,7 @@ public class UserController {
 
     // 删除用户
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable Long id) {
         try {
             userService.deleteUserAudited(id);
@@ -84,7 +84,7 @@ public class UserController {
     
     // 获取当前登录用户信息
     @GetMapping("/me")
-    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','RECEPTIONIST','HOUSEKEEPING')")
+    @PreAuthorize("hasAnyRole('OPERATOR','RECEPTIONIST','HOUSEKEEPING')")
     public ResponseEntity<ApiResponse<UserDto>> getCurrentUser(Authentication authentication) {
         String username = authentication.getName();
         return userService.getUserByUsername(username)
@@ -94,7 +94,7 @@ public class UserController {
     
     // 更新当前用户密码
     @PostMapping("/me/password")
-    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','RECEPTIONIST','HOUSEKEEPING')")
+    @PreAuthorize("hasAnyRole('OPERATOR','RECEPTIONIST','HOUSEKEEPING')")
     public ResponseEntity<ApiResponse<Void>> updateCurrentUserPassword(
             @RequestBody Map<String, String> request,
             Authentication authentication) {
@@ -120,7 +120,7 @@ public class UserController {
     
     // 更新当前用户密保
     @PostMapping("/me/security")
-    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','RECEPTIONIST','HOUSEKEEPING')")
+    @PreAuthorize("hasAnyRole('OPERATOR','RECEPTIONIST','HOUSEKEEPING')")
     public ResponseEntity<ApiResponse<Void>> updateCurrentUserSecurity(
             @RequestBody Map<String, String> request,
             Authentication authentication) {

@@ -35,7 +35,7 @@ public class DashboardController {
      * 获取角色化工作台数据
      */
     @GetMapping("/workspace")
-    @PreAuthorize("hasAnyRole('ADMIN','MANAGER','RECEPTIONIST','HOUSEKEEPING')")
+    @PreAuthorize("hasAnyRole('OPERATOR','RECEPTIONIST','HOUSEKEEPING')")
     public ResponseEntity<ApiResponse<Map<String, Object>>> getWorkspace(Authentication authentication) {
         String username = authentication.getName();
         User user = userRepository.findByUsername(username)
@@ -52,8 +52,7 @@ public class DashboardController {
             case HOUSEKEEPING:
                 workspace.put("data", getHousekeepingWorkspace());
                 break;
-            case MANAGER:
-            case ADMIN:
+            case OPERATOR:
                 workspace.put("data", getManagerWorkspace());
                 break;
             default:

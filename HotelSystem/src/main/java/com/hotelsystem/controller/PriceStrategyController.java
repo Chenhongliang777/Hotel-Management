@@ -22,7 +22,7 @@ public class PriceStrategyController {
     private final PriceStrategyService priceStrategyService;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<List<PriceStrategy>>> getAllPriceStrategies() {
         List<PriceStrategy> strategies = priceStrategyService.getAllPriceStrategies();
         return ResponseEntity.ok(ApiResponse.success(strategies));
@@ -35,7 +35,7 @@ public class PriceStrategyController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<PriceStrategy>> getPriceStrategyById(@PathVariable Long id) {
         return priceStrategyService.getPriceStrategyById(id)
                 .map(strategy -> ResponseEntity.ok(ApiResponse.success(strategy)))
@@ -43,7 +43,7 @@ public class PriceStrategyController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<PriceStrategy>> createPriceStrategy(@RequestBody PriceStrategy strategy) {
         try {
             PriceStrategy created = priceStrategyService.createPriceStrategy(strategy);
@@ -54,7 +54,7 @@ public class PriceStrategyController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<PriceStrategy>> updatePriceStrategy(
             @PathVariable Long id,
             @RequestBody PriceStrategy strategy) {
@@ -67,7 +67,7 @@ public class PriceStrategyController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<Void>> deletePriceStrategy(@PathVariable Long id) {
         try {
             priceStrategyService.deletePriceStrategy(id);
@@ -100,7 +100,7 @@ public class PriceStrategyController {
      * 批量调整价格
      */
     @PostMapping("/batch-update")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<Map<String, Object>>> batchUpdatePrices(
             @RequestBody Map<String, Object> request) {
         try {

@@ -31,14 +31,14 @@ public class ReservationController {
 
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<List<ReservationDto>>> getAllReservations() {
         List<ReservationDto> reservations = reservationService.getAllReservations();
         return ResponseEntity.ok(ApiResponse.success(reservations));
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('GUEST','MANAGER','RECEPTIONIST','ADMIN')")
+    @PreAuthorize("hasAnyRole('GUEST','OPERATOR','RECEPTIONIST')")
     public ResponseEntity<ApiResponse<ReservationDto>> getReservationById(@PathVariable Long id, Authentication authentication) {
         try {
             // 如果是宾客，确保只能查看自己的预订
@@ -67,7 +67,7 @@ public class ReservationController {
      * 获取订单详情（包含订单条款、操作历史等）
      */
     @GetMapping("/{id}/details")
-    @PreAuthorize("hasAnyRole('GUEST','MANAGER','RECEPTIONIST','ADMIN')")
+    @PreAuthorize("hasAnyRole('GUEST','OPERATOR','RECEPTIONIST')")
     public ResponseEntity<ApiResponse<Map<String, Object>>> getReservationDetails(
             @PathVariable Long id, Authentication authentication) {
         try {
@@ -160,7 +160,7 @@ public class ReservationController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('GUEST','RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('GUEST','RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<ReservationDto>> createReservation(@Valid @RequestBody ReservationDto reservationDto, Authentication authentication) {
         try {
             // 如果是宾客，从token中获取guestId
@@ -185,7 +185,7 @@ public class ReservationController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<ReservationDto>> updateReservation(
             @PathVariable Long id,
             @Valid @RequestBody ReservationDto reservationDto) {
@@ -198,7 +198,7 @@ public class ReservationController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<Void>> deleteReservation(@PathVariable Long id) {
         try {
             reservationService.deleteReservation(id);
@@ -208,7 +208,7 @@ public class ReservationController {
         }
     }
 
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     @GetMapping("/guest/{guestId}")
     public ResponseEntity<ApiResponse<List<ReservationDto>>> getReservationsByGuestId(@PathVariable Long guestId) {
         List<ReservationDto> reservations = reservationService.getReservationsByGuestId(guestId);
@@ -250,7 +250,7 @@ public class ReservationController {
 
     // 取消预订
     @PostMapping("/{id}/cancel")
-    @PreAuthorize("hasAnyRole('GUEST','RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('GUEST','RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<Object>> cancelReservation(
             @PathVariable Long id, 
             @RequestBody(required = false) Map<String, String> request,
@@ -280,7 +280,7 @@ public class ReservationController {
 
     // 批量确认预订
     @PostMapping("/batch/confirm")
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<Map<String, Object>>> batchConfirmReservations(@RequestBody Map<String, List<Long>> request) {
         try {
             List<Long> ids = request.get("ids");
@@ -323,7 +323,7 @@ public class ReservationController {
 
     // 批量取消预订
     @PostMapping("/batch/cancel")
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<Map<String, Object>>> batchCancelReservations(@RequestBody Map<String, List<Long>> request) {
         try {
             List<Long> ids = request.get("ids");
@@ -360,7 +360,7 @@ public class ReservationController {
      * 改订预订（优化界面）
      */
     @PostMapping("/{id}/modify")
-    @PreAuthorize("hasAnyRole('GUEST','RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('GUEST','RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<Map<String, Object>>> modifyReservation(
             @PathVariable Long id,
             @RequestBody Map<String, Object> request,
@@ -403,7 +403,7 @@ public class ReservationController {
      * 获取可用房间列表（用于改订界面）
      */
     @GetMapping("/modify/available-rooms")
-    @PreAuthorize("hasAnyRole('GUEST','RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('GUEST','RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<List<Map<String, Object>>>> getAvailableRoomsForModify(
             @RequestParam @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) 
                 java.time.LocalDate checkInDate,

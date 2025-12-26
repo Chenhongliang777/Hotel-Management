@@ -19,7 +19,7 @@ public class PosConsumptionController {
     private final PosConsumptionService posConsumptionService;
 
     @GetMapping("/reservation/{reservationId}")
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<List<PosConsumptionDto>>> getConsumptionsByReservation(
             @PathVariable Long reservationId) {
         List<PosConsumptionDto> consumptions = posConsumptionService.getConsumptionsByReservationId(reservationId);
@@ -27,7 +27,7 @@ public class PosConsumptionController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<PosConsumptionDto>> createConsumption(
             @RequestBody PosConsumptionDto dto,
             Authentication authentication) {
@@ -41,7 +41,7 @@ public class PosConsumptionController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<PosConsumptionDto>> updateConsumption(
             @PathVariable Long id,
             @RequestBody PosConsumptionDto dto) {
@@ -54,7 +54,7 @@ public class PosConsumptionController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<Void>> deleteConsumption(@PathVariable Long id) {
         try {
             posConsumptionService.deleteConsumption(id);

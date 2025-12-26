@@ -225,7 +225,7 @@ public class PaymentController {
      * 获取支付记录（按预订ID）
      */
     @GetMapping("/reservation/{reservationId}")
-    @PreAuthorize("hasAnyRole('GUEST','RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('GUEST','RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<List<PaymentTransaction>>> getPaymentsByReservation(
             @PathVariable Long reservationId, Authentication authentication) {
         try {
@@ -284,7 +284,7 @@ public class PaymentController {
      * 管理端查询所有支付记录（支持筛选）
      */
     @GetMapping("/admin")
-    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
+    @PreAuthorize("hasRole('OPERATOR')")
     public ResponseEntity<ApiResponse<List<PaymentTransaction>>> getAllPayments(
             @RequestParam(required = false) PaymentTransaction.TransactionType type,
             @RequestParam(required = false) PaymentTransaction.TransactionStatus status,

@@ -23,14 +23,14 @@ public class GuestController {
     private final GuestRepository guestRepository;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<List<GuestDto>>> getAllGuests() {
         List<GuestDto> guests = guestService.getAllGuests();
         return ResponseEntity.ok(ApiResponse.success(guests));
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<GuestDto>> getGuestById(@PathVariable Long id) {
         return guestService.getGuestById(id)
                 .map(guest -> ResponseEntity.ok(ApiResponse.success(guest)))
@@ -72,7 +72,7 @@ public class GuestController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<Void>> deleteGuest(@PathVariable Long id) {
         try {
             guestService.deleteGuest(id);
@@ -118,7 +118,7 @@ public class GuestController {
      * 综合搜索：按关键词搜索姓名、身份证号或手机号
      */
     @GetMapping("/search")
-    @PreAuthorize("hasAnyRole('RECEPTIONIST','MANAGER','ADMIN')")
+    @PreAuthorize("hasAnyRole('RECEPTIONIST','OPERATOR')")
     public ResponseEntity<ApiResponse<List<GuestDto>>> searchGuests(
             @RequestParam(required = false) String keyword) {
         List<GuestDto> guests = guestService.searchGuests(keyword);
