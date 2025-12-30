@@ -1,0 +1,61 @@
+<view class="container" wx:if="{{order && roomType}}">
+  <view class="room-info card">
+    <view class="room-name">{{roomType.name}}</view>
+    <view class="room-price">¥{{roomType.basePrice}}/晚</view>
+  </view>
+  
+  <view class="form-card card">
+    <view class="section-title">修改入住日期</view>
+    
+    <view class="form-item">
+      <text class="label">入住日期</text>
+      <picker mode="date" value="{{checkInDate}}" start="{{today}}" bindchange="onCheckInChange">
+        <view class="picker-value">{{checkInDate}}</view>
+      </picker>
+    </view>
+    
+    <view class="form-item">
+      <text class="label">退房日期</text>
+      <picker mode="date" value="{{checkOutDate}}" start="{{minCheckOut}}" bindchange="onCheckOutChange">
+        <view class="picker-value">{{checkOutDate}}</view>
+      </picker>
+    </view>
+  </view>
+  
+  <view class="price-card card">
+    <view class="section-title">费用对比</view>
+    <view class="price-row">
+      <text class="label">原订单总价</text>
+      <text>¥{{originalTotalPrice}}</text>
+    </view>
+    <view class="price-row">
+      <text class="label">新订单总价</text>
+      <text class="text-primary">¥{{newTotalPrice}}</text>
+    </view>
+    <view class="price-row diff" wx:if="{{priceDiff !== 0}}">
+      <text class="label">{{priceDiff > 0 ? '需补差价' : '可退金额'}}</text>
+      <text class="{{priceDiff > 0 ? 'text-danger' : 'text-success'}}">¥{{absPriceDiff}}</text>
+    </view>
+    <view class="price-row diff" wx:if="{{priceDiff === 0}}">
+      <text class="label">差价</text>
+      <text class="text-gray">无变化</text>
+    </view>
+  </view>
+  
+  <view class="tip-card card">
+    <text class="tip-text">⚠️ 改订说明：</text>
+    <text class="tip-content">1. 改订后，系统会重新计算订单价格</text>
+    <text class="tip-content">2. 如新价格高于原价格，需要补差价</text>
+    <text class="tip-content">3. 如新价格低于原价格，差额将退回到您的账户</text>
+    <text class="tip-content">4. 改订后需要重新支付保证金</text>
+  </view>
+  
+  <view class="bottom-bar">
+    <button class="btn-submit btn-primary" bindtap="submitModify" loading="{{submitting}}">
+      确认改订
+    </button>
+  </view>
+  
+  <view style="height: 140rpx;"></view>
+</view>
+

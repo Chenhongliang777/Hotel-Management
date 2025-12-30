@@ -1,0 +1,59 @@
+<view class="container">
+  <view class="header">
+    <view class="logo">
+      <text class="logo-text">🏠</text>
+    </view>
+    <text class="app-name">{{appInfo.name}}</text>
+    <text class="app-version">Version {{appInfo.version}}</text>
+  </view>
+
+  <view class="intro-card card">
+    <view class="card-title">关于我们</view>
+    <text class="intro-text">{{appInfo.description}}</text>
+  </view>
+
+  <view class="features-card card">
+    <view class="card-title">我们的优势</view>
+    <view class="features-list">
+      <view class="feature-item" wx:for="{{appInfo.features}}" wx:key="index">
+        <text class="feature-icon">✓</text>
+        <text class="feature-text">{{item}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="company-card card">
+    <view class="card-title">公司信息</view>
+    <view class="company-info">
+      <view class="info-row">
+        <text class="info-label">公司名称：</text>
+        <text class="info-value">{{appInfo.company.name}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">成立时间：</text>
+        <text class="info-value">{{appInfo.company.established}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">公司地址：</text>
+        <text class="info-value">{{appInfo.company.location}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="legal-card card">
+    <view class="legal-item" bindtap="viewAgreement">
+      <text class="legal-text">用户协议</text>
+      <text class="legal-arrow">></text>
+    </view>
+    <view class="legal-item" bindtap="viewPrivacy">
+      <text class="legal-text">隐私政策</text>
+      <text class="legal-arrow">></text>
+    </view>
+  </view>
+
+  <view class="footer">
+    <text class="footer-text">© 2024 {{appInfo.name}} 版权所有</text>
+    <text class="footer-text">让每一次旅行都成为美好的回忆</text>
+  </view>
+</view>
+

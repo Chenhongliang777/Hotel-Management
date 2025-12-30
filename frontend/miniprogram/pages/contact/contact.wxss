@@ -1,0 +1,158 @@
+.container {
+  min-height: 100vh;
+  background: #f5f7fa;
+  padding: 20rpx;
+}
+
+.header {
+  text-align: center;
+  padding: 40rpx 0;
+}
+
+.title {
+  display: block;
+  font-size: 44rpx;
+  font-weight: bold;
+  color: #303133;
+  margin-bottom: 10rpx;
+}
+
+.subtitle {
+  display: block;
+  font-size: 28rpx;
+  color: #909399;
+}
+
+.card {
+  background: #fff;
+  border-radius: 16rpx;
+  margin-bottom: 20rpx;
+  padding: 30rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.contact-card {
+  padding: 0;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f5f7fa;
+}
+
+.contact-item:last-child {
+  border-bottom: none;
+}
+
+.item-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.item-icon {
+  font-size: 40rpx;
+  margin-right: 20rpx;
+}
+
+.item-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.item-label {
+  font-size: 28rpx;
+  color: #909399;
+  margin-bottom: 8rpx;
+}
+
+.item-value {
+  font-size: 32rpx;
+  color: #303133;
+  font-weight: 500;
+}
+
+.item-action {
+  color: #667eea;
+  font-size: 28rpx;
+  padding: 10rpx 20rpx;
+  border: 1rpx solid #667eea;
+  border-radius: 8rpx;
+}
+
+.info-card {
+  text-align: center;
+}
+
+.info-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #303133;
+  margin-bottom: 20rpx;
+}
+
+.info-content {
+  font-size: 30rpx;
+  color: #606266;
+  line-height: 1.6;
+}
+
+.address-card {
+  padding: 30rpx;
+}
+
+.address-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.address-text {
+  font-size: 30rpx;
+  color: #606266;
+  line-height: 1.6;
+  margin-bottom: 20rpx;
+}
+
+.btn-map {
+  width: 200rpx;
+  height: 60rpx;
+  line-height: 60rpx;
+  background: #667eea;
+  color: #fff;
+  font-size: 26rpx;
+  border-radius: 8rpx;
+  padding: 0;
+  margin: 0;
+}
+
+.btn-map::after {
+  border: none;
+}
+
+.tips-card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-top: 20rpx;
+}
+
+.tips-title {
+  display: block;
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #303133;
+  margin-bottom: 20rpx;
+}
+
+.tips-text {
+  display: block;
+  font-size: 28rpx;
+  color: #606266;
+  line-height: 2;
+  margin-bottom: 10rpx;
+}
+

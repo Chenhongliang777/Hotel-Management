@@ -1,0 +1,31 @@
+<view class="container">
+  <view class="logo-wrap">
+    <image class="logo" src="/images/logo.png" mode="aspectFit" binderror="onLogoError" wx:if="{{showLogo}}"></image>
+    <text class="app-name">悦居民宿</text>
+  </view>
+  
+  <view class="form-card card">
+    <!-- 登录类型选择 -->
+    <view class="login-type-tabs">
+      <view class="tab-item {{loginType === 'guest' ? 'active' : ''}}" 
+            data-type="guest" 
+            bindtap="switchLoginType">
+        客户登录
+      </view>
+      <view class="tab-item {{loginType === 'employee' ? 'active' : ''}}" 
+            data-type="employee" 
+            bindtap="switchLoginType">
+        员工登录
+      </view>
+    </view>
+    
+    <view class="form-item">
+      <input class="input" placeholder="请输入用户名" value="{{username}}" bindinput="onUsernameInput" />
+    </view>
+    <view class="form-item">
+      <input class="input" placeholder="请输入密码" password value="{{password}}" bindinput="onPasswordInput" />
+    </view>
+    <button class="btn-login btn-primary" bindtap="login" loading="{{loading}}">登 录</button>
+    <view class="register-link" bindtap="goRegister" wx:if="{{loginType === 'guest'}}">没有账号？立即注册</view>
+  </view>
+</view>

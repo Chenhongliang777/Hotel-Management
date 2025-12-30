@@ -1,0 +1,85 @@
+<view class="container">
+  <!-- 状态筛选 -->
+  <view class="filter-bar" wx:if="{{!type}}">
+    <picker mode="selector" 
+            range="{{['全部状态', '待分配', '已分配', '进行中', '已完成', '已取消']}}"
+            value="{{statusFilter === '' ? 0 : (statusFilter === 'pending' ? 1 : (statusFilter === 'assigned' ? 2 : (statusFilter === 'in_progress' ? 3 : (statusFilter === 'completed' ? 4 : 5))))}}"
+            bindchange="onStatusFilterChange">
+      <view class="filter-item">
+        <text>{{statusFilter === '' ? '全部状态' : getStatusText(statusFilter)}}</text>
+        <text class="arrow">▼</text>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 任务列表 -->
+  <view class="tasks-list">
+    <view class="task-item card" 
+          wx:for="{{tasks}}" 
+          wx:key="id">
+      <view class="task-header">
+        <view class="task-info">
+          <text class="task-title">房间：{{item.roomNumber}}</text>
+          <text class="task-type" wx:if="{{item.taskType}}">{{item.taskType}}</text>
+        </view>
+        <view class="status-badge" style="background: {{getStatusColor(item.status)}}15; color: {{getStatusColor(item.status)}};">
+          {{getStatusText(item.status)}}
+        </view>
+      </view>
+
+      <view class="task-details">
+        <view class="detail-row" wx:if="{{item.assigneeName}}">
+          <text class="label">执行人：</text>
+          <text class="value">{{item.assigneeName}}</text>
+        </view>
+        <view class="detail-row" wx:if="{{item.priority}}">
+          <text class="label">优先级：</text>
+          <text class="value">{{item.priority}}</text>
+        </view>
+        <view class="detail-row" wx:if="{{item.description}}">
+          <text class="label">说明：</text>
+          <text class="value">{{item.description}}</text>
+        </view>
+        <view class="detail-row" wx:if="{{item.createTime}}">
+          <text class="label">创建时间：</text>
+          <text class="value">{{item.createTime}}</text>
+        </view>
+        <view class="detail-row" wx:if="{{item.completeTime}}">
+          <text class="label">完成时间：</text>
+          <text class="value">{{item.completeTime}}</text>
+        </view>
+      </view>
+
+      <!-- 操作按钮 -->
+      <view class="task-actions">
+        <button class="action-btn" 
+                wx:if="{{item.status === 'pending' && (type === 'pending' || !type)}}"
+                data-id="{{item.id}}"
+                catchtap="handleAssignTask">
+          分配任务
+        </button>
+        <button class="action-btn" 
+                wx:if="{{(item.status === 'assigned' || item.status === 'pending') && (type === 'my' || !type)}}"
+                data-id="{{item.id}}"
+                catchtap="handleStartTask">
+          开始任务
+        </button>
+        <button class="action-btn complete" 
+                wx:if="{{item.status === 'in_progress' && (type === 'my' || !type)}}"
+                data-id="{{item.id}}"
+                catchtap="handleCompleteTask">
+          完成任务
+        </button>
+      </view>
+    </view>
+
+    <view class="empty" wx:if="{{!loading && tasks.length === 0}}">
+      <text>暂无任务</text>
+    </view>
+  </view>
+
+  <view class="loading" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+</view>
+

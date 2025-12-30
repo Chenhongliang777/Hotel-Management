@@ -1,0 +1,138 @@
+.container {
+  min-height: 100vh;
+  background: #f5f7fa;
+  padding-bottom: 40rpx;
+}
+
+.search-bar {
+  display: flex;
+  padding: 20rpx;
+  background: #fff;
+  gap: 20rpx;
+}
+
+.search-input {
+  flex: 1;
+  height: 70rpx;
+  background: #f5f7fa;
+  border-radius: 8rpx;
+  padding: 0 20rpx;
+  font-size: 28rpx;
+}
+
+.search-btn {
+  width: 120rpx;
+  height: 70rpx;
+  line-height: 70rpx;
+  text-align: center;
+  background: #667eea;
+  color: #fff;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+}
+
+.filter-bar {
+  background: #fff;
+  padding: 20rpx;
+  border-top: 1rpx solid #eee;
+}
+
+.filter-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 28rpx;
+}
+
+.arrow {
+  font-size: 20rpx;
+  color: #999;
+}
+
+.orders-list {
+  padding: 20rpx;
+}
+
+.order-item {
+  margin-bottom: 20rpx;
+  padding: 30rpx;
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx solid #eee;
+}
+
+.order-no {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.status-badge {
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+}
+
+.order-info {
+  margin-bottom: 20rpx;
+}
+
+.info-row {
+  display: flex;
+  margin-bottom: 12rpx;
+  font-size: 28rpx;
+}
+
+.label {
+  color: #999;
+  width: 120rpx;
+}
+
+.value {
+  color: #333;
+  flex: 1;
+}
+
+.price {
+  color: #f56565;
+  font-weight: bold;
+  font-size: 32rpx;
+}
+
+.order-actions {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 20rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid #eee;
+}
+
+.action-btn {
+  flex: 1;
+  height: 70rpx;
+  line-height: 70rpx;
+  text-align: center;
+  background: #667eea;
+  color: #fff;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  padding: 0 !important;
+}
+
+.action-btn::after {
+  border: none;
+}
+
+.empty, .loading {
+  text-align: center;
+  padding: 100rpx 0;
+  color: #999;
+  font-size: 28rpx;
+}
+

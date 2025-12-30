@@ -1,0 +1,79 @@
+<view class="container" wx:if="{{order}}">
+  <view class="status-card card {{order.status}}">
+    <text class="status-text">{{statusMap[order.status]}}</text>
+  </view>
+  
+  <view class="info-card card">
+    <view class="section-title">订单信息</view>
+    <view class="info-row"><text class="label">订单编号</text><text>{{order.orderNo}}</text></view>
+    <view class="info-row"><text class="label">入住日期</text><text>{{order.checkInDate}}</text></view>
+    <view class="info-row"><text class="label">退房日期</text><text>{{order.checkOutDate}}</text></view>
+    <view class="info-row"><text class="label">入住晚数</text><text>{{order.nights}}晚</text></view>
+    <view class="info-row"><text class="label">入住人数</text><text>{{order.guestCount}}人</text></view>
+  </view>
+  
+  <view class="info-card card">
+    <view class="section-title">入住人信息</view>
+    <view class="info-row"><text class="label">姓名</text><text>{{order.guestName}}</text></view>
+    <view class="info-row"><text class="label">电话</text><text>{{order.guestPhone}}</text></view>
+    <view class="info-row" wx:if="{{order.guestIdCard}}"><text class="label">身份证</text><text>{{order.guestIdCard}}</text></view>
+  </view>
+  
+  <view class="info-card card">
+    <view class="section-title">费用信息</view>
+    <view class="info-row"><text class="label">房费单价</text><text>¥{{order.roomPrice}}/晚</text></view>
+    <view class="info-row"><text class="label">房费</text><text>¥{{order.totalPrice}}</text></view>
+    <view class="info-row" wx:if="{{order.extraCharges > 0}}"><text class="label">额外消费</text><text>¥{{order.extraCharges}}</text></view>
+    <view class="info-row"><text class="label">应付总计</text><text class="price">¥{{totalAmount}}</text></view>
+    <view class="info-row"><text class="label">保证金</text><text>¥{{order.deposit}}</text></view>
+    <view class="info-row"><text class="label">已付金额</text><text class="text-success">¥{{order.paidAmount}}</text></view>
+    <view class="info-row" wx:if="{{unpaidAmount > 0}}">
+      <text class="label">待付金额</text>
+      <text class="price">¥{{unpaidAmount}}</text>
+    </view>
+  </view>
+  
+  <view class="info-card card" wx:if="{{payments.length > 0}}">
+    <view class="section-title">支付记录</view>
+    <view class="payment-item" wx:for="{{payments}}" wx:key="id">
+      <view class="payment-header">
+        <text class="payment-type">{{paymentTypeMap[item.paymentType] || item.paymentType}}</text>
+        <text class="payment-amount {{item.paymentType === 'refund' ? 'text-success' : ''}}">
+          {{item.paymentType === 'refund' ? '+' : '-'}}¥{{item.amount}}
+        </text>
+      </view>
+      <view class="payment-info">
+        <text class="payment-no">支付单号：{{item.paymentNo}}</text>
+        <text class="payment-time">{{formatDate(item.createTime)}}</text>
+      </view>
+      <view class="payment-status" wx:if="{{item.status === 'success'}}">
+        <text class="status-badge success">支付成功</text>
+      </view>
+    </view>
+  </view>
+  
+  <view class="bottom-bar" wx:if="{{order.status === 'pending' || order.status === 'confirmed'}}">
+    <button class="btn-pay btn-primary" wx:if="{{unpaidAmount > 0}}" bindtap="showPay">
+      支付 ¥{{nextPayAmount}}
+    </button>
+    <block wx:if="{{unpaidAmount <= 0}}">
+      <button class="btn-modify" wx:if="{{!isModified}}" bindtap="goModify">改订</button>
+      <button class="btn-cancel" bindtap="cancelOrder">取消订单</button>
+    </block>
+  </view>
+  
+  <!-- 支付弹窗 -->
+  <view class="modal-mask" wx:if="{{showPayModal}}" bindtap="hidePayModal">
+    <view class="modal-content" catchtap="stopPropagation">
+      <view class="modal-title">确认支付</view>
+      <view class="pay-amount-wrap">
+        <text class="pay-amount-label">支付金额</text>
+        <text class="pay-amount-value">¥{{payAmount}}</text>
+      </view>
+      <view class="modal-buttons">
+        <button class="btn-modal-cancel" bindtap="hidePayModal">取消</button>
+        <button class="btn-modal-confirm btn-primary" bindtap="confirmPay" loading="{{paying}}">确认支付</button>
+      </view>
+    </view>
+  </view>
+</view>

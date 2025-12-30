@@ -1,0 +1,102 @@
+<view class="container">
+  <!-- 今日概览 -->
+  <view class="section">
+    <view class="section-title">今日概览</view>
+    <view class="stats-grid">
+      <view class="stat-card">
+        <text class="stat-value">{{stats.todayOrders}}</text>
+        <text class="stat-label">今日订单</text>
+      </view>
+      <view class="stat-card">
+        <text class="stat-value">{{stats.todayCheckIn}}</text>
+        <text class="stat-label">今日入住</text>
+      </view>
+      <view class="stat-card">
+        <text class="stat-value">{{stats.todayCheckOut}}</text>
+        <text class="stat-label">今日退房</text>
+      </view>
+      <view class="stat-card">
+        <text class="stat-value">{{stats.currentGuests}}</text>
+        <text class="stat-label">在住客人</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 营收统计 -->
+  <view class="section">
+    <view class="section-title">营收统计</view>
+    <view class="revenue-stats">
+      <view class="revenue-item">
+        <text class="revenue-label">今日营收</text>
+        <text class="revenue-value">¥{{stats.todayRevenueFormatted}}</text>
+      </view>
+      <view class="revenue-item">
+        <text class="revenue-label">本月营收</text>
+        <text class="revenue-value">¥{{stats.monthlyRevenueFormatted}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 房态统计 -->
+  <view class="section" wx:if="{{roomStats.length > 0}}">
+    <view class="section-title">房态统计</view>
+    <view class="room-stats-list">
+      <view class="room-stat-item" wx:for="{{roomStats}}" wx:key="status">
+        <view class="room-stat-info">
+          <text class="room-stat-label">{{item.label || item.status}}</text>
+          <text class="room-stat-count">{{item.count || 0}}间</text>
+        </view>
+        <view class="room-stat-bar">
+          <view class="room-stat-progress" style="width: {{(item.count || 0) / (item.total || 1) * 100}}%"></view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 营收趋势 -->
+  <view class="section">
+    <view class="section-title">营收趋势</view>
+    <view class="date-range">
+      <picker mode="date" value="{{dateRange.start}}" bindchange="onStartDateChange">
+        <view class="date-picker">
+          <text>{{dateRange.start || '开始日期'}}</text>
+        </view>
+      </picker>
+      <text class="date-separator">至</text>
+      <picker mode="date" value="{{dateRange.end}}" bindchange="onEndDateChange">
+        <view class="date-picker">
+          <text>{{dateRange.end || '结束日期'}}</text>
+        </view>
+      </picker>
+    </view>
+    <view class="chart-container" wx:if="{{revenueChart.length > 0}}">
+      <view class="chart-item" wx:for="{{revenueChart}}" wx:key="date">
+        <text class="chart-date">{{item.date}}</text>
+        <text class="chart-amount">¥{{item.revenueFormatted}}</text>
+      </view>
+    </view>
+    <view class="empty" wx:else>
+      <text>暂无数据</text>
+    </view>
+  </view>
+
+  <!-- 其他统计 -->
+  <view class="section">
+    <view class="section-title">其他统计</view>
+    <view class="other-stats">
+      <view class="other-stat-item">
+        <text class="other-stat-label">待确认订单</text>
+        <text class="other-stat-value">{{stats.pendingOrders}}</text>
+      </view>
+      <view class="other-stat-item">
+        <text class="other-stat-label">低库存物品</text>
+        <text class="other-stat-value">{{stats.lowStockCount}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="loading" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+</view>
+

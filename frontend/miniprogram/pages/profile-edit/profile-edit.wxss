@@ -1,0 +1,86 @@
+.form-card {
+  padding: 40rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-bottom: 30rpx;
+  color: #303133;
+}
+
+.form-item {
+  margin-bottom: 40rpx;
+  padding-bottom: 30rpx;
+  border-bottom: 1rpx solid #f5f7fa;
+}
+
+.form-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.label {
+  display: block;
+  font-size: 28rpx;
+  color: #606266;
+  margin-bottom: 20rpx;
+}
+
+.value {
+  display: block;
+  font-size: 30rpx;
+  color: #303133;
+}
+
+.hint {
+  display: block;
+  font-size: 24rpx;
+  color: #909399;
+  margin-top: 10rpx;
+}
+
+.input {
+  width: 100%;
+  height: 80rpx;
+  background: #f5f7fa;
+  border-radius: 8rpx;
+  padding: 0 30rpx;
+  font-size: 30rpx;
+  box-sizing: border-box;
+}
+
+.picker-value {
+  height: 80rpx;
+  line-height: 80rpx;
+  background: #f5f7fa;
+  border-radius: 8rpx;
+  padding: 0 30rpx;
+  font-size: 30rpx;
+  color: #303133;
+}
+
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20rpx;
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+  background: #fff;
+  box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.btn-save {
+  width: 100%;
+  height: 88rpx;
+  line-height: 88rpx;
+  font-size: 32rpx;
+  text-align: center;
+}
+
+.container {
+  padding-bottom: 140rpx;
+}
+

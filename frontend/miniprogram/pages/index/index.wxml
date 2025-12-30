@@ -1,0 +1,45 @@
+<view class="container">
+  <!-- 搜索区域 -->
+  <view class="search-card card">
+    <view class="search-title">预订房间</view>
+    <view class="search-form">
+      <view class="form-item">
+        <text class="label">入住日期</text>
+        <picker mode="date" value="{{checkInDate}}" start="{{today}}" bindchange="onCheckInChange">
+          <view class="picker">{{checkInDate || '请选择'}}</view>
+        </picker>
+      </view>
+      <view class="form-item">
+        <text class="label">退房日期</text>
+        <picker mode="date" value="{{checkOutDate}}" start="{{minCheckOut}}" bindchange="onCheckOutChange">
+          <view class="picker">{{checkOutDate || '请选择'}}</view>
+        </picker>
+      </view>
+      <view class="form-item">
+        <text class="label">入住人数</text>
+        <picker mode="selector" range="{{guestOptions}}" value="{{guestIndex}}" bindchange="onGuestChange">
+          <view class="picker">{{guestOptions[guestIndex]}}人</view>
+        </picker>
+      </view>
+      <button class="btn-search btn-primary" bindtap="searchRooms">搜索可用房型</button>
+    </view>
+  </view>
+
+  <!-- 推荐房型 -->
+  <view class="section">
+    <view class="section-title">精选房型</view>
+    <view class="room-list">
+      <view class="room-card card" wx:for="{{roomTypes}}" wx:key="id" bindtap="goRoomDetail" data-id="{{item.id}}">
+        <image class="room-image" src="{{item.images[0] || 'https://dummyimage.com/400x300/667eea/ffffff.png&text=Room'}}" mode="aspectFill" binderror="onImageError" data-index="{{index}}"></image>
+        <view class="room-info">
+          <view class="room-name">{{item.name}}</view>
+          <view class="room-desc">{{item.bedType}} · {{item.area}}㎡ · 最多{{item.maxGuests}}人</view>
+          <view class="room-price">
+            <text class="price">¥{{item.basePrice}}</text>
+            <text class="unit">/晚起</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

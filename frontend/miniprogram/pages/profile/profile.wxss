@@ -1,0 +1,85 @@
+.user-card {
+  display: flex;
+  align-items: center;
+  padding: 40rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+}
+
+.avatar-wrap .avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  border: 4rpx solid rgba(255,255,255,0.5);
+}
+
+.user-info {
+  margin-left: 30rpx;
+}
+
+.nickname {
+  font-size: 36rpx;
+  font-weight: bold;
+  margin-bottom: 10rpx;
+}
+
+.phone {
+  font-size: 26rpx;
+  opacity: 0.9;
+}
+
+.login-card {
+  text-align: center;
+  padding: 60rpx;
+}
+
+.login-tip {
+  display: block;
+  color: #909399;
+  margin-bottom: 30rpx;
+}
+
+.btn-login {
+  width: 300rpx;
+  text-align: center;
+}
+
+.menu-card {
+  margin-top: 20rpx;
+  padding: 0;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f5f7fa;
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-icon {
+  font-size: 36rpx;
+  margin-right: 20rpx;
+}
+
+.menu-text {
+  flex: 1;
+  font-size: 30rpx;
+  color: #303133;
+}
+
+.menu-arrow {
+  color: #c0c4cc;
+  font-size: 28rpx;
+}
+
+.btn-logout {
+  margin-top: 60rpx;
+  background: #fff;
+  color: #f56c6c;
+  border: 1rpx solid #f56c6c;
+  text-align: center;
+}

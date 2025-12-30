@@ -1,0 +1,117 @@
+.room-info {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+}
+
+.room-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-bottom: 10rpx;
+}
+
+.date-info {
+  font-size: 26rpx;
+  opacity: 0.9;
+}
+
+.form-card, .price-card {
+  margin-top: 20rpx;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #303133;
+  margin-bottom: 20rpx;
+  padding-left: 15rpx;
+  border-left: 6rpx solid #667eea;
+}
+
+.form-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25rpx 0;
+  border-bottom: 1rpx solid #ebeef5;
+}
+
+.form-item:last-child {
+  border-bottom: none;
+}
+
+.form-item .label {
+  font-size: 28rpx;
+  color: #606266;
+  width: 180rpx;
+}
+
+.form-item .input {
+  flex: 1;
+  text-align: right;
+  font-size: 28rpx;
+}
+
+.form-item .picker-value {
+  font-size: 28rpx;
+  color: #303133;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 28rpx;
+  color: #606266;
+  padding: 15rpx 0;
+}
+
+.price-row.total {
+  border-top: 1rpx solid #ebeef5;
+  margin-top: 10rpx;
+  padding-top: 20rpx;
+}
+
+.price-row .total-price {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #303133;
+}
+
+.price-row.deposit {
+  color: #f56c6c;
+}
+
+.price-row .deposit-price {
+  font-weight: bold;
+}
+
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 30rpx;
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+  box-shadow: 0 -4rpx 20rpx rgba(0,0,0,0.08);
+}
+
+.price-info .label {
+  font-size: 24rpx;
+  color: #909399;
+}
+
+.price-info .amount {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #f56c6c;
+}
+
+.btn-submit {
+  width: 280rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+}

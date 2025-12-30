@@ -1,0 +1,61 @@
+.logo-wrap {
+  text-align: center;
+  padding: 60rpx 0 40rpx;
+}
+
+.logo {
+  width: 160rpx;
+  height: 160rpx;
+}
+
+.app-name {
+  display: block;
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #667eea;
+  margin-top: 20rpx;
+}
+
+.form-card {
+  padding: 40rpx;
+}
+
+.form-item {
+  margin-bottom: 30rpx;
+}
+
+.form-item .input {
+  width: 100%;
+  height: 90rpx;
+  background: #f5f7fa;
+  border-radius: 8rpx;
+  padding: 0 30rpx;
+  font-size: 30rpx;
+  box-sizing: border-box;
+}
+
+.btn-register {
+  margin-top: 20rpx;
+  width: 100%;
+  height: 90rpx;
+  line-height: 90rpx;
+  font-size: 32rpx;
+  text-align: center;
+  padding: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.btn-register::after {
+  border: none;
+}
+
+.login-link {
+  text-align: center;
+  margin-top: 30rpx;
+  color: #667eea;
+  font-size: 28rpx;
+}
+

@@ -1,0 +1,88 @@
+<view class="container">
+  <!-- 筛选栏 -->
+  <view class="filter-bar">
+    <view class="filter-item">
+      <picker mode="date" value="{{checkInDate}}" start="{{today}}" bindchange="onCheckInChange">
+        <view class="picker-text">{{checkInDate || '入住日期'}}</view>
+      </picker>
+    </view>
+    <text class="filter-separator">至</text>
+    <view class="filter-item">
+      <picker mode="date" value="{{checkOutDate}}" start="{{minCheckOut || today}}" bindchange="onCheckOutChange">
+        <view class="picker-text">{{checkOutDate || '退房日期'}}</view>
+      </picker>
+    </view>
+    <view class="filter-item">
+      <picker mode="selector" range="{{guestOptions}}" value="{{guestIndex}}" bindchange="onGuestChange">
+        <view class="picker-text">{{guestOptions[guestIndex]}}人</view>
+      </picker>
+    </view>
+  </view>
+
+  <!-- 偏好筛选栏 -->
+  <view class="preference-bar" wx:if="{{roomTypes.length > 0}}">
+    <view class="preference-label">排序：</view>
+    <picker mode="selector" range="{{sortOptions}}" value="{{sortIndex}}" bindchange="onSortChange">
+      <view class="preference-item">
+        <text class="preference-text">{{sortOptions[sortIndex]}}</text>
+        <text class="preference-arrow">▼</text>
+      </view>
+    </picker>
+  </view>
+  
+  <!-- 加载状态 -->
+  <view class="loading" wx:if="{{loading}}">
+    <text>搜索中...</text>
+  </view>
+  
+  <!-- 未选择日期时的提示 -->
+  <view class="empty-date" wx:if="{{!loading && !checkInDate && !checkOutDate}}">
+    <view class="empty-date-content">
+      <text class="empty-date-icon">📅</text>
+      <text class="empty-date-text">请选择入住和退房日期</text>
+      <view class="date-picker-group">
+        <picker mode="date" value="{{checkInDate}}" start="{{today}}" bindchange="onCheckInChange">
+          <view class="date-picker-btn">
+            <text class="date-picker-label">入住日期</text>
+            <text class="date-picker-value">{{checkInDate || '请选择'}}</text>
+          </view>
+        </picker>
+        <picker mode="date" value="{{checkOutDate}}" start="{{minCheckOut || today}}" bindchange="onCheckOutChange">
+          <view class="date-picker-btn">
+            <text class="date-picker-label">退房日期</text>
+            <text class="date-picker-value">{{checkOutDate || '请选择'}}</text>
+          </view>
+        </picker>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 房型列表 -->
+  <view class="room-list" wx:if="{{!loading && roomTypes.length > 0}}">
+    <view class="room-card card" wx:for="{{roomTypes}}" wx:key="id" bindtap="goDetail" data-id="{{item.id}}">
+      <image class="room-image" src="{{item.images[0] || 'https://dummyimage.com/400x300/667eea/ffffff.png&text=Room'}}" mode="aspectFill" binderror="onImageError" data-index="{{index}}"></image>
+      <view class="room-info">
+        <view class="room-name">{{item.name}}</view>
+        <view class="room-tags">
+          <text class="tag">{{item.bedType}}</text>
+          <text class="tag">{{item.area}}㎡</text>
+          <text class="tag">最多{{item.maxGuests}}人</text>
+        </view>
+        <view class="room-bottom">
+          <view class="price">
+            <text class="amount">¥{{item.basePrice}}</text>
+            <text class="unit">/晚</text>
+          </view>
+          <button class="btn-book" size="mini">预订</button>
+        </view>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 空状态 -->
+  <view class="empty" wx:if="{{!loading && isEmpty && checkInDate && checkOutDate}}">
+    <text class="empty-icon">🏠</text>
+    <text class="empty-text">暂无可用房型</text>
+    <text class="empty-tip">请尝试调整搜索条件</text>
+  </view>
+</view>

@@ -1,0 +1,83 @@
+<view class="container">
+  <!-- 筛选栏 -->
+  <view class="filter-section">
+    <picker mode="selector" 
+            range="{{['全部状态', '可用', '已入住', '维修中', '已预订']}}"
+            value="{{statusFilter === '' ? 0 : (statusFilter === 'available' ? 1 : (statusFilter === 'occupied' ? 2 : (statusFilter === 'maintenance' ? 3 : 4)))}}"
+            bindchange="onStatusFilterChange">
+      <view class="filter-item">
+        <text>{{statusFilter === '' ? '全部状态' : getStatusText(statusFilter)}}</text>
+        <text class="arrow">▼</text>
+      </view>
+    </picker>
+    
+    <picker mode="selector" 
+            range="{{roomTypeOptions}}"
+            value="{{roomTypeFilterIndex}}"
+            bindchange="onRoomTypeFilterChange">
+      <view class="filter-item">
+        <text>{{getRoomTypeName(roomTypeFilter)}}</text>
+        <text class="arrow">▼</text>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 房间列表 -->
+  <view class="rooms-list">
+    <view class="room-item card" 
+          wx:for="{{rooms}}" 
+          wx:key="id">
+      <view class="room-header">
+        <view class="room-info">
+          <text class="room-number">{{item.roomNumber}}</text>
+          <text class="room-type">{{item.roomType && item.roomType.name ? item.roomType.name : ''}}</text>
+        </view>
+        <view class="status-badge" style="background: {{getStatusColor(item.status)}}15; color: {{getStatusColor(item.status)}};">
+          {{getStatusText(item.status)}}
+        </view>
+      </view>
+
+      <view class="room-details">
+        <view class="detail-row">
+          <text class="label">楼层：</text>
+          <text class="value">{{item.floor ? item.floor : '-'}}</text>
+        </view>
+        <view class="detail-row">
+          <text class="label">面积：</text>
+          <text class="value">{{item.roomType && item.roomType.area ? item.roomType.area : '-'}}㎡</text>
+        </view>
+        <view class="detail-row">
+          <text class="label">清洁状态：</text>
+          <text class="value clean-status" style="color: {{getCleanStatusColor(item.cleanStatus || 'clean')}};">
+            {{getCleanStatusText(item.cleanStatus || 'clean')}}
+          </text>
+        </view>
+      </view>
+
+      <!-- 操作按钮 -->
+      <view class="room-actions">
+        <button class="action-btn" 
+                data-id="{{item.id}}"
+                data-status="{{item.status}}"
+                catchtap="updateRoomStatus">
+          更新状态
+        </button>
+        <button class="action-btn secondary" 
+                data-id="{{item.id}}"
+                data-cleanstatus="{{item.cleanStatus}}"
+                catchtap="updateCleanStatus">
+          清洁状态
+        </button>
+      </view>
+    </view>
+
+    <view class="empty" wx:if="{{!loading && rooms.length === 0}}">
+      <text>暂无房间</text>
+    </view>
+  </view>
+
+  <view class="loading" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+</view>
+

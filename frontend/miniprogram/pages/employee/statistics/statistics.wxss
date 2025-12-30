@@ -1,0 +1,198 @@
+.container {
+  min-height: 100vh;
+  background: #f5f7fa;
+  padding-bottom: 40rpx;
+}
+
+.section {
+  background: #fff;
+  margin: 20rpx;
+  padding: 30rpx;
+  border-radius: 16rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-bottom: 30rpx;
+  color: #333;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+}
+
+.stat-card {
+  background: linear-gradient(135deg, #667eea15 0%, #764ba205 100%);
+  padding: 30rpx;
+  border-radius: 12rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-value {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #667eea;
+  margin-bottom: 10rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.revenue-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.revenue-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx;
+  background: #f5f7fa;
+  border-radius: 12rpx;
+}
+
+.revenue-label {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.revenue-value {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #667eea;
+}
+
+.room-stats-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.room-stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+
+.room-stat-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.room-stat-label {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.room-stat-count {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #667eea;
+}
+
+.room-stat-bar {
+  height: 8rpx;
+  background: #f0f0f0;
+  border-radius: 4rpx;
+  overflow: hidden;
+}
+
+.room-stat-progress {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  border-radius: 4rpx;
+  transition: width 0.3s;
+}
+
+.date-range {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  margin-bottom: 30rpx;
+}
+
+.date-picker {
+  flex: 1;
+  padding: 20rpx;
+  background: #f5f7fa;
+  border-radius: 8rpx;
+  text-align: center;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.date-separator {
+  font-size: 28rpx;
+  color: #999;
+}
+
+.chart-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15rpx;
+}
+
+.chart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx;
+  background: #f5f7fa;
+  border-radius: 8rpx;
+}
+
+.chart-date {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.chart-amount {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #667eea;
+}
+
+.other-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.other-stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx;
+  background: #f5f7fa;
+  border-radius: 12rpx;
+}
+
+.other-stat-label {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.other-stat-value {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #667eea;
+}
+
+.empty, .loading {
+  text-align: center;
+  padding: 60rpx 0;
+  color: #999;
+  font-size: 28rpx;
+}
+

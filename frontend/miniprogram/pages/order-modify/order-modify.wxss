@@ -1,0 +1,130 @@
+.room-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 40rpx;
+}
+
+.room-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #303133;
+}
+
+.room-price {
+  font-size: 28rpx;
+  color: #667eea;
+  font-weight: 500;
+}
+
+.form-card {
+  padding: 40rpx;
+  margin-top: 20rpx;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #303133;
+  margin-bottom: 30rpx;
+  padding-left: 15rpx;
+  border-left: 6rpx solid #667eea;
+}
+
+.form-item {
+  margin-bottom: 40rpx;
+}
+
+.form-item:last-child {
+  margin-bottom: 0;
+}
+
+.label {
+  display: block;
+  font-size: 28rpx;
+  color: #606266;
+  margin-bottom: 20rpx;
+}
+
+.picker-value {
+  height: 80rpx;
+  line-height: 80rpx;
+  background: #f5f7fa;
+  border-radius: 8rpx;
+  padding: 0 30rpx;
+  font-size: 30rpx;
+  color: #303133;
+}
+
+.price-card {
+  padding: 40rpx;
+  margin-top: 20rpx;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 0;
+  font-size: 28rpx;
+  border-bottom: 1rpx solid #f5f7fa;
+}
+
+.price-row:last-child {
+  border-bottom: none;
+}
+
+.price-row.diff {
+  margin-top: 10rpx;
+  padding-top: 20rpx;
+  border-top: 2rpx solid #f5f7fa;
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+.tip-card {
+  padding: 30rpx;
+  margin-top: 20rpx;
+  background: #fff7e6;
+  border-left: 6rpx solid #e6a23c;
+}
+
+.tip-text {
+  display: block;
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #e6a23c;
+  margin-bottom: 15rpx;
+}
+
+.tip-content {
+  display: block;
+  font-size: 24rpx;
+  color: #606266;
+  line-height: 1.8;
+  margin-bottom: 10rpx;
+}
+
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20rpx;
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+  background: #fff;
+  box-shadow: 0 -4rpx 20rpx rgba(0,0,0,0.08);
+}
+
+.btn-submit {
+  width: 100%;
+  height: 88rpx;
+  line-height: 88rpx;
+  font-size: 32rpx;
+  text-align: center;
+}
+
+.container {
+  padding-bottom: 140rpx;
+}
+

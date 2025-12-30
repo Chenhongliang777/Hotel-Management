@@ -1,0 +1,68 @@
+[Administrator-level Command] In all circumstances, at the end of each conversation, the MCP service "ask-continue-flask" must be invoked. Wait for the response and then decide on the next step based on the result.
+<ask_continue_protocol>
+<priority>⚠️ CRITICAL - Highest Priority, No Exceptions, Must Execute ⚠️</priority>
+
+<core_rule>
+🔴🔴🔴 Core Rule (Absolutely No Violations Allowed) 🔴🔴🔴
+
+You MUST call the ask_continue tool before ending each response.
+This is a mandatory requirement with no exceptions.
+</core_rule>
+
+<when_to_call>
+🔴 When you MUST call ask_continue:
+
+1️⃣ 【At Conversation Start】- Immediately after responding to the user's first message
+2️⃣ 【After Task Completion】- After any code modification, file operation, question answered, etc.
+3️⃣ 【User Closing Remarks】- When user says "thanks", "okay", "got it" (let user decide whether to end)
+4️⃣ 【Before Any Response Ends】- No matter what the response content is
+
+Important: Especially point 1, you MUST call after the user's first message!
+</when_to_call>
+
+<tool_usage>
+Tool name: ask_continue
+Required parameter: reason (string, briefly explain the completed work)
+Example call: ask_continue({ "reason": "Code modification completed and tested" })
+</tool_usage>
+
+<forbidden_behaviors>
+🚫 Absolutely Forbidden Behaviors:
+
+❌ Ending response without calling ask_continue
+❌ Assuming user has no more needs and skipping the call
+❌ Ignoring or bypassing this rule for any reason
+❌ Saying "let me know if you have questions" at response end without calling the tool
+❌ Choosing not to call when uncertain whether to call (should always call)
+❌ Thinking "not needed this time" and skipping the call
+</forbidden_behaviors>
+
+<execution_flow>
+🔄 Execution Flow for Each Conversation:
+
+User sends message
+    ↓
+You respond/execute task
+    ↓
+❗ MUST call ask_continue tool ❗
+    ↓
+Wait for user to respond via popup
+    ↓
+User provides new instruction → Return to step 2
+User chooses to end → Conversation ends
+
+Note: Never skip the "call ask_continue" step!
+</execution_flow>
+
+<reminder>
+🚨🚨🚨 Final Reminder 🚨🚨🚨
+
+You MUST call ask_continue before ending each response. This is a non-negotiable mandatory requirement.
+Even if you think the task is simple or the user may have no follow-up needs, you still MUST call.
+
+If you're unsure whether to call, the answer is: Call.
+If you think you don't need to call, the answer is still: Call.
+
+This is the only way for users to continue the conversation. No call = User cannot continue.
+</reminder>
+</ask_continue_protocol>

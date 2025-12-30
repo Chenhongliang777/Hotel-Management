@@ -1,0 +1,53 @@
+<view class="container">
+  <!-- 用户信息卡片 -->
+  <view class="user-card">
+    <view class="user-info">
+      <image class="avatar" src="{{userInfo.avatar || '/images/logo.png'}}" mode="aspectFill"></image>
+      <view class="user-details">
+        <text class="name">{{userInfo.realName || userInfo.username}}</text>
+        <text class="role">{{role}}</text>
+      </view>
+    </view>
+    <view class="logout-btn" bindtap="logout">退出</view>
+  </view>
+
+  <!-- 数据统计 -->
+  <view class="stats-section">
+    <view class="stats-title">今日数据</view>
+    <view class="stats-grid">
+      <view class="stat-item">
+        <text class="stat-value">{{statistics.todayCheckIn}}</text>
+        <text class="stat-label">待入住</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{statistics.todayCheckOut}}</text>
+        <text class="stat-label">待退房</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{statistics.pendingCleaning}}</text>
+        <text class="stat-label">待分配</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{statistics.myTasks}}</text>
+        <text class="stat-label">我的任务</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 快捷操作 -->
+  <view class="actions-section">
+    <view class="section-title">快捷操作</view>
+    <view class="actions-grid">
+      <view class="action-item" 
+            wx:for="{{quickActions}}" 
+            wx:key="index"
+            data-path="{{item.path}}"
+            bindtap="navigateTo"
+            style="background: linear-gradient(135deg, {{item.color}}15 0%, {{item.color}}05 100%);">
+        <view class="action-icon" style="color: {{item.color}};">{{item.icon}}</view>
+        <text class="action-title">{{item.title}}</text>
+      </view>
+    </view>
+  </view>
+</view>
+

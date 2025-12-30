@@ -1,0 +1,74 @@
+<view class="container">
+  <view class="header">
+    <text class="title">联系我们</text>
+    <text class="subtitle">我们随时为您服务</text>
+  </view>
+
+  <view class="contact-card card">
+    <view class="contact-item" bindtap="makePhoneCall">
+      <view class="item-left">
+        <text class="item-icon">📞</text>
+        <view class="item-content">
+          <text class="item-label">客服热线</text>
+          <text class="item-value">{{contactInfo.phone}}</text>
+        </view>
+      </view>
+      <text class="item-action">拨打</text>
+    </view>
+
+    <view class="contact-item" bindtap="copyWechat">
+      <view class="item-left">
+        <text class="item-icon">💬</text>
+        <view class="item-content">
+          <text class="item-label">微信客服</text>
+          <text class="item-value">{{contactInfo.wechat}}</text>
+        </view>
+      </view>
+      <text class="item-action">复制</text>
+    </view>
+
+    <view class="contact-item" bindtap="copyQQ">
+      <view class="item-left">
+        <text class="item-icon">💻</text>
+        <view class="item-content">
+          <text class="item-label">QQ客服</text>
+          <text class="item-value">{{contactInfo.qq}}</text>
+        </view>
+      </view>
+      <text class="item-action">复制</text>
+    </view>
+
+    <view class="contact-item" bindtap="copyEmail">
+      <view class="item-left">
+        <text class="item-icon">📧</text>
+        <view class="item-content">
+          <text class="item-label">邮箱地址</text>
+          <text class="item-value">{{contactInfo.email}}</text>
+        </view>
+      </view>
+      <text class="item-action">复制</text>
+    </view>
+  </view>
+
+  <view class="info-card card">
+    <view class="info-title">服务时间</view>
+    <view class="info-content">{{contactInfo.workTime}}</view>
+  </view>
+
+  <view class="address-card card">
+    <view class="info-title">公司地址</view>
+    <view class="address-content">
+      <text class="address-text">{{contactInfo.address}}</text>
+      <button class="btn-map" bindtap="viewMap">查看地图</button>
+    </view>
+  </view>
+
+  <view class="tips-card">
+    <text class="tips-title">💡 温馨提示</text>
+    <text class="tips-text">• 客服热线：{{contactInfo.workTime}} 为您服务</text>
+    <text class="tips-text">• 微信客服：添加后请发送"咨询"开始对话</text>
+    <text class="tips-text">• 紧急情况请直接拨打客服热线</text>
+    <text class="tips-text">• 我们会在24小时内回复您的邮件</text>
+  </view>
+</view>
+

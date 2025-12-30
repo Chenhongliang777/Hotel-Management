@@ -1,0 +1,61 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/rooms/rooms",
+    "pages/room-detail/room-detail",
+    "pages/booking/booking",
+    "pages/orders/orders",
+    "pages/order-detail/order-detail",
+    "pages/profile/profile",
+    "pages/login/login",
+    "pages/register/register",
+    "pages/profile-edit/profile-edit",
+    "pages/order-modify/order-modify",
+    "pages/contact/contact",
+    "pages/about/about",
+    "pages/employee/workbench/workbench",
+    "pages/employee/orders/orders",
+    "pages/employee/rooms/rooms",
+    "pages/employee/cleaning/cleaning",
+    "pages/employee/statistics/statistics",
+    "pages/employee/inventory/inventory"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#667eea",
+    "navigationBarTitleText": "悦居民宿",
+    "navigationBarTextStyle": "white"
+  },
+  "tabBar": {
+    "color": "#999",
+    "selectedColor": "#667eea",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "images/tab-home.png",
+        "selectedIconPath": "images/tab-home-active.png"
+      },
+      {
+        "pagePath": "pages/rooms/rooms",
+        "text": "房型",
+        "iconPath": "images/tab-room.png",
+        "selectedIconPath": "images/tab-room-active.png"
+      },
+      {
+        "pagePath": "pages/orders/orders",
+        "text": "订单",
+        "iconPath": "images/tab-order.png",
+        "selectedIconPath": "images/tab-order-active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "images/tab-user.png",
+        "selectedIconPath": "images/tab-user-active.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}
