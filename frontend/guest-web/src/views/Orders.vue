@@ -262,7 +262,12 @@ const loadOrders = async () => {
     let orderList = res.data || []
 
     if (filterStatus.value) {
-      orderList = orderList.filter(order => order.status === filterStatus.value)
+      // 状态筛选（兼容大小写和下划线格式）
+      const targetStatus = filterStatus.value.toLowerCase().replace(/_/g, '_')
+      orderList = orderList.filter(order => {
+        const orderStatus = (order.status || '').toLowerCase().trim()
+        return orderStatus === targetStatus
+      })
     }
 
     orders.value = orderList
@@ -278,13 +283,14 @@ const goToOrderDetail = (id) => {
   router.push(`/order/${id}`)
 }
 
-// 获取待支付房费（用于列表显示，使用简单计算）
+// 获取待支付金额（用于列表显示：保证金 + 房费 + 额外消费 - 已付）
 const getUnpaidAmount = (order) => {
   if (!order) return 0
+  const deposit = Number(order.deposit || 0)
   const roomFee = Number(order.totalPrice || 0)
   const extraCharges = Number(order.extraCharges || 0)
   const paid = Number(order.paidAmount || 0)
-  const totalDue = parseFloat((roomFee + extraCharges).toFixed(2))
+  const totalDue = parseFloat((deposit + roomFee + extraCharges).toFixed(2))
   return Math.max(0, parseFloat((totalDue - paid).toFixed(2)))
 }
 

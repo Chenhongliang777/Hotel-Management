@@ -10,7 +10,10 @@ import com.homestay.module.room.entity.RoomType;
 import com.homestay.module.room.mapper.RoomMapper;
 import com.homestay.module.room.mapper.RoomTypeMapper;
 import com.homestay.module.room.service.RoomService;
+import com.homestay.module.cleaning.entity.CleaningTask;
+import com.homestay.module.cleaning.service.CleaningService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -25,6 +28,10 @@ public class RoomServiceImpl extends ServiceImpl<RoomMapper, Room> implements Ro
 
     @Autowired
     private RoomTypeMapper roomTypeMapper;
+
+    @Autowired
+    @Lazy
+    private CleaningService cleaningService;
 
     @Override
     public IPage<Room> getRoomPage(Integer page, Integer size, String keyword, Long roomTypeId, String status) {
@@ -90,8 +97,13 @@ public class RoomServiceImpl extends ServiceImpl<RoomMapper, Room> implements Ro
             throw new BusinessException("房间号已存在");
         }
         
-        room.setStatus("available");
-        room.setCleanStatus("clean");
+        // 如果未设置状态，默认为可用
+        if (room.getStatus() == null || room.getStatus().isEmpty()) {
+            room.setStatus("available");
+        }
+        if (room.getCleanStatus() == null || room.getCleanStatus().isEmpty()) {
+            room.setCleanStatus("clean");
+        }
         return this.save(room);
     }
 
@@ -140,8 +152,27 @@ public class RoomServiceImpl extends ServiceImpl<RoomMapper, Room> implements Ro
         if (room == null) {
             throw new BusinessException("房间不存在");
         }
+        
+        String oldStatus = room.getCleanStatus();
         room.setCleanStatus(cleanStatus);
-        return this.updateById(room);
+        boolean result = this.updateById(room);
+        
+        // 当房间被标记为待清洁时，自动创建清洁任务
+        if (result && "dirty".equals(cleanStatus) && !"dirty".equals(oldStatus)) {
+            CleaningTask task = new CleaningTask();
+            task.setRoomId(room.getId());
+            task.setRoomNumber(room.getRoomNumber());
+            task.setTaskType("日常清洁");
+            task.setStatus("pending");
+            cleaningService.createTask(task);
+        }
+        
+        // 当房间被标记为已清洁时，取消该房间所有待分配的清洁任务
+        if (result && "clean".equals(cleanStatus) && !"clean".equals(oldStatus)) {
+            cleaningService.cancelPendingTasksByRoomId(id);
+        }
+        
+        return result;
     }
 
     @Override

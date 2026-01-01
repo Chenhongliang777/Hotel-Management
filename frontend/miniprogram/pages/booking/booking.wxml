@@ -36,12 +36,16 @@
       <text>房费 ¥{{roomType.basePrice}} × {{nights}}晚</text>
       <text>¥{{totalPrice}}</text>
     </view>
+    <view class="price-row">
+      <text>保证金({{depositRate * 100}}%)</text>
+      <text>¥{{deposit}}</text>
+    </view>
     <view class="price-row total">
-      <text>订单总价</text>
-      <text class="total-price">¥{{totalPrice}}</text>
+      <text>应付总计</text>
+      <text class="total-price">¥{{grandTotal}}</text>
     </view>
     <view class="price-row deposit">
-      <text>需付保证金({{depositRate * 100}}%)</text>
+      <text>本次需付保证金</text>
       <text class="deposit-price">¥{{deposit}}</text>
     </view>
   </view>

@@ -1,0 +1,123 @@
+<view class="container">
+  <view class="header">
+    <text class="page-title">POS消费录入</text>
+  </view>
+
+  <!-- 选择订单 -->
+  <view class="form-section">
+    <view class="form-item">
+      <text class="form-label">选择订单<text class="required">*</text></text>
+      <picker mode="selector" 
+              range="{{orders}}"
+              range-key="label"
+              value="{{selectedOrderIndex}}"
+              bindchange="onOrderChange">
+        <view class="form-picker">
+          <text class="{{selectedOrderIndex === -1 ? 'placeholder' : ''}}">
+            {{selectedOrderIndex === -1 ? '请选择已入住订单' : orders[selectedOrderIndex].label}}
+          </text>
+          <text class="picker-arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 订单信息 -->
+    <view class="order-info" wx:if="{{selectedOrder}}">
+      <view class="info-row">
+        <text class="info-label">房间：</text>
+        <text class="info-value">{{selectedOrder.roomNumber || '未分配'}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">宾客：</text>
+        <text class="info-value">{{selectedOrder.guestName}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">入住日期：</text>
+        <text class="info-value">{{selectedOrder.checkInDate}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 选择消费物品 -->
+  <view class="form-section">
+    <view class="form-item">
+      <text class="form-label">消费物品<text class="required">*</text></text>
+      <picker mode="selector" 
+              range="{{inventoryItems}}"
+              range-key="label"
+              value="{{selectedItemIndex}}"
+              bindchange="onItemChange">
+        <view class="form-picker">
+          <text class="{{selectedItemIndex === -1 ? 'placeholder' : ''}}">
+            {{selectedItemIndex === -1 ? '请选择消费物品' : inventoryItems[selectedItemIndex].label}}
+          </text>
+          <text class="picker-arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 物品信息 -->
+    <view class="item-info" wx:if="{{selectedItem}}">
+      <view class="info-row">
+        <text class="info-label">单价：</text>
+        <text class="info-value price">¥{{selectedItem.price || 0}}</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">库存：</text>
+        <text class="info-value">{{selectedItem.quantity || 0}} {{selectedItem.unit || '件'}}</text>
+      </view>
+    </view>
+
+    <!-- 数量 -->
+    <view class="form-item">
+      <text class="form-label">数量</text>
+      <view class="quantity-input-wrapper">
+        <button class="quantity-btn minus-btn" bindtap="decreaseQuantity">-</button>
+        <input class="quantity-input" 
+               type="number"
+               value="{{quantity}}"
+               bindinput="onQuantityInput" />
+        <button class="quantity-btn plus-btn" bindtap="increaseQuantity">+</button>
+      </view>
+    </view>
+
+    <!-- 小计 -->
+    <view class="form-item total-row" wx:if="{{selectedItem}}">
+      <text class="form-label">小计</text>
+      <text class="total-price">¥{{totalPrice}}</text>
+    </view>
+
+    <!-- 备注 -->
+    <view class="form-item">
+      <text class="form-label">备注</text>
+      <input class="form-input" 
+             placeholder="请输入备注（可选）" 
+             value="{{remark}}"
+             bindinput="onRemarkInput" />
+    </view>
+  </view>
+
+  <!-- 提交按钮 -->
+  <view class="submit-section">
+    <button class="submit-btn" bindtap="handleSubmit" loading="{{submitting}}" disabled="{{submitting}}">
+      确认录入
+    </button>
+  </view>
+
+  <!-- 消费记录 -->
+  <view class="records-section" wx:if="{{selectedOrder && records.length > 0}}">
+    <view class="section-header" bindtap="toggleRecords">
+      <text class="section-title">该订单消费记录 ({{records.length}})</text>
+      <text class="toggle-icon">{{showRecords ? '▲' : '▼'}}</text>
+    </view>
+    <view class="records-list" wx:if="{{showRecords}}">
+      <view class="record-item" wx:for="{{records}}" wx:key="id">
+        <view class="record-info">
+          <text class="record-name">{{item.itemName}}</text>
+          <text class="record-detail">x{{item.quantity}} @ ¥{{item.unitPrice}}</text>
+        </view>
+        <text class="record-price">¥{{item.totalPrice}}</text>
+      </view>
+    </view>
+  </view>
+</view>

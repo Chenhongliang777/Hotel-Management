@@ -36,23 +36,23 @@
   <!-- 表格 -->
   <view class="table-container">
     <view class="table-header">
-      <view class="table-cell" style="flex: 2;">物品名称</view>
-      <view class="table-cell" style="flex: 1.5;">类别</view>
-      <view class="table-cell" style="flex: 1;">单位</view>
-      <view class="table-cell" style="flex: 1;">库存</view>
-      <view class="table-cell" style="flex: 1;">预警值</view>
-      <view class="table-cell" style="flex: 1;">单价</view>
-      <view class="table-cell" style="flex: 1.5;">操作</view>
+      <view class="table-cell cell-name">物品名称</view>
+      <view class="table-cell cell-category">类别</view>
+      <view class="table-cell cell-unit">单位</view>
+      <view class="table-cell cell-stock">库存</view>
+      <view class="table-cell cell-warn">预警值</view>
+      <view class="table-cell cell-price">单价</view>
+      <view class="table-cell cell-action">操作</view>
     </view>
     <view class="table-body">
       <view class="table-row" wx:for="{{items}}" wx:key="id">
-        <view class="table-cell" style="flex: 2;">{{item.name}}</view>
-        <view class="table-cell" style="flex: 1.5;">{{item.categoryDisplay || '-'}}</view>
-        <view class="table-cell" style="flex: 1;">{{item.unit || '-'}}</view>
-        <view class="table-cell" style="flex: 1;">{{item.quantity || 0}}</view>
-        <view class="table-cell" style="flex: 1;">{{item.minStock || '-'}}</view>
-        <view class="table-cell" style="flex: 1;">{{item.price ? '¥' + item.price : '-'}}</view>
-        <view class="table-cell actions-cell" style="flex: 1.5;">
+        <view class="table-cell cell-name">{{item.name}}</view>
+        <view class="table-cell cell-category">{{item.categoryDisplay || '-'}}</view>
+        <view class="table-cell cell-unit">{{item.unit || '-'}}</view>
+        <view class="table-cell cell-stock">{{item.quantity || 0}}</view>
+        <view class="table-cell cell-warn">{{item.minStock || '-'}}</view>
+        <view class="table-cell cell-price">{{item.price ? '¥' + item.price : '-'}}</view>
+        <view class="table-cell cell-action">
           <text class="action-link edit-link" data-id="{{item.id}}" catchtap="handleEdit">编辑</text>
           <text class="action-link delete-link" data-id="{{item.id}}" catchtap="handleDelete">删除</text>
         </view>
@@ -89,6 +89,16 @@
               <text class="picker-arrow">▼</text>
             </view>
           </picker>
+        </view>
+        <view class="form-item item-info" wx:if="{{stockInForm.selectedItem}}">
+          <view class="info-row">
+            <text class="info-label">单价：</text>
+            <text class="info-value">{{stockInForm.selectedItem.price ? '¥' + stockInForm.selectedItem.price : '-'}}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">预警值：</text>
+            <text class="info-value">{{stockInForm.selectedItem.minStock || '-'}}</text>
+          </view>
         </view>
         <view class="form-item">
           <text class="form-label">数量</text>
@@ -139,6 +149,16 @@
               <text class="picker-arrow">▼</text>
             </view>
           </picker>
+        </view>
+        <view class="form-item item-info" wx:if="{{stockOutForm.selectedItem}}">
+          <view class="info-row">
+            <text class="info-label">单价：</text>
+            <text class="info-value">{{stockOutForm.selectedItem.price ? '¥' + stockOutForm.selectedItem.price : '-'}}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-label">预警值：</text>
+            <text class="info-value">{{stockOutForm.selectedItem.minStock || '-'}}</text>
+          </view>
         </view>
         <view class="form-item">
           <text class="form-label">数量</text>
@@ -208,29 +228,21 @@
         </view>
         <view class="form-item">
           <text class="form-label">单价</text>
-          <view class="price-input-wrapper">
-            <button class="quantity-btn minus-btn" bindtap="decreasePrice">-</button>
-            <input class="quantity-input price-input" 
-                   type="digit"
-                   placeholder="0.00" 
-                   value="{{addForm.price}}"
-                   bindinput="onAddFormInput"
-                   data-field="price" />
-            <button class="quantity-btn plus-btn" bindtap="increasePrice">+</button>
-          </view>
+          <input class="form-input" 
+                 type="digit"
+                 placeholder="请输入单价" 
+                 value="{{addForm.price}}"
+                 bindinput="onAddFormInput"
+                 data-field="price" />
         </view>
         <view class="form-item">
           <text class="form-label">预警值</text>
-          <view class="price-input-wrapper">
-            <button class="quantity-btn minus-btn" bindtap="decreaseMinStock">-</button>
-            <input class="quantity-input price-input" 
-                   type="number"
-                   placeholder="0" 
-                   value="{{addForm.minStock}}"
-                   bindinput="onAddFormInput"
-                   data-field="minStock" />
-            <button class="quantity-btn plus-btn" bindtap="increaseMinStock">+</button>
-          </view>
+          <input class="form-input" 
+                 type="number"
+                 placeholder="请输入预警值" 
+                 value="{{addForm.minStock}}"
+                 bindinput="onAddFormInput"
+                 data-field="minStock" />
         </view>
         <view class="form-item">
           <text class="form-label">描述</text>
@@ -290,29 +302,21 @@
         </view>
         <view class="form-item">
           <text class="form-label">单价</text>
-          <view class="price-input-wrapper">
-            <button class="quantity-btn minus-btn" bindtap="decreaseEditPrice">-</button>
-            <input class="quantity-input price-input" 
-                   type="digit"
-                   placeholder="0.00" 
-                   value="{{editForm.price}}"
-                   bindinput="onEditFormInput"
-                   data-field="price" />
-            <button class="quantity-btn plus-btn" bindtap="increaseEditPrice">+</button>
-          </view>
+          <input class="form-input" 
+                 type="digit"
+                 placeholder="请输入单价" 
+                 value="{{editForm.price}}"
+                 bindinput="onEditFormInput"
+                 data-field="price" />
         </view>
         <view class="form-item">
           <text class="form-label">预警值</text>
-          <view class="price-input-wrapper">
-            <button class="quantity-btn minus-btn" bindtap="decreaseEditMinStock">-</button>
-            <input class="quantity-input price-input" 
-                   type="number"
-                   placeholder="0" 
-                   value="{{editForm.minStock}}"
-                   bindinput="onEditFormInput"
-                   data-field="minStock" />
-            <button class="quantity-btn plus-btn" bindtap="increaseEditMinStock">+</button>
-          </view>
+          <input class="form-input" 
+                 type="number"
+                 placeholder="请输入预警值" 
+                 value="{{editForm.minStock}}"
+                 bindinput="onEditFormInput"
+                 data-field="minStock" />
         </view>
         <view class="form-item">
           <text class="form-label">描述</text>

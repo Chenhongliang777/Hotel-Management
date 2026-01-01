@@ -4,8 +4,16 @@ Page({
   data: {
     type: '', // my, pending, 或空（全部）
     tasks: [],
+    rooms: [],
+    roomOptions: [],
+    employees: [],
+    employeeNames: [],
     loading: false,
-    statusFilter: ''
+    statusFilter: '',
+    statusFilterIndex: 0,
+    statusFilterText: '全部状态',
+    statusOptions: ['全部状态', '待分配', '已分配', '进行中', '已完成', '已取消'],
+    statusValues: ['', 'pending', 'assigned', 'in_progress', 'completed', 'cancelled']
   },
 
   onLoad(options) {
@@ -14,7 +22,68 @@ Page({
       const title = options.type === 'my' ? '我的任务' : options.type === 'pending' ? '待分配任务' : '清洁任务'
       wx.setNavigationBarTitle({ title })
     }
+    this.loadRooms()
+    this.loadEmployees()
     this.loadTasks()
+  },
+
+  async loadEmployees() {
+    try {
+      const res = await app.request({ 
+        url: '/employee/page',
+        data: { page: 1, size: 100 }
+      })
+      const employees = (res.data && res.data.records) || res.data || []
+      console.log('[清洁任务] 员工列表:', employees)
+      // 显示所有员工供选择，优先使用realName
+      const employeeNames = employees.map(e => e.realName || e.name || e.username || ('员工' + e.id))
+      this.setData({ employees, employeeNames })
+    } catch (err) {
+      console.error('加载员工列表失败', err)
+    }
+  },
+
+  async loadRooms() {
+    try {
+      const res = await app.request({ url: '/room/list' })
+      const rooms = res.data || []
+      const roomOptions = rooms.map(r => r.roomNumber)
+      this.setData({ rooms, roomOptions })
+    } catch (err) {
+      console.error('加载房间列表失败', err)
+    }
+  },
+
+  showAddTaskModal() {
+    if (!this.data.rooms || this.data.rooms.length === 0) {
+      wx.showToast({ title: '正在加载房间...', icon: 'none' })
+      this.loadRooms()
+      return
+    }
+    wx.showActionSheet({
+      itemList: this.data.roomOptions,
+      success: async (res) => {
+        const room = this.data.rooms[res.tapIndex]
+        if (!room) return
+        
+        try {
+          await app.request({
+            url: '/cleaning',
+            method: 'POST',
+            data: {
+              roomId: room.id,
+              roomNumber: room.roomNumber,
+              taskType: '日常清洁',
+              status: 'pending'
+            }
+          })
+          wx.showToast({ title: '创建成功', icon: 'success' })
+          this.loadTasks()
+        } catch (err) {
+          wx.showToast({ title: err.message || '创建失败', icon: 'none' })
+        }
+      }
+    })
   },
 
   onShow() {
@@ -30,20 +99,45 @@ Page({
       } else if (this.data.type === 'pending') {
         res = await app.request({ url: '/cleaning/pending' })
       } else {
+        const params = { page: 1, size: 100 }
+        if (this.data.statusFilter) {
+          params.status = this.data.statusFilter
+        }
         res = await app.request({
           url: '/cleaning/page',
           method: 'GET',
-          data: {
-            page: 1,
-            size: 100,
-            status: this.data.statusFilter || undefined
-          }
+          data: params
         })
       }
       
-      this.setData({ 
-        tasks: (res.data && res.data.records) || res.data || []
+      console.log('[清洁任务] API响应:', res)
+      
+      // 兼容多种返回格式
+      let tasksData = []
+      if (res.data) {
+        if (Array.isArray(res.data)) {
+          tasksData = res.data
+        } else if (res.data.records && Array.isArray(res.data.records)) {
+          tasksData = res.data.records
+        } else if (res.data.data && Array.isArray(res.data.data)) {
+          tasksData = res.data.data
+        }
+      }
+      
+      console.log('[清洁任务] 解析后的任务数据:', tasksData)
+      
+      // 预处理任务数据，添加显示文本和颜色
+      const processedTasks = tasksData.map(task => {
+        const status = task.status || 'pending'
+        return {
+          ...task,
+          statusText: this.getStatusText(status),
+          statusColor: this.getStatusColor(status),
+          createTime: this.formatDateTime(task.createTime),
+          completeTime: this.formatDateTime(task.finishTime || task.completeTime)
+        }
       })
+      this.setData({ tasks: processedTasks })
     } catch (err) {
       console.error('加载任务失败', err)
       wx.showToast({ title: '加载失败', icon: 'none' })
@@ -53,7 +147,14 @@ Page({
   },
 
   onStatusFilterChange(e) {
-    this.setData({ statusFilter: e.detail.value || '' })
+    const index = parseInt(e.detail.value)
+    const statusValue = this.data.statusValues[index] || ''
+    const statusText = this.data.statusOptions[index] || '全部状态'
+    this.setData({ 
+      statusFilter: statusValue,
+      statusFilterIndex: index,
+      statusFilterText: statusText
+    })
     this.loadTasks()
   },
 
@@ -107,35 +208,31 @@ Page({
     
     if (!task) return
 
-    // 获取员工列表（这里简化处理，实际应该调用员工列表接口）
-    wx.showModal({
-      title: '分配任务',
-      content: '请输入员工ID',
-      editable: true,
-      placeholderText: '请输入员工ID',
-      success: async (modalRes) => {
-        if (modalRes.confirm && modalRes.content) {
-          try {
-            // 这里需要获取员工信息，简化处理
-            const assigneeId = parseInt(modalRes.content)
-            if (isNaN(assigneeId)) {
-              wx.showToast({ title: '请输入有效的员工ID', icon: 'none' })
-              return
-            }
+    if (!this.data.employees || this.data.employees.length === 0) {
+      wx.showToast({ title: '正在加载员工...', icon: 'none' })
+      this.loadEmployees()
+      return
+    }
 
-            await app.request({
-              url: `/cleaning/${taskId}/assign`,
-              method: 'PUT',
-              data: {
-                assigneeId: assigneeId,
-                assigneeName: '员工' + assigneeId // 实际应该从员工信息获取
-              }
-            })
-            wx.showToast({ title: '分配成功', icon: 'success' })
-            this.loadTasks()
-          } catch (err) {
-            wx.showToast({ title: err.message || '分配失败', icon: 'none' })
-          }
+    wx.showActionSheet({
+      itemList: this.data.employeeNames,
+      success: async (res) => {
+        const employee = this.data.employees[res.tapIndex]
+        if (!employee) return
+
+        try {
+          await app.request({
+            url: `/cleaning/${taskId}/assign`,
+            method: 'PUT',
+            data: {
+              assigneeId: employee.id,
+              assigneeName: employee.realName || employee.name || employee.username || ('员工' + employee.id)
+            }
+          })
+          wx.showToast({ title: '分配成功', icon: 'success' })
+          this.loadTasks()
+        } catch (err) {
+          wx.showToast({ title: err.message || '分配失败', icon: 'none' })
         }
       }
     })
@@ -161,6 +258,12 @@ Page({
       'cancelled': '#f56565'
     }
     return colorMap[status] || '#999'
+  },
+
+  formatDateTime(dateTimeStr) {
+    if (!dateTimeStr) return ''
+    // 将ISO格式的T替换为空格
+    return dateTimeStr.replace('T', ' ').substring(0, 19)
   }
 })
 

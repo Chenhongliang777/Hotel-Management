@@ -29,7 +29,9 @@
             <el-tag :type="row.status === 1 ? 'success' : 'info'">{{ row.status === 1 ? '正常' : '禁用' }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="createTime" label="注册时间" width="160" />
+        <el-table-column prop="createTime" label="注册时间" width="160">
+          <template #default="{ row }">{{ formatDateTime(row.createTime) }}</template>
+        </el-table-column>
         <el-table-column label="操作" width="100">
           <template #default="{ row }">
             <el-button type="primary" link @click="viewDetail(row)">详情</el-button>
@@ -52,7 +54,7 @@
         <el-descriptions-item label="电话">{{ currentGuest.phone || '-' }}</el-descriptions-item>
         <el-descriptions-item label="邮箱">{{ currentGuest.email || '-' }}</el-descriptions-item>
         <el-descriptions-item label="身份证" :span="2">{{ currentGuest.idCard || '-' }}</el-descriptions-item>
-        <el-descriptions-item label="注册时间" :span="2">{{ currentGuest.createTime }}</el-descriptions-item>
+        <el-descriptions-item label="注册时间" :span="2">{{ formatDateTime(currentGuest.createTime) }}</el-descriptions-item>
       </el-descriptions>
     </el-dialog>
   </div>
@@ -82,4 +84,9 @@ async function loadData() {
 
 function resetSearch() { searchForm.keyword = ''; pagination.page = 1; loadData() }
 function viewDetail(row) { currentGuest.value = row; detailVisible.value = true }
+
+function formatDateTime(dateTime) {
+  if (!dateTime) return '-'
+  return dateTime.replace('T', ' ').substring(0, 19)
+}
 </script>

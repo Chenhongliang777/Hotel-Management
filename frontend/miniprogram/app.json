@@ -18,7 +18,8 @@
     "pages/employee/rooms/rooms",
     "pages/employee/cleaning/cleaning",
     "pages/employee/statistics/statistics",
-    "pages/employee/inventory/inventory"
+    "pages/employee/inventory/inventory",
+    "pages/employee/pos/pos"
   ],
   "window": {
     "backgroundTextStyle": "light",

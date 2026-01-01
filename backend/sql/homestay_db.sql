@@ -11,11 +11,12 @@
  Target Server Version : 80017
  File Encoding         : 65001
 
- Date: 30/12/2025 14:50:29
+ Date: 01/01/2026 03:17:13
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
+USE homestay_db;
 
 -- ----------------------------
 -- Table structure for booking_order
@@ -47,6 +48,7 @@ CREATE TABLE `booking_order`  (
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `deleted` tinyint(4) NULL DEFAULT 0 COMMENT '删除标记',
+  `modify_count` int(11) NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `order_no`(`order_no` ASC) USING BTREE,
   INDEX `idx_order_no`(`order_no` ASC) USING BTREE,
@@ -54,31 +56,37 @@ CREATE TABLE `booking_order`  (
   INDEX `idx_room_id`(`room_id` ASC) USING BTREE,
   INDEX `idx_status`(`status` ASC) USING BTREE,
   INDEX `idx_check_in_date`(`check_in_date` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '订单表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 20 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '订单表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of booking_order
 -- ----------------------------
-INSERT INTO `booking_order` VALUES (1, 'ORD202412250001', 1, 3, 2, '2024-12-25', '2024-12-27', 2, 2, 298.00, 596.00, 178.80, 596.00, 0.00, 'checked_out', '王建国', '13900000001', '110101199001011234', NULL, NULL, NULL, NULL, '2024-12-20 10:30:00', '2025-12-30 03:28:24', 0);
-INSERT INTO `booking_order` VALUES (2, 'ORD202412260001', 2, 5, 3, '2024-12-26', '2024-12-28', 2, 2, 268.00, 536.00, 160.80, 536.00, 0.00, 'checked_out', '李梅', '13900000002', '110101199202022345', NULL, NULL, NULL, NULL, '2024-12-22 14:20:00', '2025-12-30 03:28:24', 0);
-INSERT INTO `booking_order` VALUES (3, 'ORD202412280001', 3, 8, 4, '2024-12-28', '2024-12-31', 3, 3, 458.00, 1374.00, 412.20, 1374.00, 0.00, 'checked_in', '张伟', '13900000003', '110101198803033456', NULL, NULL, NULL, NULL, '2024-12-25 09:15:00', '2025-12-30 03:28:24', 0);
-INSERT INTO `booking_order` VALUES (4, 'ORD202412300001', 4, 4, 2, '2024-12-30', '2025-01-02', 3, 2, 368.00, 1104.00, 331.20, 331.20, 0.00, 'confirmed', '陈静', '13900000004', '110101199504044567', NULL, NULL, NULL, NULL, '2024-12-28 16:45:00', '2025-12-30 03:28:24', 0);
-INSERT INTO `booking_order` VALUES (5, 'ORD202412300002', 5, 1, 1, '2024-12-30', '2024-12-31', 1, 1, 198.00, 198.00, 59.40, 59.40, 0.00, 'confirmed', '刘洋', '13900000005', '110101199205055678', NULL, NULL, NULL, NULL, '2024-12-29 11:00:00', '2025-12-30 03:28:24', 0);
-INSERT INTO `booking_order` VALUES (6, 'ORD202512300001', NULL, NULL, 1, '2025-12-30', '2025-12-31', 1, 1, 198.00, 198.00, 59.40, 237.60, 0.00, 'pending', '杰', '15915452638', '440372200110269875', '', NULL, NULL, NULL, '2025-12-30 03:40:49', '2025-12-30 03:40:49', 0);
-INSERT INTO `booking_order` VALUES (7, 'ORD202512300002', NULL, NULL, 2, '2025-12-30', '2025-12-31', 1, 2, 298.00, 298.00, 89.40, 357.60, 0.00, 'cancelled', '杰', '15916238394', '440938200212238746', '', NULL, NULL, NULL, '2025-12-30 03:46:31', '2025-12-30 03:47:54', 0);
-INSERT INTO `booking_order` VALUES (8, 'ORD202512300003', NULL, NULL, 2, '2025-12-30', '2025-12-31', 1, 2, 298.00, 298.00, 89.40, 0.00, 0.00, 'pending', '杰', '15628392022', '440392200302123494', '', NULL, NULL, NULL, '2025-12-30 03:49:23', '2025-12-30 03:49:23', 0);
-INSERT INTO `booking_order` VALUES (9, 'ORD202512300004', NULL, NULL, 1, '2025-12-30', '2025-12-31', 1, 2, 198.00, 198.00, 59.40, 0.00, 0.00, 'pending', '杰', '15728390223', '440525200212233903', '', NULL, NULL, NULL, '2025-12-30 03:53:30', '2025-12-30 03:53:30', 0);
-INSERT INTO `booking_order` VALUES (10, 'ORD202512300005', NULL, NULL, 2, '2025-12-30', '2025-12-31', 1, 2, 298.00, 298.00, 89.40, 268.20, 0.00, 'pending', '杰', '15267382299', '440922200112243789', '', NULL, NULL, NULL, '2025-12-30 03:56:33', '2025-12-30 03:56:33', 0);
-INSERT INTO `booking_order` VALUES (11, 'ORD202512300006', NULL, NULL, 2, '2025-12-30', '2025-12-31', 1, 2, 298.00, 298.00, 89.40, 89.40, 0.00, 'pending', '杰', '15817238928', '440292200112239836', '', NULL, NULL, NULL, '2025-12-30 03:59:12', '2025-12-30 03:59:12', 0);
-INSERT INTO `booking_order` VALUES (12, 'ORD202512300007', NULL, NULL, 4, '2025-12-30', '2025-12-31', 1, 2, 458.00, 458.00, 137.40, 458.00, 0.00, 'pending', '杰', '15816273823', '440293200112233938', '', NULL, NULL, NULL, '2025-12-30 04:01:57', '2025-12-30 04:01:57', 0);
-INSERT INTO `booking_order` VALUES (13, 'ORD202512300008', 1, NULL, 3, '2025-12-30', '2025-12-31', 1, 2, 268.00, 268.00, 80.40, 268.00, 0.00, 'pending', '杰', '15928283782', '440512200211233048', '[已改订]', NULL, NULL, NULL, '2025-12-30 04:07:05', '2025-12-30 04:07:16', 0);
-INSERT INTO `booking_order` VALUES (14, 'ORD202512300009', 1, NULL, 1, '2025-12-30', '2025-12-31', 1, 2, 198.00, 198.00, 59.40, 198.00, 0.00, 'pending', '杰', '15828373920', '440512200212230938', '', NULL, NULL, NULL, '2025-12-30 04:19:58', '2025-12-30 04:19:58', 0);
-INSERT INTO `booking_order` VALUES (15, 'ORD202512300010', 1, NULL, 1, '2025-12-30', '2025-12-31', 1, 1, 198.00, 198.00, 59.40, 0.00, 0.00, 'pending', '王建国', '13900000001', NULL, '', NULL, NULL, NULL, '2025-12-30 14:20:28', '2025-12-30 14:20:28', 0);
-INSERT INTO `booking_order` VALUES (16, 'ORD202512300011', 1, NULL, 2, '2025-12-30', '2025-12-31', 1, 1, 298.00, 298.00, 89.40, 387.40, 0.00, 'pending', '王建国', '13900000001', '110101199001011234', '', NULL, NULL, NULL, '2025-12-30 14:29:23', '2025-12-30 14:29:23', 0);
-INSERT INTO `booking_order` VALUES (17, 'ORD202512300012', 1, NULL, 2, '2025-12-30', '2025-12-31', 1, 1, 298.00, 298.00, 89.40, 476.80, 0.00, 'pending', '王建国', '13900000001', '110101199001011234', '', NULL, NULL, NULL, '2025-12-30 14:30:42', '2025-12-30 14:30:42', 0);
-INSERT INTO `booking_order` VALUES (18, 'ORD202512300013', 1, NULL, 3, '2025-12-30', '2025-12-31', 1, 1, 268.00, 268.00, 80.40, 160.80, 0.00, 'pending', '王建国', '13900000001', '110101199001011234', '', NULL, NULL, NULL, '2025-12-30 14:33:12', '2025-12-30 14:33:12', 0);
-INSERT INTO `booking_order` VALUES (19, 'ORD202512300014', 1, NULL, 2, '2025-12-30', '2025-12-31', 1, 1, 298.00, 298.00, 89.40, 476.80, 0.00, 'pending', '王建国', '13900000001', '110101199001011234', '', NULL, NULL, NULL, '2025-12-30 14:41:07', '2025-12-30 14:41:07', 0);
-INSERT INTO `booking_order` VALUES (20, 'ORD202512300015', 1, NULL, 3, '2025-12-30', '2025-12-31', 1, 1, 268.00, 268.00, 80.40, 428.80, 0.00, 'pending', '王建国', '13900000001', '110101199001011234', '', NULL, NULL, NULL, '2025-12-30 14:49:40', '2025-12-30 14:49:40', 0);
+INSERT INTO `booking_order` VALUES (1, 'ORD202412250001', 1, 3, 2, '2024-12-25', '2024-12-27', 2, 2, 298.00, 596.00, 178.80, 596.00, 0.00, 'checked_out', '王建国', '13900000001', '110101199001011234', NULL, NULL, NULL, NULL, '2024-12-20 10:30:00', '2025-12-30 03:28:24', 0, 0);
+INSERT INTO `booking_order` VALUES (2, 'ORD202412260001', 2, 5, 3, '2024-12-26', '2024-12-28', 2, 2, 268.00, 536.00, 160.80, 536.00, 0.00, 'checked_out', '李梅', '13900000002', '110101199202022345', NULL, NULL, NULL, NULL, '2024-12-22 14:20:00', '2025-12-30 03:28:24', 0, 0);
+INSERT INTO `booking_order` VALUES (3, 'ORD202412280001', 3, 8, 4, '2024-12-28', '2024-12-31', 3, 3, 458.00, 1374.00, 412.20, 1374.00, 5.00, 'checked_out', '张伟', '13900000003', '110101198803033456', NULL, NULL, '2026-01-01 02:26:33', 1, '2024-12-25 09:15:00', '2025-12-30 03:28:24', 0, 0);
+INSERT INTO `booking_order` VALUES (4, 'ORD202412300001', 4, 4, 2, '2024-12-30', '2025-01-02', 3, 2, 368.00, 1104.00, 331.20, 331.20, 0.00, 'confirmed', '陈静', '13900000004', '110101199504044567', NULL, NULL, NULL, NULL, '2024-12-28 16:45:00', '2025-12-30 03:28:24', 0, 0);
+INSERT INTO `booking_order` VALUES (5, 'ORD202412300002', 5, 1, 1, '2024-12-30', '2024-12-31', 1, 1, 198.00, 198.00, 59.40, 59.40, 0.00, 'confirmed', '刘洋', '13900000005', '110101199205055678', NULL, NULL, NULL, NULL, '2024-12-29 11:00:00', '2025-12-30 03:28:24', 0, 0);
+INSERT INTO `booking_order` VALUES (6, 'ORD202512300001', NULL, NULL, 1, '2025-12-30', '2025-12-31', 1, 1, 198.00, 198.00, 59.40, 237.60, 0.00, 'pending', '杰', '15915452638', '440372200110269875', '', NULL, NULL, NULL, '2025-12-30 03:40:49', '2025-12-30 03:40:49', 0, 0);
+INSERT INTO `booking_order` VALUES (7, 'ORD202512300002', NULL, NULL, 2, '2025-12-30', '2025-12-31', 1, 2, 298.00, 298.00, 89.40, 357.60, 0.00, 'cancelled', '杰', '15916238394', '440938200212238746', '', NULL, NULL, NULL, '2025-12-30 03:46:31', '2025-12-30 03:47:54', 0, 0);
+INSERT INTO `booking_order` VALUES (8, 'ORD202512300003', NULL, NULL, 2, '2025-12-30', '2025-12-31', 1, 2, 298.00, 298.00, 89.40, 0.00, 0.00, 'pending', '杰', '15628392022', '440392200302123494', '', NULL, NULL, NULL, '2025-12-30 03:49:23', '2025-12-30 03:49:23', 0, 0);
+INSERT INTO `booking_order` VALUES (9, 'ORD202512300004', NULL, NULL, 1, '2025-12-30', '2025-12-31', 1, 2, 198.00, 198.00, 59.40, 0.00, 0.00, 'pending', '杰', '15728390223', '440525200212233903', '', NULL, NULL, NULL, '2025-12-30 03:53:30', '2025-12-30 03:53:30', 0, 0);
+INSERT INTO `booking_order` VALUES (10, 'ORD202512300005', NULL, NULL, 2, '2025-12-30', '2025-12-31', 1, 2, 298.00, 298.00, 89.40, 268.20, 0.00, 'pending', '杰', '15267382299', '440922200112243789', '', NULL, NULL, NULL, '2025-12-30 03:56:33', '2025-12-30 03:56:33', 0, 0);
+INSERT INTO `booking_order` VALUES (11, 'ORD202512300006', NULL, NULL, 2, '2025-12-30', '2025-12-31', 1, 2, 298.00, 298.00, 89.40, 89.40, 0.00, 'pending', '杰', '15817238928', '440292200112239836', '', NULL, NULL, NULL, '2025-12-30 03:59:12', '2025-12-30 03:59:12', 0, 0);
+INSERT INTO `booking_order` VALUES (12, 'ORD202512300007', NULL, NULL, 4, '2025-12-30', '2025-12-31', 1, 2, 458.00, 458.00, 137.40, 458.00, 0.00, 'pending', '杰', '15816273823', '440293200112233938', '', NULL, NULL, NULL, '2025-12-30 04:01:57', '2025-12-30 04:01:57', 0, 0);
+INSERT INTO `booking_order` VALUES (13, 'ORD202512300008', 1, NULL, 3, '2025-12-30', '2025-12-31', 1, 2, 268.00, 268.00, 80.40, 268.00, 0.00, 'pending', '杰', '15928283782', '440512200211233048', '[已改订]', NULL, NULL, NULL, '2025-12-30 04:07:05', '2025-12-30 04:07:16', 0, 0);
+INSERT INTO `booking_order` VALUES (14, 'ORD202512300009', 1, NULL, 1, '2025-12-30', '2025-12-31', 1, 2, 198.00, 198.00, 59.40, 198.00, 0.00, 'pending', '杰', '15828373920', '440512200212230938', '', NULL, NULL, NULL, '2025-12-30 04:19:58', '2025-12-30 04:19:58', 0, 0);
+INSERT INTO `booking_order` VALUES (15, 'ORD202512300010', 1, NULL, 1, '2025-12-30', '2025-12-31', 1, 1, 198.00, 198.00, 59.40, 0.00, 0.00, 'pending', '王建国', '13900000001', NULL, '', NULL, NULL, NULL, '2025-12-30 14:20:28', '2025-12-30 14:20:28', 0, 0);
+INSERT INTO `booking_order` VALUES (16, 'ORD202512300011', 1, NULL, 2, '2025-12-30', '2025-12-31', 1, 1, 298.00, 298.00, 89.40, 387.40, 0.00, 'pending', '王建国', '13900000001', '110101199001011234', '', NULL, NULL, NULL, '2025-12-30 14:29:23', '2025-12-30 14:29:23', 0, 0);
+INSERT INTO `booking_order` VALUES (17, 'ORD202512300012', 1, NULL, 2, '2025-12-30', '2025-12-31', 1, 1, 298.00, 298.00, 89.40, 476.80, 0.00, 'pending', '王建国', '13900000001', '110101199001011234', '', NULL, NULL, NULL, '2025-12-30 14:30:42', '2025-12-30 14:30:42', 0, 0);
+INSERT INTO `booking_order` VALUES (18, 'ORD202512300013', 1, NULL, 3, '2025-12-30', '2025-12-31', 1, 1, 268.00, 268.00, 80.40, 160.80, 0.00, 'confirmed', '王建国', '13900000001', '110101199001011234', '', NULL, NULL, NULL, '2025-12-30 14:33:12', '2025-12-30 14:33:12', 0, 0);
+INSERT INTO `booking_order` VALUES (19, 'ORD202512300014', 1, NULL, 2, '2025-12-30', '2025-12-31', 1, 1, 298.00, 298.00, 89.40, 476.80, 0.00, 'confirmed', '王建国', '13900000001', '110101199001011234', '', NULL, NULL, NULL, '2025-12-30 14:41:07', '2025-12-30 14:41:07', 0, 0);
+INSERT INTO `booking_order` VALUES (20, 'ORD202512300015', 1, 7, 3, '2025-12-30', '2025-12-31', 1, 1, 268.00, 268.00, 80.40, 428.80, 0.00, 'checked_in', '王建国', '13900000001', '110101199001011234', '', '2026-01-01 01:06:07', NULL, 3, '2025-12-30 14:49:40', '2025-12-30 14:49:40', 0, 0);
+INSERT INTO `booking_order` VALUES (21, 'ORD202601010001', 1, 3, 2, '2026-01-01', '2026-01-02', 1, 1, 298.00, 298.00, 89.40, 387.40, 0.00, 'checked_out', '王建国', '13900000001', '110101199001011234', '', '2026-01-01 02:08:39', '2026-01-01 02:11:13', 1, '2026-01-01 02:08:11', '2026-01-01 02:08:11', 0, 0);
+INSERT INTO `booking_order` VALUES (22, 'ORD202601010002', 1, NULL, 2, '2026-01-01', '2026-01-02', 1, 2, 298.00, 298.00, 89.40, 387.40, 0.00, 'pending', '杰', '15913256789', '440512200212234520', '', NULL, NULL, NULL, '2026-01-01 02:37:02', '2026-01-01 02:37:14', 0, 1);
+INSERT INTO `booking_order` VALUES (23, 'ORD202601010003', 1, NULL, 1, '2026-01-01', '2026-01-02', 1, 1, 198.00, 198.00, 59.40, 316.80, 0.00, 'pending', '王建国', '13900000001', '110101199001011234', '', NULL, NULL, NULL, '2026-01-01 02:52:14', '2026-01-01 02:52:14', 0, 0);
+INSERT INTO `booking_order` VALUES (24, 'ORD202601010004', 1, NULL, 3, '2026-01-02', '2026-01-03', 1, 1, 268.00, 268.00, 80.40, 348.40, 0.00, 'pending', '王建国', '13900000001', '110101199001011234', '', NULL, NULL, NULL, '2026-01-01 03:00:49', '2026-01-01 03:09:05', 0, 1);
+INSERT INTO `booking_order` VALUES (25, 'ORD202601010005', 1, 1, 1, '2026-01-01', '2026-01-02', 1, 1, 198.00, 198.00, 39.60, 237.60, 0.00, 'checked_in', '王建国', '13900000001', '110101199001011234', '', '2026-01-01 03:15:14', NULL, 1, '2026-01-01 03:11:00', '2026-01-01 03:11:00', 0, 0);
+INSERT INTO `booking_order` VALUES (26, 'ORD202601010006', 1, NULL, 1, '2026-01-01', '2026-01-02', 1, 1, 198.00, 198.00, 59.40, 59.40, 0.00, 'cancelled', '王建国', '13900000001', '110101199001011234', '', NULL, NULL, NULL, '2026-01-01 03:15:53', '2026-01-01 03:15:53', 0, 0);
 
 -- ----------------------------
 -- Table structure for cleaning_task
@@ -102,15 +110,23 @@ CREATE TABLE `cleaning_task`  (
   INDEX `idx_room_id`(`room_id` ASC) USING BTREE,
   INDEX `idx_status`(`status` ASC) USING BTREE,
   INDEX `idx_assignee_id`(`assignee_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '清洁任务表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '清洁任务表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of cleaning_task
 -- ----------------------------
 INSERT INTO `cleaning_task` VALUES (1, 3, '103', 'checkout', 'completed', 5, '刘阿姨', '2024-12-27 12:30:00', '2024-12-27 13:00:00', '2024-12-27 14:00:00', NULL, '2024-12-27 12:00:00', '2025-12-30 03:28:24');
 INSERT INTO `cleaning_task` VALUES (2, 5, '202', 'checkout', 'completed', 6, '陈阿姨', '2024-12-28 12:30:00', '2024-12-28 13:15:00', '2024-12-28 14:30:00', NULL, '2024-12-28 12:00:00', '2025-12-30 03:28:24');
-INSERT INTO `cleaning_task` VALUES (3, 1, '101', 'daily', 'pending', NULL, NULL, NULL, NULL, NULL, NULL, '2024-12-30 08:00:00', '2025-12-30 03:28:24');
+INSERT INTO `cleaning_task` VALUES (3, 1, '101', 'daily', 'assigned', 5, '刘阿姨', '2026-01-01 01:51:25', NULL, NULL, NULL, '2024-12-30 08:00:00', '2025-12-30 03:28:24');
 INSERT INTO `cleaning_task` VALUES (4, 2, '102', 'daily', 'assigned', 5, '刘阿姨', '2024-12-30 09:00:00', NULL, NULL, NULL, '2024-12-30 08:00:00', '2025-12-30 03:28:24');
+INSERT INTO `cleaning_task` VALUES (5, 1, '101', '日常清洁', 'completed', NULL, NULL, NULL, '2026-01-01 01:41:43', '2026-01-01 01:41:45', NULL, '2026-01-01 01:23:13', '2026-01-01 01:23:13');
+INSERT INTO `cleaning_task` VALUES (6, 1, '101', '日常清洁', 'completed', NULL, NULL, NULL, '2026-01-01 01:41:40', '2026-01-01 01:41:42', NULL, '2026-01-01 01:30:39', '2026-01-01 01:30:39');
+INSERT INTO `cleaning_task` VALUES (7, 1, '101', '日常清洁', 'completed', NULL, NULL, NULL, '2026-01-01 01:41:36', '2026-01-01 01:41:39', NULL, '2026-01-01 01:35:28', '2026-01-01 01:35:28');
+INSERT INTO `cleaning_task` VALUES (8, 1, '101', '日常清洁', 'completed', NULL, NULL, NULL, '2026-01-01 01:53:54', '2026-01-01 01:53:56', NULL, '2026-01-01 01:51:33', '2026-01-01 01:51:33');
+INSERT INTO `cleaning_task` VALUES (9, 1, '101', '日常清洁', 'cancelled', NULL, NULL, NULL, NULL, NULL, NULL, '2026-01-01 01:54:01', '2026-01-01 01:54:01');
+INSERT INTO `cleaning_task` VALUES (10, 1, '101', '日常清洁', 'cancelled', NULL, NULL, NULL, NULL, NULL, NULL, '2026-01-01 02:06:49', '2026-01-01 02:06:49');
+INSERT INTO `cleaning_task` VALUES (11, 3, '103', '退房清洁', 'cancelled', NULL, NULL, NULL, NULL, NULL, NULL, '2026-01-01 02:11:13', '2026-01-01 02:11:13');
+INSERT INTO `cleaning_task` VALUES (12, 8, '302', '退房清洁', 'cancelled', NULL, NULL, NULL, NULL, NULL, NULL, '2026-01-01 02:26:33', '2026-01-01 02:26:33');
 
 -- ----------------------------
 -- Table structure for inventory_item
@@ -132,7 +148,7 @@ CREATE TABLE `inventory_item`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_category`(`category` ASC) USING BTREE,
   INDEX `idx_quantity`(`quantity` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 19 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '库存物品表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 18 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '库存物品表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of inventory_item
@@ -146,7 +162,7 @@ INSERT INTO `inventory_item` VALUES (6, '浴巾', 'toiletry', '条', 100, 20, 25
 INSERT INTO `inventory_item` VALUES (7, '毛巾', 'toiletry', '条', 150, 30, 10.00, '纯棉毛巾', 1, '2025-12-30 03:28:24', '2025-12-30 03:28:24', 0);
 INSERT INTO `inventory_item` VALUES (8, '拖鞋', 'toiletry', '双', 200, 50, 5.00, '一次性拖鞋', 1, '2025-12-30 03:28:24', '2025-12-30 03:28:24', 0);
 INSERT INTO `inventory_item` VALUES (9, '矿泉水', 'beverage', '瓶', 500, 100, 3.00, '550ml矿泉水', 1, '2025-12-30 03:28:24', '2025-12-30 03:28:24', 0);
-INSERT INTO `inventory_item` VALUES (10, '可乐', 'beverage', '瓶', 100, 30, 5.00, '330ml罐装可乐', 1, '2025-12-30 03:28:24', '2025-12-30 03:28:24', 0);
+INSERT INTO `inventory_item` VALUES (10, '可乐', 'beverage', '瓶', 99, 30, 5.00, '330ml罐装可乐', 1, '2025-12-30 03:28:24', '2025-12-30 03:28:24', 0);
 INSERT INTO `inventory_item` VALUES (11, '雪碧', 'beverage', '瓶', 100, 30, 5.00, '330ml罐装雪碧', 1, '2025-12-30 03:28:24', '2025-12-30 03:28:24', 0);
 INSERT INTO `inventory_item` VALUES (12, '橙汁', 'beverage', '瓶', 80, 20, 8.00, '300ml瓶装橙汁', 1, '2025-12-30 03:28:24', '2025-12-30 03:28:24', 0);
 INSERT INTO `inventory_item` VALUES (13, '方便面', 'food', '桶', 100, 30, 6.00, '桶装方便面', 1, '2025-12-30 03:28:24', '2025-12-30 03:28:24', 0);
@@ -175,7 +191,7 @@ CREATE TABLE `inventory_record`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_item_id`(`item_id` ASC) USING BTREE,
   INDEX `idx_type`(`type` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 37 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '库存变动记录表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 36 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '库存变动记录表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of inventory_record
@@ -216,6 +232,7 @@ INSERT INTO `inventory_record` VALUES (33, 9, 'out', 6, 488, 482, 8, 3, 'POS销�
 INSERT INTO `inventory_record` VALUES (34, 15, 'out', 1, 50, 49, 8, 3, 'POS销售-巧克力', 4, '2024-12-29 10:30:00');
 INSERT INTO `inventory_record` VALUES (35, 3, 'out', 5, 150, 145, NULL, NULL, '库存盘点损耗', 1, '2024-12-20 17:00:00');
 INSERT INTO `inventory_record` VALUES (36, 17, 'out', 3, 100, 97, NULL, NULL, '库存盘点损耗', 1, '2024-12-20 17:00:00');
+INSERT INTO `inventory_record` VALUES (37, 10, 'out', 1, 100, 99, 8, 3, 'POS消费扣减', 1, '2026-01-01 01:02:19');
 
 -- ----------------------------
 -- Table structure for payment_record
@@ -239,7 +256,7 @@ CREATE TABLE `payment_record`  (
   UNIQUE INDEX `payment_no`(`payment_no` ASC) USING BTREE,
   INDEX `idx_order_id`(`order_id` ASC) USING BTREE,
   INDEX `idx_payment_type`(`payment_type` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '支付记录表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 39 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '支付记录表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of payment_record
@@ -283,6 +300,18 @@ INSERT INTO `payment_record` VALUES (36, 'PAY202512300028', 19, 'ORD202512300014
 INSERT INTO `payment_record` VALUES (37, 'PAY202512300029', 20, 'ORD202512300015', 1, 80.40, 'deposit', 'alipay', 'success', '', 1, '2025-12-30 14:49:43', '2025-12-30 14:49:43');
 INSERT INTO `payment_record` VALUES (38, 'PAY202512300030', 20, 'ORD202512300015', 1, 80.40, 'deposit', 'wechat', 'success', '', 1, '2025-12-30 14:49:45', '2025-12-30 14:49:45');
 INSERT INTO `payment_record` VALUES (39, 'PAY202512300031', 20, 'ORD202512300015', 1, 268.00, 'room_fee', 'card', 'success', '', 1, '2025-12-30 14:49:50', '2025-12-30 14:49:50');
+INSERT INTO `payment_record` VALUES (40, 'PAY202601010001', 21, 'ORD202601010001', 1, 89.40, 'deposit', 'wechat', 'success', '', 1, '2026-01-01 02:08:16', '2026-01-01 02:08:16');
+INSERT INTO `payment_record` VALUES (41, 'PAY202601010002', 21, 'ORD202601010001', 1, 298.00, 'room_fee', 'wechat', 'success', '', 1, '2026-01-01 02:08:20', '2026-01-01 02:08:20');
+INSERT INTO `payment_record` VALUES (42, 'PAY202601010003', 22, 'ORD202601010002', 1, 89.40, 'deposit', 'wechat', 'success', '支付保证金', 1, '2026-01-01 02:37:07', '2026-01-01 02:37:07');
+INSERT INTO `payment_record` VALUES (43, 'PAY202601010004', 22, 'ORD202601010002', 1, 298.00, 'balance', 'wechat', 'success', '补差价', 1, '2026-01-01 02:37:09', '2026-01-01 02:37:09');
+INSERT INTO `payment_record` VALUES (44, 'PAY202601010005', 23, 'ORD202601010003', 1, 59.40, 'deposit', 'wechat', 'success', '', 1, '2026-01-01 02:52:17', '2026-01-01 02:52:17');
+INSERT INTO `payment_record` VALUES (45, 'PAY202601010006', 23, 'ORD202601010003', 1, 59.40, 'deposit', 'alipay', 'success', '', 1, '2026-01-01 02:52:21', '2026-01-01 02:52:21');
+INSERT INTO `payment_record` VALUES (46, 'PAY202601010007', 23, 'ORD202601010003', 1, 198.00, 'room_fee', 'alipay', 'success', '', 1, '2026-01-01 02:52:26', '2026-01-01 02:52:26');
+INSERT INTO `payment_record` VALUES (47, 'PAY202601010008', 24, 'ORD202601010004', 1, 80.40, 'deposit', 'wechat', 'success', '', 1, '2026-01-01 03:00:56', '2026-01-01 03:00:56');
+INSERT INTO `payment_record` VALUES (48, 'PAY202601010009', 24, 'ORD202601010004', 1, 268.00, 'room_fee', 'alipay', 'success', '', 1, '2026-01-01 03:01:03', '2026-01-01 03:01:03');
+INSERT INTO `payment_record` VALUES (49, 'PAY202601010010', 25, 'ORD202601010005', 1, 39.60, 'deposit', 'wechat', 'success', '', 1, '2026-01-01 03:11:05', '2026-01-01 03:11:05');
+INSERT INTO `payment_record` VALUES (50, 'PAY202601010011', 25, 'ORD202601010005', 1, 198.00, 'room_fee', 'cash', 'success', '', 1, '2026-01-01 03:11:08', '2026-01-01 03:11:08');
+INSERT INTO `payment_record` VALUES (51, 'PAY202601010012', 26, 'ORD202601010006', 1, 59.40, 'deposit', 'wechat', 'success', '', 1, '2026-01-01 03:15:56', '2026-01-01 03:15:56');
 
 -- ----------------------------
 -- Table structure for pos_record
@@ -306,7 +335,7 @@ CREATE TABLE `pos_record`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_order_id`(`order_id` ASC) USING BTREE,
   INDEX `idx_guest_id`(`guest_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'POS消费记录表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'POS消费记录表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of pos_record
@@ -316,6 +345,7 @@ INSERT INTO `pos_record` VALUES (2, 1, 'ORD202412250001', 1, 3, 10, '可乐', 2,
 INSERT INTO `pos_record` VALUES (3, 2, 'ORD202412260001', 2, 5, 13, '方便面', 1, 6.00, 6.00, 'food', NULL, 3, '2024-12-26 22:45:00');
 INSERT INTO `pos_record` VALUES (4, 3, 'ORD202412280001', 3, 8, 9, '矿泉水', 6, 3.00, 18.00, 'beverage', NULL, 3, '2024-12-28 18:00:00');
 INSERT INTO `pos_record` VALUES (5, 3, 'ORD202412280001', 3, 8, 15, '巧克力', 1, 15.00, 15.00, 'food', NULL, 4, '2024-12-29 10:30:00');
+INSERT INTO `pos_record` VALUES (6, 3, 'ORD202412280001', 3, 8, 10, '可乐', 1, 5.00, 5.00, 'beverage', '', 1, '2026-01-01 01:02:19');
 
 -- ----------------------------
 -- Table structure for room
@@ -336,18 +366,18 @@ CREATE TABLE `room`  (
   UNIQUE INDEX `room_number`(`room_number` ASC) USING BTREE,
   INDEX `idx_room_type`(`room_type_id` ASC) USING BTREE,
   INDEX `idx_status`(`status` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '房间表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '房间表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of room
 -- ----------------------------
-INSERT INTO `room` VALUES (1, '101', 1, 1, 'available', 'clean', '朝南，采光好', '2025-12-30 03:28:24', '2025-12-30 03:28:24', 0);
+INSERT INTO `room` VALUES (1, '101', 1, 1, 'occupied', 'clean', '朝南，采光好', '2025-12-30 03:28:24', '2025-12-30 03:28:24', 0);
 INSERT INTO `room` VALUES (2, '102', 1, 1, 'available', 'clean', '朝北，安静', '2025-12-30 03:28:24', '2025-12-30 03:28:24', 0);
 INSERT INTO `room` VALUES (3, '103', 2, 1, 'available', 'clean', '朝南，景观房', '2025-12-30 03:28:24', '2025-12-30 03:28:24', 0);
 INSERT INTO `room` VALUES (4, '201', 2, 2, 'available', 'clean', '朝南，阳台房', '2025-12-30 03:28:24', '2025-12-30 03:28:24', 0);
 INSERT INTO `room` VALUES (5, '202', 3, 2, 'available', 'clean', '朝东，早晨阳光充足', '2025-12-30 03:28:24', '2025-12-30 03:28:24', 0);
 INSERT INTO `room` VALUES (6, '203', 3, 2, 'available', 'clean', '朝西', '2025-12-30 03:28:24', '2025-12-30 03:28:24', 0);
-INSERT INTO `room` VALUES (7, '301', 3, 3, 'available', 'clean', '朝南', '2025-12-30 03:28:24', '2025-12-30 03:28:24', 0);
+INSERT INTO `room` VALUES (7, '301', 3, 3, 'occupied', 'clean', '朝南', '2025-12-30 03:28:24', '2025-12-30 03:28:24', 0);
 INSERT INTO `room` VALUES (8, '302', 4, 3, 'available', 'clean', '家庭套房，空间大', '2025-12-30 03:28:24', '2025-12-30 03:28:24', 0);
 INSERT INTO `room` VALUES (9, '303', 4, 3, 'available', 'clean', '家庭套房，带阳台', '2025-12-30 03:28:24', '2025-12-30 03:28:24', 0);
 INSERT INTO `room` VALUES (10, '501', 5, 5, 'available', 'clean', '总统套房，顶层景观', '2025-12-30 03:28:24', '2025-12-30 03:28:24', 0);
@@ -401,7 +431,7 @@ CREATE TABLE `sys_config`  (
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `config_key`(`config_key` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '系统配置表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '系统配置表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_config
@@ -438,7 +468,7 @@ CREATE TABLE `sys_employee`  (
   UNIQUE INDEX `username`(`username` ASC) USING BTREE,
   INDEX `idx_username`(`username` ASC) USING BTREE,
   INDEX `idx_role`(`role` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '员工表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '员工表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_employee
@@ -463,7 +493,7 @@ CREATE TABLE `sys_employee_role`  (
   UNIQUE INDEX `uk_employee_role`(`employee_id` ASC, `role_id` ASC) USING BTREE,
   INDEX `idx_employee_id`(`employee_id` ASC) USING BTREE,
   INDEX `idx_role_id`(`role_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '员工角色关联表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '员工角色关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_employee_role
@@ -498,7 +528,7 @@ CREATE TABLE `sys_guest`  (
   UNIQUE INDEX `username`(`username` ASC) USING BTREE,
   INDEX `idx_username`(`username` ASC) USING BTREE,
   INDEX `idx_phone`(`phone` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '宾客表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '宾客表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_guest
@@ -531,7 +561,7 @@ CREATE TABLE `sys_operation_log`  (
   INDEX `idx_user_id`(`user_id` ASC) USING BTREE,
   INDEX `idx_module`(`module` ASC) USING BTREE,
   INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '操作日志表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '操作日志表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_operation_log
@@ -539,6 +569,43 @@ CREATE TABLE `sys_operation_log`  (
 INSERT INTO `sys_operation_log` VALUES (1, 1, 'admin', 'employee', '系统管理', '员工登录', 'POST /auth/login', NULL, '127.0.0.1', 125, 1, NULL, '2024-12-30 08:00:00');
 INSERT INTO `sys_operation_log` VALUES (2, 3, 'reception1', 'employee', '订单管理', '办理入住', 'POST /order/checkin', NULL, '192.168.1.100', 230, 1, NULL, '2024-12-28 14:30:00');
 INSERT INTO `sys_operation_log` VALUES (3, 5, 'housekeeper1', 'employee', '清洁管理', '完成清洁任务', 'PUT /cleaning/complete', NULL, '192.168.1.101', 85, 1, NULL, '2024-12-27 14:00:00');
+INSERT INTO `sys_operation_log` VALUES (4, 1, 'admin', 'employee', '订单管理', '确认订单', 'OrderController.confirmOrder', NULL, '0:0:0:0:0:0:0:1', 26, 1, NULL, '2026-01-01 02:13:57');
+INSERT INTO `sys_operation_log` VALUES (5, 1, 'admin', 'employee', '订单管理', '确认订单 [ID:18]', 'OrderController.confirmOrder', NULL, '0:0:0:0:0:0:0:1', 32, 1, NULL, '2026-01-01 02:19:25');
+INSERT INTO `sys_operation_log` VALUES (6, 1, 'admin', 'employee', '订单管理', '办理退房 [ID:3]', 'OrderController.checkOut', NULL, '0:0:0:0:0:0:0:1', 16, 1, NULL, '2026-01-01 02:26:33');
+INSERT INTO `sys_operation_log` VALUES (7, 1, 'admin', 'employee', '房间管理', '更新房间清洁状态 [ID:3]', 'RoomController.updateCleanStatus', NULL, '0:0:0:0:0:0:0:1', 17, 1, NULL, '2026-01-01 02:26:44');
+INSERT INTO `sys_operation_log` VALUES (8, 1, 'admin', 'employee', '房间管理', '更新房间清洁状态 [ID:8]', 'RoomController.updateCleanStatus', NULL, '0:0:0:0:0:0:0:1', 13, 1, NULL, '2026-01-01 02:27:04');
+INSERT INTO `sys_operation_log` VALUES (9, 1, 'admin', 'employee', '订单管理', '创建订单 [宾客:杰]', 'OrderController.createOrder', NULL, '0:0:0:0:0:0:0:1', 36, 1, NULL, '2026-01-01 02:37:02');
+INSERT INTO `sys_operation_log` VALUES (10, 1, 'admin', 'employee', '其他', '创建支付记录', 'PaymentController.createPayment', NULL, '0:0:0:0:0:0:0:1', 31, 1, NULL, '2026-01-01 02:37:07');
+INSERT INTO `sys_operation_log` VALUES (11, 1, 'admin', 'employee', '其他', '创建支付记录', 'PaymentController.createPayment', NULL, '0:0:0:0:0:0:0:1', 22, 1, NULL, '2026-01-01 02:37:09');
+INSERT INTO `sys_operation_log` VALUES (12, 1, 'admin', 'employee', '订单管理', '更新订单 [ID:22]', 'OrderController.updateOrder', NULL, '0:0:0:0:0:0:0:1', 8, 1, NULL, '2026-01-01 02:37:14');
+INSERT INTO `sys_operation_log` VALUES (13, 1, 'guest1', 'guest', '订单管理', '创建订单 [宾客:王建国]', 'OrderController.createOrder', NULL, '0:0:0:0:0:0:0:1', 44, 1, NULL, '2026-01-01 02:52:14');
+INSERT INTO `sys_operation_log` VALUES (14, 1, 'guest1', 'guest', '其他', '创建支付记录', 'PaymentController.createPayment', NULL, '0:0:0:0:0:0:0:1', 33, 1, NULL, '2026-01-01 02:52:17');
+INSERT INTO `sys_operation_log` VALUES (15, 1, 'guest1', 'guest', '其他', '创建支付记录', 'PaymentController.createPayment', NULL, '0:0:0:0:0:0:0:1', 23, 1, NULL, '2026-01-01 02:52:21');
+INSERT INTO `sys_operation_log` VALUES (16, 1, 'guest1', 'guest', '其他', '创建支付记录', 'PaymentController.createPayment', NULL, '0:0:0:0:0:0:0:1', 15, 1, NULL, '2026-01-01 02:52:26');
+INSERT INTO `sys_operation_log` VALUES (17, 1, 'guest1', 'guest', '订单管理', '创建订单 [宾客:王建国]', 'OrderController.createOrder', NULL, '0:0:0:0:0:0:0:1', 51, 1, NULL, '2026-01-01 03:00:49');
+INSERT INTO `sys_operation_log` VALUES (18, 1, 'guest1', 'guest', '其他', '创建支付记录', 'PaymentController.createPayment', NULL, '0:0:0:0:0:0:0:1', 37, 1, NULL, '2026-01-01 03:00:56');
+INSERT INTO `sys_operation_log` VALUES (19, 1, 'guest1', 'guest', '其他', '创建支付记录', 'PaymentController.createPayment', NULL, '0:0:0:0:0:0:0:1', 25, 1, NULL, '2026-01-01 03:01:03');
+INSERT INTO `sys_operation_log` VALUES (20, NULL, NULL, NULL, '认证管理', '宾客登录 [用户名:guest1]', 'AuthController.guestLogin', NULL, '0:0:0:0:0:0:0:1', 26, 1, NULL, '2026-01-01 03:06:38');
+INSERT INTO `sys_operation_log` VALUES (21, NULL, NULL, NULL, '认证管理', '宾客登录 [用户名:guest1]', 'AuthController.guestLogin', NULL, '0:0:0:0:0:0:0:1', 3, 1, NULL, '2026-01-01 03:08:39');
+INSERT INTO `sys_operation_log` VALUES (22, 1, 'guest1', 'guest', '订单管理', '更新订单 [ID:24]', 'OrderController.updateOrder', NULL, '0:0:0:0:0:0:0:1', 18, 1, NULL, '2026-01-01 03:09:05');
+INSERT INTO `sys_operation_log` VALUES (23, 1, 'admin', 'employee', '系统管理', '批量更新配置', 'SystemConfigController.batchUpdateConfig', NULL, '0:0:0:0:0:0:0:1', 52, 1, NULL, '2026-01-01 03:10:41');
+INSERT INTO `sys_operation_log` VALUES (24, 1, 'guest1', 'guest', '订单管理', '创建订单 [宾客:王建国]', 'OrderController.createOrder', NULL, '0:0:0:0:0:0:0:1', 44, 1, NULL, '2026-01-01 03:11:00');
+INSERT INTO `sys_operation_log` VALUES (25, 1, 'guest1', 'guest', '其他', '创建支付记录', 'PaymentController.createPayment', NULL, '0:0:0:0:0:0:0:1', 21, 1, NULL, '2026-01-01 03:11:05');
+INSERT INTO `sys_operation_log` VALUES (26, 1, 'guest1', 'guest', '其他', '创建支付记录', 'PaymentController.createPayment', NULL, '0:0:0:0:0:0:0:1', 18, 1, NULL, '2026-01-01 03:11:08');
+INSERT INTO `sys_operation_log` VALUES (27, 1, 'admin', 'employee', '系统管理', '批量更新配置', 'SystemConfigController.batchUpdateConfig', NULL, '0:0:0:0:0:0:0:1', 36, 1, NULL, '2026-01-01 03:11:15');
+INSERT INTO `sys_operation_log` VALUES (28, 1, 'admin', 'employee', '员工管理', '修改密码', 'EmployeeController.updatePassword', NULL, '0:0:0:0:0:0:0:1', 8, 1, NULL, '2026-01-01 03:12:02');
+INSERT INTO `sys_operation_log` VALUES (29, 1, 'admin', 'employee', '员工管理', '修改密码', 'EmployeeController.updatePassword', NULL, '0:0:0:0:0:0:0:1', 16, 1, NULL, '2026-01-01 03:12:32');
+INSERT INTO `sys_operation_log` VALUES (30, 1, 'guest1', 'guest', '宾客管理', '修改密码', 'GuestController.updatePassword', NULL, '0:0:0:0:0:0:0:1', 13, 1, NULL, '2026-01-01 03:12:57');
+INSERT INTO `sys_operation_log` VALUES (31, NULL, NULL, NULL, '认证管理', '宾客登录 [用户名:guest1]', 'AuthController.guestLogin', NULL, '0:0:0:0:0:0:0:1', 3, 1, NULL, '2026-01-01 03:13:02');
+INSERT INTO `sys_operation_log` VALUES (32, 1, 'guest1', 'guest', '宾客管理', '修改密码', 'GuestController.updatePassword', NULL, '0:0:0:0:0:0:0:1', 11, 1, NULL, '2026-01-01 03:13:26');
+INSERT INTO `sys_operation_log` VALUES (33, NULL, NULL, NULL, '认证管理', '宾客登录 [用户名:guest1]', 'AuthController.guestLogin', NULL, '0:0:0:0:0:0:0:1', 3, 1, NULL, '2026-01-01 03:13:29');
+INSERT INTO `sys_operation_log` VALUES (34, NULL, NULL, NULL, '认证管理', '宾客登录 [用户名:guest1]', 'AuthController.guestLogin', NULL, '0:0:0:0:0:0:0:1', 4, 1, NULL, '2026-01-01 03:14:29');
+INSERT INTO `sys_operation_log` VALUES (35, 1, 'admin', 'employee', '订单管理', '确认订单 [ID:25]', 'OrderController.confirmOrder', NULL, '0:0:0:0:0:0:0:1', 13, 1, NULL, '2026-01-01 03:15:09');
+INSERT INTO `sys_operation_log` VALUES (36, 1, 'admin', 'employee', '订单管理', '办理入住 [ID:25, 房间ID:1]', 'OrderController.checkIn', NULL, '0:0:0:0:0:0:0:1', 13, 1, NULL, '2026-01-01 03:15:14');
+INSERT INTO `sys_operation_log` VALUES (37, NULL, NULL, NULL, '认证管理', '员工登录 [用户名:admin]', 'AuthController.employeeLogin', NULL, '0:0:0:0:0:0:0:1', 4, 1, NULL, '2026-01-01 03:15:41');
+INSERT INTO `sys_operation_log` VALUES (38, 1, 'guest1', 'guest', '订单管理', '创建订单 [宾客:王建国]', 'OrderController.createOrder', NULL, '0:0:0:0:0:0:0:1', 9, 1, NULL, '2026-01-01 03:15:53');
+INSERT INTO `sys_operation_log` VALUES (39, 1, 'guest1', 'guest', '其他', '创建支付记录', 'PaymentController.createPayment', NULL, '0:0:0:0:0:0:0:1', 14, 1, NULL, '2026-01-01 03:15:56');
+INSERT INTO `sys_operation_log` VALUES (40, 1, 'guest1', 'guest', '订单管理', '取消订单 [ID:26]', 'OrderController.cancelOrder', NULL, '0:0:0:0:0:0:0:1', 6, 1, NULL, '2026-01-01 03:16:05');
 
 -- ----------------------------
 -- Table structure for sys_permission
@@ -559,7 +626,7 @@ CREATE TABLE `sys_permission`  (
   UNIQUE INDEX `permission_code`(`permission_code` ASC) USING BTREE,
   INDEX `idx_module`(`module` ASC) USING BTREE,
   INDEX `idx_parent_id`(`parent_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 91 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '权限表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 90 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '权限表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_permission
@@ -697,7 +764,7 @@ CREATE TABLE `sys_role`  (
   `deleted` tinyint(4) NULL DEFAULT 0 COMMENT '删除标记',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `role_code`(`role_code` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '角色表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '角色表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_role
@@ -720,7 +787,7 @@ CREATE TABLE `sys_role_permission`  (
   UNIQUE INDEX `uk_role_permission`(`role_id` ASC, `permission_id` ASC) USING BTREE,
   INDEX `idx_role_id`(`role_id` ASC) USING BTREE,
   INDEX `idx_permission_id`(`permission_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 205 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '角色权限关联表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 192 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '角色权限关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_role_permission

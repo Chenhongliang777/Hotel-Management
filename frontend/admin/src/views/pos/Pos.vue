@@ -20,7 +20,9 @@
               <template #default="{ row }">¥{{ row.totalPrice }}</template>
             </el-table-column>
             <el-table-column prop="category" label="类别" width="90" />
-            <el-table-column prop="createTime" label="时间" width="160" />
+            <el-table-column prop="createTime" label="时间" width="160">
+              <template #default="{ row }">{{ formatDateTime(row.createTime) }}</template>
+            </el-table-column>
           </el-table>
           <div class="pagination-container">
             <el-pagination v-model:current-page="pagination.page" v-model:page-size="pagination.size"
@@ -67,11 +69,14 @@
           <el-input-number v-model="form.quantity" :min="1" style="width:100%" />
         </el-form-item>
         <el-form-item label="类别">
-          <el-select v-model="form.category" style="width:100%">
+          <el-select v-model="form.category" style="width:100%" :disabled="!!form.itemId">
             <el-option label="饮料" value="beverage" />
             <el-option label="食品" value="food" />
+            <el-option label="洗浴用品" value="toiletry" />
+            <el-option label="日用品" value="supplies" />
             <el-option label="其他" value="other" />
           </el-select>
+          <div v-if="form.itemId" style="font-size: 12px; color: #909399;">商品类别自动获取，无法修改</div>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -141,6 +146,11 @@ async function submitForm() {
     await createPosRecord(form.value)
     ElMessage.success('录入成功'); dialogVisible.value = false; loadData()
   } finally { submitting.value = false }
+}
+
+function formatDateTime(dateTime) {
+  if (!dateTime) return '-'
+  return dateTime.replace('T', ' ').substring(0, 19)
 }
 </script>
 

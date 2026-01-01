@@ -12,12 +12,11 @@
   <!-- 状态筛选 -->
   <view class="filter-bar" wx:if="{{!type}}">
     <picker mode="selector" 
-            range="{{['全部', '待确认', '已确认', '已入住', '已退房', '已取消']}}"
-            range-key=""
-            value="{{statusFilter === '' ? 0 : (statusFilter === 'pending' ? 1 : (statusFilter === 'confirmed' ? 2 : (statusFilter === 'checked_in' ? 3 : (statusFilter === 'checked_out' ? 4 : 5))))}}"
+            range="{{statusOptions}}"
+            value="{{statusFilterIndex}}"
             bindchange="onStatusChange">
       <view class="filter-item">
-        <text>{{statusFilter === '' ? '全部状态' : getStatusText(statusFilter)}}</text>
+        <text>{{statusFilterText}}</text>
         <text class="arrow">▼</text>
       </view>
     </picker>
@@ -32,8 +31,8 @@
           bindtap="goOrderDetail">
       <view class="order-header">
         <text class="order-no">订单号：{{item.orderNo}}</text>
-        <view class="status-badge" style="background: {{getStatusColor(item.status)}}15; color: {{getStatusColor(item.status)}};">
-          {{getStatusText(item.status)}}
+        <view class="status-badge" style="background: {{item.statusColor}}15; color: {{item.statusColor}};">
+          {{item.statusText}}
         </view>
       </view>
       
@@ -67,7 +66,7 @@
       <!-- 操作按钮 -->
       <view class="order-actions">
         <button class="action-btn" 
-                wx:if="{{item.status === 'confirmed' && (type === 'checkin' || !type)}}"
+                wx:if="{{(item.status === 'confirmed' || item.status === 'pending') && (type === 'checkin' || !type)}}"
                 data-id="{{item.id}}"
                 catchtap="handleCheckIn">
           办理入住

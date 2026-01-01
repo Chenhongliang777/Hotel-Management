@@ -54,6 +54,24 @@
                   <span class="price">¥{{ roomType.price }}</span>
                   <span class="unit">/晚</span>
                 </div>
+                <div class="deposit-info" v-if="nights > 0">
+                  <div class="info-row">
+                    <span>入住天数：</span>
+                    <span>{{ nights }} 晚</span>
+                  </div>
+                  <div class="info-row">
+                    <span>房费：</span>
+                    <span class="highlight">¥{{ totalPrice.toFixed(2) }}</span>
+                  </div>
+                  <div class="info-row">
+                    <span>保证金（{{ (depositRate * 100).toFixed(0) }}%）：</span>
+                    <span class="highlight-red">¥{{ deposit.toFixed(2) }}</span>
+                  </div>
+                  <div class="info-row total">
+                    <span>应付总计：</span>
+                    <span class="highlight-total">¥{{ (totalPrice + deposit).toFixed(2) }}</span>
+                  </div>
+                </div>
               </div>
             </el-card>
           </div>
@@ -209,7 +227,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
-import { getRoomType } from '@/api/room'
+import { getRoomType, getDepositRate } from '@/api/room'
 import { createOrder } from '@/api/order'
 import { ElMessage } from 'element-plus'
 import dayjs from 'dayjs'
@@ -224,6 +242,7 @@ const submitting = ref(false)
 const currentStep = ref(0)
 const roomType = ref(null)
 const bookingFormRef = ref(null)
+const depositRate = ref(0.3)  // 默认30%，会从配置加载
 
 const bookingForm = ref({
   roomTypeId: Number(route.params.roomTypeId),
@@ -276,7 +295,7 @@ const totalPrice = computed(() => {
 })
 
 const deposit = computed(() => {
-  return Math.ceil(totalPrice.value * 0.3) // 保证金为总价的30%
+  return parseFloat((totalPrice.value * depositRate.value).toFixed(2))
 })
 
 const disabledCheckInDate = (date) => {
@@ -382,8 +401,20 @@ const handleLogout = () => {
   ElMessage.success('已退出登录')
 }
 
+const loadDepositRate = async () => {
+  try {
+    const res = await getDepositRate()
+    if (res.data) {
+      depositRate.value = parseFloat(res.data)
+    }
+  } catch (error) {
+    console.error('加载保证金比例失败:', error)
+  }
+}
+
 onMounted(() => {
   loadRoomType()
+  loadDepositRate()
 })
 </script>
 
@@ -481,6 +512,44 @@ onMounted(() => {
         font-size: 14px;
         color: #999;
         margin-left: 5px;
+      }
+    }
+
+    .deposit-info {
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid #eee;
+
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        font-size: 14px;
+        color: #666;
+
+        .highlight {
+          color: #667eea;
+          font-weight: 600;
+        }
+
+        .highlight-red {
+          color: #f56c6c;
+          font-weight: 600;
+        }
+
+        .highlight-total {
+          color: #667eea;
+          font-weight: 700;
+          font-size: 18px;
+        }
+
+        &.total {
+          margin-top: 15px;
+          padding-top: 10px;
+          border-top: 1px dashed #ddd;
+          font-size: 16px;
+          font-weight: 600;
+        }
       }
     }
   }

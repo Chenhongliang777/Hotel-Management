@@ -21,4 +21,6 @@ public interface CleaningService extends IService<CleaningTask> {
     boolean startTask(Long taskId);
     
     boolean completeTask(Long taskId);
+    
+    void cancelPendingTasksByRoomId(Long roomId);
 }

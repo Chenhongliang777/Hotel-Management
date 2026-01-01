@@ -39,18 +39,20 @@ Page({
     try {
       const res = await app.request({ url: `/order/${id}` })
       const order = res.data
-      // 应付总计 = 房费 + 额外消费
-      const totalAmount = parseFloat((parseFloat(order.totalPrice || 0) + parseFloat(order.extraCharges || 0)).toFixed(2))
-      // 待付金额 = 应付总计 - 已付金额
-      const unpaidAmount = parseFloat((totalAmount - parseFloat(order.paidAmount || 0)).toFixed(2))
-      // 判断是否已支付保证金
-      const paidAmount = parseFloat(order.paidAmount || 0)
+      // 应付总计 = 保证金 + 房费 + 额外消费（与Web端保持一致：30%保证金 + 100%房费）
       const deposit = parseFloat(order.deposit || 0)
+      const roomFee = parseFloat(order.totalPrice || 0)
+      const extraCharges = parseFloat(order.extraCharges || 0)
+      const totalAmount = parseFloat((deposit + roomFee + extraCharges).toFixed(2))
+      // 待付金额 = 应付总计 - 已付金额
+      const paidAmount = parseFloat(order.paidAmount || 0)
+      const unpaidAmount = parseFloat((totalAmount - paidAmount).toFixed(2))
+      // 判断是否已支付保证金
       const hasPaidDeposit = paidAmount >= deposit
       // 计算本次应支付金额：如果还没支付保证金，支付保证金；否则支付剩余金额
       const nextPayAmount = !hasPaidDeposit ? deposit : unpaidAmount
-      // 判断是否已改订过（通过检查 remark 中是否包含改订标记）
-      const isModified = order.remark && order.remark.includes('[已改订]')
+      // 判断是否已改订过（通过检查 modifyCount）
+      const isModified = order.modifyCount && order.modifyCount >= 1
       this.setData({ order, unpaidAmount, totalAmount, nextPayAmount, isModified })
       this.loadPayments(id)
     } catch (err) {

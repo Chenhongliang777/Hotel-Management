@@ -10,6 +10,7 @@ Page({
     totalPrice: 0,
     depositRate: 0.3,
     deposit: 0,
+    grandTotal: 0,  // 应付总计 = 房费 + 保证金
     guestOptions: [1, 2, 3, 4, 5, 6],
     guestIndex: 1,
     form: { guestName: '', guestPhone: '', guestIdCard: '', remark: '' },
@@ -34,7 +35,8 @@ Page({
       const nights = this.calculateNights()
       const totalPrice = (roomType.basePrice * nights).toFixed(2)
       const deposit = (totalPrice * this.data.depositRate).toFixed(2)
-      this.setData({ roomType, nights, totalPrice, deposit })
+      const grandTotal = (parseFloat(totalPrice) + parseFloat(deposit)).toFixed(2)
+      this.setData({ roomType, nights, totalPrice, deposit, grandTotal })
     } catch (err) {
       console.error(err)
     }
@@ -46,7 +48,8 @@ Page({
       if (res.data) {
         const depositRate = parseFloat(res.data)
         const deposit = (this.data.totalPrice * depositRate).toFixed(2)
-        this.setData({ depositRate, deposit })
+        const grandTotal = (parseFloat(this.data.totalPrice) + parseFloat(deposit)).toFixed(2)
+        this.setData({ depositRate, deposit, grandTotal })
       }
     } catch (err) {}
   },

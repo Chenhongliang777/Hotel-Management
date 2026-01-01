@@ -21,21 +21,34 @@ Page({
     const today = new Date()
     const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
     
-    const guestCount = parseInt(options.guestCount) || 2
-    const guestIndex = Math.max(0, guestCount - 1)
-    
     this.setData({
-      checkInDate: options.checkInDate || '',
-      checkOutDate: options.checkOutDate || '',
-      guestCount: guestCount,
-      guestIndex: guestIndex,
       today: todayStr,
       minCheckOut: todayStr
     })
-    
-    // 如果有日期参数，自动加载房型
-    if (options.checkInDate && options.checkOutDate) {
-      this.loadRoomTypes()
+  },
+  
+  onShow() {
+    // 检查是否有从首页传递的搜索参数
+    const searchParams = app.globalData.searchParams
+    if (searchParams) {
+      const guestCount = parseInt(searchParams.guestCount) || 2
+      const guestIndex = Math.max(0, guestCount - 1)
+      
+      this.setData({
+        checkInDate: searchParams.checkInDate || '',
+        checkOutDate: searchParams.checkOutDate || '',
+        guestCount: guestCount,
+        guestIndex: guestIndex,
+        minCheckOut: this.getMinCheckOut(searchParams.checkInDate)
+      })
+      
+      // 清除搜索参数，避免重复触发
+      app.globalData.searchParams = null
+      
+      // 自动加载房型
+      if (searchParams.checkInDate && searchParams.checkOutDate) {
+        this.loadRoomTypes()
+      }
     }
   },
   

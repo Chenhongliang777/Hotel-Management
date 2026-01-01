@@ -6,6 +6,10 @@ Page({
     orders: [],
     loading: false,
     statusFilter: '',
+    statusFilterIndex: 0,
+    statusFilterText: '全部状态',
+    statusOptions: ['全部', '待确认', '已确认', '已入住', '已退房', '已取消'],
+    statusValues: ['', 'pending', 'confirmed', 'checked_in', 'checked_out', 'cancelled'],
     keyword: ''
   },
 
@@ -43,9 +47,20 @@ Page({
         })
       }
       
-      this.setData({ 
-        orders: (res.data && res.data.records) || res.data || []
+      const ordersData = (res.data && res.data.records) || res.data || []
+      // 预处理订单数据，添加显示文本和颜色
+      const processedOrders = ordersData.map(order => {
+        const status = order.status || 'pending'
+        return {
+          ...order,
+          statusText: this.getStatusText(status),
+          statusColor: this.getStatusColor(status),
+          createTime: this.formatDateTime(order.createTime),
+          checkInTime: this.formatDateTime(order.checkInTime),
+          checkOutTime: this.formatDateTime(order.checkOutTime)
+        }
       })
+      this.setData({ orders: processedOrders })
     } catch (err) {
       console.error('加载订单失败', err)
       wx.showToast({ title: '加载失败', icon: 'none' })
@@ -64,8 +79,13 @@ Page({
 
   onStatusChange(e) {
     const index = parseInt(e.detail.value)
-    const statusMap = ['', 'pending', 'confirmed', 'checked_in', 'checked_out', 'cancelled']
-    this.setData({ statusFilter: statusMap[index] || '' })
+    const statusValue = this.data.statusValues[index] || ''
+    const statusText = this.data.statusOptions[index] || '全部状态'
+    this.setData({ 
+      statusFilter: statusValue,
+      statusFilterIndex: index,
+      statusFilterText: statusText
+    })
     this.loadOrders()
   },
 
@@ -93,31 +113,23 @@ Page({
         return
       }
 
-      const roomNames = availableRooms.map(r => r.roomNumber).join('、')
-      wx.showModal({
-        title: '选择房间',
-        content: `可用房间：${roomNames}，请选择一间办理入住`,
-        editable: true,
-        placeholderText: '请输入房间号',
-        success: async (modalRes) => {
-          if (modalRes.confirm && modalRes.content) {
-            const selectedRoom = availableRooms.find(r => r.roomNumber === modalRes.content)
-            if (!selectedRoom) {
-              wx.showToast({ title: '房间号不正确', icon: 'none' })
-              return
-            }
+      const roomNames = availableRooms.map(r => r.roomNumber)
+      wx.showActionSheet({
+        itemList: roomNames,
+        success: async (res) => {
+          const selectedRoom = availableRooms[res.tapIndex]
+          if (!selectedRoom) return
 
-            try {
-              await app.request({
-                url: `/order/${orderId}/checkin`,
-                method: 'PUT',
-                data: { roomId: selectedRoom.id }
-              })
-              wx.showToast({ title: '办理入住成功', icon: 'success' })
-              this.loadOrders()
-            } catch (err) {
-              wx.showToast({ title: err.message || '办理入住失败', icon: 'none' })
-            }
+          try {
+            await app.request({
+              url: `/order/${orderId}/checkin`,
+              method: 'PUT',
+              data: { roomId: selectedRoom.id }
+            })
+            wx.showToast({ title: '办理入住成功', icon: 'success' })
+            this.loadOrders()
+          } catch (err) {
+            wx.showToast({ title: err.message || '办理入住失败', icon: 'none' })
           }
         }
       })
@@ -168,6 +180,11 @@ Page({
       'cancelled': '#f56565'
     }
     return colorMap[status] || '#999'
+  },
+
+  formatDateTime(dateTimeStr) {
+    if (!dateTimeStr) return ''
+    return dateTimeStr.replace('T', ' ').substring(0, 19)
   }
 })
 

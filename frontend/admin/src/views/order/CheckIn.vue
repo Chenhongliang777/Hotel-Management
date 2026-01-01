@@ -51,11 +51,17 @@
         <el-descriptions-item label="入住日期">{{ currentOrder.checkInDate }} - {{ currentOrder.checkOutDate }}</el-descriptions-item>
         <el-descriptions-item label="订单金额">¥{{ currentOrder.totalPrice }}</el-descriptions-item>
         <el-descriptions-item label="已付金额">¥{{ currentOrder.paidAmount }}</el-descriptions-item>
+        <el-descriptions-item label="预订房型">
+          <el-tag type="info">{{ currentOrder.roomTypeName || '未知' }}</el-tag>
+        </el-descriptions-item>
         <el-descriptions-item label="分配房间">
           <el-select v-model="selectedRoomId" placeholder="请选择房间" style="width: 100%">
-            <el-option v-for="room in availableRooms" :key="room.id" 
+            <el-option v-for="room in filteredRooms" :key="room.id" 
                        :label="`${room.roomNumber} - ${room.roomType?.name}`" :value="room.id" />
           </el-select>
+          <div v-if="filteredRooms.length === 0" style="color: #909399; font-size: 12px; margin-top: 5px;">
+            该房型暂无可用房间
+          </div>
         </el-descriptions-item>
       </el-descriptions>
       <template #footer>
@@ -67,7 +73,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { getTodayCheckInOrders, checkIn } from '@/api/order'
 import { getAllRooms } from '@/api/room'
@@ -80,6 +86,14 @@ const dialogVisible = ref(false)
 const currentOrder = ref({})
 const selectedRoom = ref(null)
 const selectedRoomId = ref(null)
+
+// 过滤出符合订单房型的可用房间
+const filteredRooms = computed(() => {
+  if (!currentOrder.value.roomTypeId) {
+    return availableRooms.value
+  }
+  return availableRooms.value.filter(r => r.roomTypeId === currentOrder.value.roomTypeId)
+})
 
 onMounted(() => { loadOrders(); loadRooms() })
 

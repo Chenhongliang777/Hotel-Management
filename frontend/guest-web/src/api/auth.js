@@ -16,3 +16,7 @@ export function updateGuest(data) {
   return request.put('/guest', data)
 }
 
+export function changePassword(data) {
+  return request.put('/guest/password', data)
+}
+

@@ -2,11 +2,11 @@
   <!-- 筛选栏 -->
   <view class="filter-section">
     <picker mode="selector" 
-            range="{{['全部状态', '可用', '已入住', '维修中', '已预订']}}"
-            value="{{statusFilter === '' ? 0 : (statusFilter === 'available' ? 1 : (statusFilter === 'occupied' ? 2 : (statusFilter === 'maintenance' ? 3 : 4)))}}"
+            range="{{statusOptions}}"
+            value="{{statusFilterIndex}}"
             bindchange="onStatusFilterChange">
       <view class="filter-item">
-        <text>{{statusFilter === '' ? '全部状态' : getStatusText(statusFilter)}}</text>
+        <text>{{statusFilterText}}</text>
         <text class="arrow">▼</text>
       </view>
     </picker>
@@ -16,7 +16,7 @@
             value="{{roomTypeFilterIndex}}"
             bindchange="onRoomTypeFilterChange">
       <view class="filter-item">
-        <text>{{getRoomTypeName(roomTypeFilter)}}</text>
+        <text>{{roomTypeFilterText}}</text>
         <text class="arrow">▼</text>
       </view>
     </picker>
@@ -32,8 +32,8 @@
           <text class="room-number">{{item.roomNumber}}</text>
           <text class="room-type">{{item.roomType && item.roomType.name ? item.roomType.name : ''}}</text>
         </view>
-        <view class="status-badge" style="background: {{getStatusColor(item.status)}}15; color: {{getStatusColor(item.status)}};">
-          {{getStatusText(item.status)}}
+        <view class="status-badge" style="background: {{item.statusColor}}15; color: {{item.statusColor}};">
+          {{item.statusText}}
         </view>
       </view>
 
@@ -48,8 +48,8 @@
         </view>
         <view class="detail-row">
           <text class="label">清洁状态：</text>
-          <text class="value clean-status" style="color: {{getCleanStatusColor(item.cleanStatus || 'clean')}};">
-            {{getCleanStatusText(item.cleanStatus || 'clean')}}
+          <text class="value clean-status" style="color: {{item.cleanStatusColor}};">
+            {{item.cleanStatusText}}
           </text>
         </view>
       </view>

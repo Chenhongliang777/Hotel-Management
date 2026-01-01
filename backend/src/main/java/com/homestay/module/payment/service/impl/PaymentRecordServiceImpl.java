@@ -35,6 +35,28 @@ public class PaymentRecordServiceImpl extends ServiceImpl<PaymentRecordMapper, P
             throw new BusinessException("订单不存在");
         }
         
+        // 检查是否重复支付保证金
+        if ("deposit".equals(payment.getPaymentType())) {
+            List<PaymentRecord> existingDeposits = this.list(new LambdaQueryWrapper<PaymentRecord>()
+                    .eq(PaymentRecord::getOrderId, payment.getOrderId())
+                    .eq(PaymentRecord::getPaymentType, "deposit")
+                    .eq(PaymentRecord::getStatus, "success"));
+            if (!existingDeposits.isEmpty()) {
+                throw new BusinessException("保证金已支付，不能重复支付");
+            }
+        }
+        
+        // 检查是否重复支付房费
+        if ("room_fee".equals(payment.getPaymentType())) {
+            List<PaymentRecord> existingRoomFees = this.list(new LambdaQueryWrapper<PaymentRecord>()
+                    .eq(PaymentRecord::getOrderId, payment.getOrderId())
+                    .eq(PaymentRecord::getPaymentType, "room_fee")
+                    .eq(PaymentRecord::getStatus, "success"));
+            if (!existingRoomFees.isEmpty()) {
+                throw new BusinessException("房费已支付，不能重复支付");
+            }
+        }
+        
         payment.setPaymentNo(generatePaymentNo());
         payment.setOrderNo(order.getOrderNo());
         payment.setGuestId(order.getGuestId());

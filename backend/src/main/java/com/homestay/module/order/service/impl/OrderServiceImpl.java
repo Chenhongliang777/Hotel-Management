@@ -13,6 +13,8 @@ import com.homestay.module.room.entity.Room;
 import com.homestay.module.room.entity.RoomType;
 import com.homestay.module.room.mapper.RoomMapper;
 import com.homestay.module.room.mapper.RoomTypeMapper;
+import com.homestay.module.cleaning.entity.CleaningTask;
+import com.homestay.module.cleaning.service.CleaningService;
 import com.homestay.module.system.service.SystemConfigService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     
     @Autowired
     private SystemConfigService systemConfigService;
+    
+    @Autowired
+    private CleaningService cleaningService;
 
     @Override
     @Transactional
@@ -156,9 +161,19 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Override
     public List<Order> getGuestOrders(Long guestId) {
-        return this.list(new LambdaQueryWrapper<Order>()
+        List<Order> orders = this.list(new LambdaQueryWrapper<Order>()
                 .eq(Order::getGuestId, guestId)
                 .orderByDesc(Order::getCreateTime));
+        // 填充房型名称
+        for (Order order : orders) {
+            if (order.getRoomTypeId() != null) {
+                RoomType roomType = roomTypeMapper.selectById(order.getRoomTypeId());
+                if (roomType != null) {
+                    order.setRoomTypeName(roomType.getName());
+                }
+            }
+        }
+        return orders;
     }
 
     @Override
@@ -172,6 +187,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         if (order == null) {
             log.warn("订单不存在 - 订单ID: {}", id);
             throw new BusinessException(404, "订单不存在");
+        }
+        // 填充房型名称
+        if (order.getRoomTypeId() != null) {
+            RoomType roomType = roomTypeMapper.selectById(order.getRoomTypeId());
+            if (roomType != null) {
+                order.setRoomTypeName(roomType.getName());
+            }
         }
         log.debug("订单查询成功 - 订单ID: {}, 订单号: {}, 状态: {}", id, order.getOrderNo(), order.getStatus());
         return order;
@@ -250,6 +272,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 room.setStatus("available");
                 room.setCleanStatus("dirty");
                 roomMapper.updateById(room);
+                
+                // 创建退房清洁任务
+                CleaningTask task = new CleaningTask();
+                task.setRoomId(room.getId());
+                task.setRoomNumber(room.getRoomNumber());
+                task.setTaskType("退房清洁");
+                task.setStatus("pending");
+                cleaningService.createTask(task);
             }
         }
         
@@ -277,35 +307,52 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         if (existing == null) {
             throw new BusinessException("订单不存在");
         }
-        // 检查是否已经改订过（通过检查 remark 中是否包含改订标记）
-        if (existing.getRemark() != null && existing.getRemark().contains("[已改订]")) {
-            throw new BusinessException("订单已改订过，不能重复改订");
+        // 检查是否已经改订过
+        Integer modifyCount = existing.getModifyCount();
+        if (modifyCount != null && modifyCount >= 1) {
+            throw new BusinessException("订单已改订过，每个订单只能改订一次");
         }
-        // 标记订单已改订
-        String remark = existing.getRemark() != null ? existing.getRemark() : "";
-        if (!remark.contains("[已改订]")) {
-            remark = remark.isEmpty() ? "[已改订]" : remark + " [已改订]";
-            order.setRemark(remark);
-        }
+        // 增加改订次数
+        order.setModifyCount((modifyCount == null ? 0 : modifyCount) + 1);
         return this.updateById(order);
     }
 
     @Override
     public List<Order> getTodayCheckInOrders() {
         LocalDate today = LocalDate.now();
-        return this.list(new LambdaQueryWrapper<Order>()
+        // 只显示已确认的订单，待确认的订单需要先确认后才能办理入住
+        List<Order> orders = this.list(new LambdaQueryWrapper<Order>()
                 .eq(Order::getCheckInDate, today)
-                .in(Order::getStatus, "confirmed", "pending")
+                .eq(Order::getStatus, "confirmed")
                 .orderByAsc(Order::getCreateTime));
+        // 填充房型名称
+        for (Order order : orders) {
+            if (order.getRoomTypeId() != null) {
+                RoomType roomType = roomTypeMapper.selectById(order.getRoomTypeId());
+                if (roomType != null) {
+                    order.setRoomTypeName(roomType.getName());
+                }
+            }
+        }
+        return orders;
     }
 
     @Override
     public List<Order> getTodayCheckOutOrders() {
-        LocalDate today = LocalDate.now();
-        return this.list(new LambdaQueryWrapper<Order>()
-                .eq(Order::getCheckOutDate, today)
+        // 返回所有已入住的订单，可以随时办理退房
+        List<Order> orders = this.list(new LambdaQueryWrapper<Order>()
                 .eq(Order::getStatus, "checked_in")
-                .orderByAsc(Order::getCreateTime));
+                .orderByAsc(Order::getCheckOutDate));
+        // 填充房型名称
+        for (Order order : orders) {
+            if (order.getRoomTypeId() != null) {
+                RoomType roomType = roomTypeMapper.selectById(order.getRoomTypeId());
+                if (roomType != null) {
+                    order.setRoomTypeName(roomType.getName());
+                }
+            }
+        }
+        return orders;
     }
 
     @Override

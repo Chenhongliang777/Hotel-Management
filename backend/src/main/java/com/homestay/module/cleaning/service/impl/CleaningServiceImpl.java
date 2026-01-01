@@ -26,18 +26,22 @@ public class CleaningServiceImpl extends ServiceImpl<CleaningTaskMapper, Cleanin
 
     @Override
     public CleaningTask createTask(CleaningTask task) {
-        Room room = roomMapper.selectById(task.getRoomId());
-        if (room == null) {
-            throw new BusinessException("房间不存在");
+        // 如果有roomId但没有roomNumber，获取房间信息
+        if (task.getRoomId() != null && task.getRoomNumber() == null) {
+            Room room = roomMapper.selectById(task.getRoomId());
+            if (room != null) {
+                task.setRoomNumber(room.getRoomNumber());
+            }
         }
         
-        task.setRoomNumber(room.getRoomNumber());
-        task.setStatus("pending");
+        if (task.getStatus() == null) {
+            task.setStatus("pending");
+        }
+        if (task.getTaskType() == null) {
+            task.setTaskType("日常清洁");
+        }
+        
         this.save(task);
-        
-        room.setCleanStatus("dirty");
-        roomMapper.updateById(room);
-        
         return task;
     }
 
@@ -95,7 +99,8 @@ public class CleaningServiceImpl extends ServiceImpl<CleaningTaskMapper, Cleanin
             throw new BusinessException("任务不存在");
         }
         
-        if (!"assigned".equals(task.getStatus())) {
+        // 允许pending或assigned状态的任务开始
+        if (!"assigned".equals(task.getStatus()) && !"pending".equals(task.getStatus())) {
             throw new BusinessException("任务状态不允许开始");
         }
         
@@ -137,5 +142,19 @@ public class CleaningServiceImpl extends ServiceImpl<CleaningTaskMapper, Cleanin
         }
         
         return true;
+    }
+
+    @Override
+    public void cancelPendingTasksByRoomId(Long roomId) {
+        // 取消该房间所有待分配的清洁任务
+        LambdaQueryWrapper<CleaningTask> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(CleaningTask::getRoomId, roomId)
+               .eq(CleaningTask::getStatus, "pending");
+        
+        List<CleaningTask> pendingTasks = this.list(wrapper);
+        for (CleaningTask task : pendingTasks) {
+            task.setStatus("cancelled");
+            this.updateById(task);
+        }
     }
 }

@@ -36,7 +36,9 @@
             <el-tag :type="row.status === 1 ? 'success' : 'danger'">{{ row.status === 1 ? '成功' : '失败' }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="createTime" label="操作时间" width="170" />
+        <el-table-column prop="createTime" label="操作时间" width="170">
+          <template #default="{ row }">{{ formatDateTime(row.createTime) }}</template>
+        </el-table-column>
       </el-table>
       
       <div class="pagination-container">
@@ -76,5 +78,10 @@ async function loadData() {
 function resetSearch() {
   searchForm.username = ''; searchForm.module = ''; dateRange.value = []
   pagination.page = 1; loadData()
+}
+
+function formatDateTime(dateTime) {
+  if (!dateTime) return '-'
+  return dateTime.replace('T', ' ').substring(0, 19)
 }
 </script>

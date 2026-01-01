@@ -22,10 +22,10 @@
   <view class="info-card card">
     <view class="section-title">费用信息</view>
     <view class="info-row"><text class="label">房费单价</text><text>¥{{order.roomPrice}}/晚</text></view>
-    <view class="info-row"><text class="label">房费</text><text>¥{{order.totalPrice}}</text></view>
+    <view class="info-row"><text class="label">房费({{order.nights}}晚)</text><text>¥{{order.totalPrice}}</text></view>
+    <view class="info-row"><text class="label">保证金(30%)</text><text>¥{{order.deposit}}</text></view>
     <view class="info-row" wx:if="{{order.extraCharges > 0}}"><text class="label">额外消费</text><text>¥{{order.extraCharges}}</text></view>
     <view class="info-row"><text class="label">应付总计</text><text class="price">¥{{totalAmount}}</text></view>
-    <view class="info-row"><text class="label">保证金</text><text>¥{{order.deposit}}</text></view>
     <view class="info-row"><text class="label">已付金额</text><text class="text-success">¥{{order.paidAmount}}</text></view>
     <view class="info-row" wx:if="{{unpaidAmount > 0}}">
       <text class="label">待付金额</text>

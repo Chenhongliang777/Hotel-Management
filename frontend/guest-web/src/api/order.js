@@ -16,3 +16,7 @@ export function cancelOrder(id) {
   return request.put(`/order/${id}/cancel`)
 }
 
+export function updateOrder(data) {
+  return request.put('/order', data)
+}
+

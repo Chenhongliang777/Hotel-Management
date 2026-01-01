@@ -53,13 +53,15 @@ Page({
       itemIndex: -1,
       itemId: null,
       quantity: 1,
-      remark: ''
+      remark: '',
+      selectedItem: null
     },
     stockOutForm: {
       itemIndex: -1,
       itemId: null,
       quantity: 1,
-      remark: ''
+      remark: '',
+      selectedItem: null
     },
     categoryOptionsForAdd: [
       { label: '请选择类别', value: '' },
@@ -97,11 +99,21 @@ Page({
         categoryDisplay: item.category ? (categoryMap[item.category] || item.category) : ''
       }))
       
-      const allItemsForPicker = allItems.map(item => ({
-        label: `${item.name}(库存:${item.quantity || 0})`,
-        value: item.id,
-        item: item
-      }))
+      const allItemsForPicker = allItems.map(item => {
+        let label = `${item.name}(库存:${item.quantity || 0}`
+        if (item.price) {
+          label += ` 单价:¥${item.price}`
+        }
+        if (item.minStock) {
+          label += ` 预警:${item.minStock}`
+        }
+        label += ')'
+        return {
+          label: label,
+          value: item.id,
+          item: item
+        }
+      })
       
       this.setData({
         allItems: allItems,
@@ -343,7 +355,8 @@ Page({
         itemIndex: -1,
         itemId: null,
         quantity: 1,
-        remark: ''
+        remark: '',
+        selectedItem: null
       }
     })
   },
@@ -361,7 +374,8 @@ Page({
         itemIndex: -1,
         itemId: null,
         quantity: 1,
-        remark: ''
+        remark: '',
+        selectedItem: null
       }
     })
   },
@@ -375,9 +389,11 @@ Page({
   onStockInItemChange(e) {
     const index = parseInt(e.detail.value)
     const selectedItem = this.data.allItemsForPicker[index]
+    const itemDetail = selectedItem ? selectedItem.item : null
     this.setData({
       'stockInForm.itemIndex': index,
-      'stockInForm.itemId': selectedItem ? selectedItem.value : null
+      'stockInForm.itemId': selectedItem ? selectedItem.value : null,
+      'stockInForm.selectedItem': itemDetail
     })
   },
 
@@ -385,9 +401,11 @@ Page({
   onStockOutItemChange(e) {
     const index = parseInt(e.detail.value)
     const selectedItem = this.data.allItemsForPicker[index]
+    const itemDetail = selectedItem ? selectedItem.item : null
     this.setData({
       'stockOutForm.itemIndex': index,
-      'stockOutForm.itemId': selectedItem ? selectedItem.value : null
+      'stockOutForm.itemId': selectedItem ? selectedItem.value : null,
+      'stockOutForm.selectedItem': itemDetail
     })
   },
 

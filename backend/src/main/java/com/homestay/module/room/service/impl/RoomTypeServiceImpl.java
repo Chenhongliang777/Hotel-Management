@@ -79,7 +79,10 @@ public class RoomTypeServiceImpl extends ServiceImpl<RoomTypeMapper, RoomType> i
 
     @Override
     public boolean addRoomType(RoomType roomType) {
-        roomType.setStatus(1);
+        // 如果未设置状态，默认为上架
+        if (roomType.getStatus() == null) {
+            roomType.setStatus(1);
+        }
         return this.save(roomType);
     }
 

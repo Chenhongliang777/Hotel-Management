@@ -16,3 +16,7 @@ export function getRoomsByType(roomTypeId) {
   return request.get(`/room/type/${roomTypeId}`)
 }
 
+export function getDepositRate() {
+  return request.get('/config/deposit_rate')
+}
+

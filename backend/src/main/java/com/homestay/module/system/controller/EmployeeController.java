@@ -32,6 +32,14 @@ public class EmployeeController {
         return Result.success(PageResult.of(pageResult));
     }
 
+    @Operation(summary = "获取所有员工列表")
+    @GetMapping("/list")
+    public Result<java.util.List<Employee>> getAllEmployees() {
+        java.util.List<Employee> employees = employeeService.list();
+        employees.forEach(e -> e.setPassword(null));
+        return Result.success(employees);
+    }
+
     @Operation(summary = "获取员工详情")
     @GetMapping("/{id}")
     public Result<Employee> getEmployee(@PathVariable Long id) {

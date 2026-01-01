@@ -51,11 +51,16 @@ public class Order implements Serializable {
 
     private String remark;
 
+    private Integer modifyCount;
+
     private LocalDateTime checkInTime;
 
     private LocalDateTime checkOutTime;
 
     private Long operatorId;
+
+    @TableField(exist = false)
+    private String roomTypeName;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;

@@ -134,7 +134,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
-import { getCurrentGuest, updateGuest } from '@/api/auth'
+import { getCurrentGuest, updateGuest, changePassword } from '@/api/auth'
 import { ElMessage } from 'element-plus'
 
 const router = useRouter()
@@ -249,14 +249,18 @@ const handleChangePassword = async () => {
 
     changingPassword.value = true
     try {
-      // 注意：这里需要后端提供修改密码的接口
-      // 暂时提示用户联系管理员
-      ElMessage.warning('修改密码功能暂未开放，请联系管理员')
+      await changePassword({
+        oldPassword: passwordForm.value.oldPassword,
+        newPassword: passwordForm.value.newPassword
+      })
+      ElMessage.success('密码修改成功，请重新登录')
       passwordForm.value = {
         oldPassword: '',
         newPassword: '',
         confirmPassword: ''
       }
+      // 退出登录，要求用户重新登录
+      userStore.logout()
     } catch (error) {
       console.error('修改密码失败:', error)
     } finally {

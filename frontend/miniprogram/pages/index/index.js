@@ -104,8 +104,14 @@ Page({
     }
     
     const guestCount = guestOptions[guestIndex]
-    wx.navigateTo({
-      url: `/pages/rooms/rooms?checkInDate=${checkInDate}&checkOutDate=${checkOutDate}&guestCount=${guestCount}`
+    // 通过全局变量传递搜索参数（因为rooms是tabBar页面，不能用navigateTo传参）
+    app.globalData.searchParams = {
+      checkInDate,
+      checkOutDate,
+      guestCount
+    }
+    wx.switchTab({
+      url: '/pages/rooms/rooms'
     })
   },
 

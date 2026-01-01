@@ -2,11 +2,11 @@
   <!-- 状态筛选 -->
   <view class="filter-bar" wx:if="{{!type}}">
     <picker mode="selector" 
-            range="{{['全部状态', '待分配', '已分配', '进行中', '已完成', '已取消']}}"
-            value="{{statusFilter === '' ? 0 : (statusFilter === 'pending' ? 1 : (statusFilter === 'assigned' ? 2 : (statusFilter === 'in_progress' ? 3 : (statusFilter === 'completed' ? 4 : 5))))}}"
+            range="{{statusOptions}}"
+            value="{{statusFilterIndex}}"
             bindchange="onStatusFilterChange">
       <view class="filter-item">
-        <text>{{statusFilter === '' ? '全部状态' : getStatusText(statusFilter)}}</text>
+        <text>{{statusFilterText}}</text>
         <text class="arrow">▼</text>
       </view>
     </picker>
@@ -22,8 +22,8 @@
           <text class="task-title">房间：{{item.roomNumber}}</text>
           <text class="task-type" wx:if="{{item.taskType}}">{{item.taskType}}</text>
         </view>
-        <view class="status-badge" style="background: {{getStatusColor(item.status)}}15; color: {{getStatusColor(item.status)}};">
-          {{getStatusText(item.status)}}
+        <view class="status-badge" style="background: {{item.statusColor}}15; color: {{item.statusColor}};">
+          {{item.statusText}}
         </view>
       </view>
 

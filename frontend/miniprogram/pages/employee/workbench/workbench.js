@@ -53,13 +53,15 @@ Page({
     const role = this.data.role
     let actions = []
 
-    // 经营者：所有功能
-    if (role === '经营者' || role === 'manager' || role === 'owner') {
+    // 经营者/管理员：所有功能（包含订单管理）
+    if (role === '经营者' || role === '管理员' || role === 'manager' || role === 'owner' || role === 'admin') {
       actions = [
         { icon: '📋', title: '今日入住', path: '/pages/employee/orders/orders?type=checkin', color: '#667eea' },
         { icon: '🚪', title: '今日退房', path: '/pages/employee/orders/orders?type=checkout', color: '#48bb78' },
+        { icon: '📝', title: '订单管理', path: '/pages/employee/orders/orders', color: '#4299e1' },
         { icon: '🏠', title: '房间管理', path: '/pages/employee/rooms/rooms', color: '#ed8936' },
         { icon: '🧹', title: '清洁任务', path: '/pages/employee/cleaning/cleaning', color: '#38b2ac' },
+        { icon: '💳', title: 'POS消费', path: '/pages/employee/pos/pos', color: '#e53e3e' },
         { icon: '📊', title: '数据统计', path: '/pages/employee/statistics/statistics', color: '#9f7aea' },
         { icon: '📦', title: '库存管理', path: '/pages/employee/inventory/inventory', color: '#f56565' }
       ]
@@ -70,23 +72,23 @@ Page({
         { icon: '📋', title: '今日入住', path: '/pages/employee/orders/orders?type=checkin', color: '#667eea' },
         { icon: '🚪', title: '今日退房', path: '/pages/employee/orders/orders?type=checkout', color: '#48bb78' },
         { icon: '📝', title: '订单管理', path: '/pages/employee/orders/orders', color: '#ed8936' },
+        { icon: '💳', title: 'POS消费', path: '/pages/employee/pos/pos', color: '#e53e3e' },
         { icon: '🏠', title: '房间状态', path: '/pages/employee/rooms/rooms', color: '#38b2ac' }
       ]
     }
-    // 房务人员：清洁和房间
-    else if (role === '房务人员' || role === 'housekeeping' || role === 'cleaner') {
+    // 房务人员：仅清洁和房间状态，无订单管理
+    else if (role === '房务人员' || role === 'housekeeping' || role === 'cleaner' || role === 'housekeeper') {
       actions = [
         { icon: '🧹', title: '我的任务', path: '/pages/employee/cleaning/cleaning?type=my', color: '#667eea' },
         { icon: '📋', title: '待分配', path: '/pages/employee/cleaning/cleaning?type=pending', color: '#48bb78' },
         { icon: '🏠', title: '房间状态', path: '/pages/employee/rooms/rooms', color: '#ed8936' }
       ]
     }
-    // 默认功能
+    // 默认功能（无订单管理）
     else {
       actions = [
-        { icon: '📋', title: '订单管理', path: '/pages/employee/orders/orders', color: '#667eea' },
-        { icon: '🏠', title: '房间管理', path: '/pages/employee/rooms/rooms', color: '#48bb78' },
-        { icon: '🧹', title: '清洁任务', path: '/pages/employee/cleaning/cleaning', color: '#ed8936' }
+        { icon: '🏠', title: '房间管理', path: '/pages/employee/rooms/rooms', color: '#667eea' },
+        { icon: '🧹', title: '清洁任务', path: '/pages/employee/cleaning/cleaning', color: '#48bb78' }
       ]
     }
 

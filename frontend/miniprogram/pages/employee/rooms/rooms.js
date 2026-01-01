@@ -5,10 +5,15 @@ Page({
     rooms: [],
     loading: false,
     statusFilter: '',
+    statusFilterIndex: 0,
+    statusFilterText: '全部状态',
     roomTypeFilter: '',
     roomTypeFilterIndex: 0,
+    roomTypeFilterText: '全部房型',
     roomTypes: [],
-    roomTypeOptions: ['全部房型']
+    roomTypeOptions: ['全部房型'],
+    statusOptions: ['全部状态', '可用', '已入住', '维修中', '已预订'],
+    statusValues: ['', 'available', 'occupied', 'maintenance', 'reserved']
   },
 
   onLoad() {
@@ -57,16 +62,21 @@ Page({
         data: requestData
       })
       const rooms = (res.data && res.data.records) || res.data || []
-      // 确保所有数据字段都正确映射
+      // 确保所有数据字段都正确映射，并预处理显示文本和颜色
       const processedRooms = rooms.map(room => {
+        const status = room.status || 'available'
+        const cleanStatus = room.cleanStatus || 'clean'
         return {
           ...room,
-          // 确保有默认值
           floor: room.floor || null,
-          cleanStatus: room.cleanStatus || 'clean',
-          status: room.status || 'available',
-          // 确保 roomType 对象存在
-          roomType: room.roomType || null
+          cleanStatus: cleanStatus,
+          status: status,
+          roomType: room.roomType || null,
+          // 预处理状态显示
+          statusText: this.getStatusText(status),
+          statusColor: this.getStatusColor(status),
+          cleanStatusText: this.getCleanStatusText(cleanStatus),
+          cleanStatusColor: this.getCleanStatusColor(cleanStatus)
         }
       })
       this.setData({ 
@@ -81,19 +91,27 @@ Page({
   },
 
   onStatusFilterChange(e) {
-    this.setData({ statusFilter: e.detail.value || '' })
+    const index = parseInt(e.detail.value)
+    const statusValue = this.data.statusValues[index] || ''
+    const statusText = this.data.statusOptions[index] || '全部状态'
+    this.setData({ 
+      statusFilter: statusValue,
+      statusFilterIndex: index,
+      statusFilterText: statusText
+    })
     this.loadRooms()
   },
 
   onRoomTypeFilterChange(e) {
     const index = parseInt(e.detail.value)
     if (index === 0) {
-      this.setData({ roomTypeFilter: '', roomTypeFilterIndex: 0 })
+      this.setData({ roomTypeFilter: '', roomTypeFilterIndex: 0, roomTypeFilterText: '全部房型' })
     } else {
       const selectedType = this.data.roomTypes[index - 1]
       this.setData({ 
         roomTypeFilter: selectedType ? selectedType.id : '',
-        roomTypeFilterIndex: index
+        roomTypeFilterIndex: index,
+        roomTypeFilterText: selectedType ? selectedType.name : '全部房型'
       })
     }
     this.loadRooms()

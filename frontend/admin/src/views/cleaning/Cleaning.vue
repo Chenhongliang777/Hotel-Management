@@ -33,7 +33,9 @@
                 <el-tag :type="getStatusType(row.status)">{{ getStatusLabel(row.status) }}</el-tag>
               </template>
             </el-table-column>
-            <el-table-column prop="createTime" label="创建时间" width="160" />
+            <el-table-column prop="createTime" label="创建时间" width="160">
+              <template #default="{ row }">{{ formatDateTime(row.createTime) }}</template>
+            </el-table-column>
             <el-table-column label="操作" width="180">
               <template #default="{ row }">
                 <el-button v-if="row.status === 'assigned'" type="primary" link @click="startTask(row)">开始</el-button>
@@ -148,6 +150,11 @@ async function submitAssign() {
 
 async function startTask(task) { await startTaskApi(task.id); ElMessage.success('任务已开始'); loadTasks() }
 async function completeTask(task) { await completeTaskApi(task.id); ElMessage.success('任务已完成'); loadTasks(); loadPendingTasks() }
+
+function formatDateTime(dateTime) {
+  if (!dateTime) return '-'
+  return dateTime.replace('T', ' ').substring(0, 19)
+}
 </script>
 
 <style lang="scss" scoped>
