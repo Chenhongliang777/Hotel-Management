@@ -30,7 +30,7 @@
               @keyup.enter="handleLogin"
             />
           </el-form-item>
-          <el-form-item>
+          <el-form-item label-width="0">
             <el-button
               type="primary"
               size="large"
@@ -41,17 +41,16 @@
               登录
             </el-button>
           </el-form-item>
-          <el-form-item>
-            <div class="register-link">
-              还没有账号？
+          <el-form-item label-width="0">
+            <div class="footer-links">
+              <span>还没有账号？</span>
               <el-link type="primary" @click="$router.push('/register')">立即注册</el-link>
+              <span class="separator">|</span>
+              <el-link type="primary" @click="$router.push('/')">返回首页</el-link>
             </div>
           </el-form-item>
         </el-form>
       </el-card>
-      <div class="back-home">
-        <el-link type="primary" @click="$router.push('/')">返回首页</el-link>
-      </div>
     </div>
   </div>
 </template>
@@ -121,6 +120,12 @@ const handleLogin = async () => {
 }
 
 .login-card {
+  :deep(.el-form-item[label-width="0"] .el-form-item__content) {
+    margin-left: 0 !important;
+    display: flex;
+    justify-content: center;
+  }
+  
   .card-header {
     text-align: center;
     
@@ -137,17 +142,21 @@ const handleLogin = async () => {
     }
   }
   
-  .register-link {
+  .footer-links {
     text-align: center;
     width: 100%;
     color: #666;
     font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    
+    .separator {
+      margin: 0 4px;
+      color: #ccc;
+    }
   }
-}
-
-.back-home {
-  text-align: center;
-  margin-top: 20px;
 }
 </style>
 
